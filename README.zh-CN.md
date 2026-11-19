@@ -12,7 +12,7 @@ MotrixSim 集成多体动力学、精细接触、柔性体仿真与 CPU/GPU 并�
 
 [阅读文档](https://motrixsim.readthedocs.io/zh-cn/latest/) · [技术报告](https://motrixsim.motphys.com) · [网页版仿真](https://motrix.motphys.com)
 
-[观看 MotrixSim 演示视频](docs/source/_static/videos/motrixsim-prom-10m.mp4)
+https://github.com/user-attachments/assets/30bbd874-4567-4f4e-81ec-388d9a707308
 
 <p align="center">
   <img src="assets/readme/multibody.webp" alt="MotrixSim 渲染的人形机器人、四足机器人、移动操作机器人、机械臂、灵巧手和工程机械等多体系统" width="960">
@@ -41,13 +41,13 @@ MotrixSim 集成多体动力学、精细接触、柔性体仿真与 CPU/GPU 并�
 
 | 特性 | 说明 | 演示 |
 | --- | --- | --- |
-| SDF 精细交互 | 使用**有符号距离场（SDF）**表示复杂曲面与非凸结构，支持多点接触与摩擦求解，用于灵巧抓取、齿轮啮合等依赖局部几何细节的交互。 | img src="assets/readme/demos/sdf-apple.gif" alt="灵巧手通过多指接触抓起不规则曲面的苹果" width="240" |
-| 复杂机构与闭环约束 | 基于广义坐标描述多体系统，联合求解关节、限位、接触与闭环约束。Strandbeest 模型由同一曲柄驱动 **12 条腿、92 个连杆和 36 个闭合运动环路**，配套示例支持约束残差检查。 | img src="assets/readme/demos/closed-loop.gif" alt="单曲柄驱动 Strandbeest 多足闭链机构协同运动" width="240" |
-| 柔性体与刚柔耦合 | 使用**物质点法（MPM）**模拟压缩、回弹与大变形，并与多体动力学双向交换运动边界及接触反作用，描述机械臂夹取海绵等刚柔交互。 | img src="assets/readme/demos/rigid-soft.gif" alt="真实机械臂与 MotrixSim 仿真中夹取海绵的并列演示" width="240" |
-| CPU/GPU 大规模并行 | 提供 **CPU/GPU 批量仿真后端**，通过 Python 接口管理整批、单环境及环境子集的状态与控制，支持强化学习采样、参数扫描和策略评测。 | img src="assets/readme/demos/parallel.gif" alt="多个 G1 机器人在粗糙地形中的批量策略执行" width="240" |
-| 触觉感知与力控 | 根据接触几何，通过降阶接触求解计算凝胶表面三维位移场，输出标记点（marker）位移与法向变形，并支持批量计算。凝胶接触力可接入力控闭环，用于机械臂与灵巧手抓取。 | img src="assets/readme/demos/tactile.gif" alt="机械臂夹爪和灵巧手通过凝胶指垫抓取物体并显示接触力与压力分布" width="240" |
+| SDF 精细交互 | 使用**有符号距离场（SDF）**表示复杂曲面与非凸结构，支持多点接触与摩擦求解，用于灵巧抓取、齿轮啮合等依赖局部几何细节的交互。 | <img src="assets/readme/demos/sdf-apple.gif" alt="灵巧手通过多指接触抓起不规则曲面的苹果" width="240"> |
+| 复杂机构与闭环约束 | 基于广义坐标描述多体系统，联合求解关节、限位、接触与闭环约束。Strandbeest 模型由同一曲柄驱动 **12 条腿、92 个连杆和 36 个闭合运动环路**，配套示例支持约束残差检查。 | <img src="assets/readme/demos/closed-loop.gif" alt="单曲柄驱动 Strandbeest 多足闭链机构协同运动" width="240"> |
+| 柔性体与刚柔耦合 | 使用**物质点法（MPM）**模拟压缩、回弹与大变形，并与多体动力学双向交换运动边界及接触反作用，描述机械臂夹取海绵等刚柔交互。 | <img src="assets/readme/demos/rigid-soft.gif" alt="真实机械臂与 MotrixSim 仿真中夹取海绵的并列演示" width="240"> |
+| CPU/GPU 大规模并行 | 提供 **CPU/GPU 批量仿真后端**，通过 Python 接口管理整批、单环境及环境子集的状态与控制，支持强化学习采样、参数扫描和策略评测。 | <img src="assets/readme/demos/parallel.gif" alt="多个 G1 机器人在粗糙地形中的批量策略执行" width="240"> |
+| 触觉感知与力控 | 根据接触几何，通过降阶接触求解计算凝胶表面三维位移场，输出标记点（marker）位移与法向变形，并支持批量计算。凝胶接触力可接入力控闭环，用于机械臂与灵巧手抓取。 | <img src="assets/readme/demos/tactile.gif" alt="机械臂夹爪和灵巧手通过凝胶指垫抓取物体并显示接触力与压力分布" width="240"> |
 | PBR 高质量渲染 | 通过反射率、粗糙度与金属性描述材质，结合环境光照和屏幕空间全局光照（SSGI）计算光照响应。批量相机可输出彩色、深度与分割图像，用于视觉策略训练。 | <a href="assets/readme/pbr.webp"><img src="assets/readme/pbr.webp" alt="MotrixSim 开启 SSGI 的 PBR 场景渲染，展示材质受光与间接照明" width="240"></a> |
-| 3DGS 混合渲染 | **3D 高斯泼溅（3DGS）**与 PBR 网格混合渲染，融合扫描环境外观与独立配置的物理模型。 | img src="assets/readme/demos/3dgs.gif" alt="G1 机器人网格与 3DGS 扫描环境共同渲染" width="240" |
+| 3DGS 混合渲染 | **3D 高斯泼溅（3DGS）**与 PBR 网格混合渲染，融合扫描环境外观与独立配置的物理模型。 | <img src="assets/readme/demos/3dgs.gif" alt="G1 机器人网格与 3DGS 扫描环境共同渲染" width="240"> |
 
 <a id="performance"></a>
 
