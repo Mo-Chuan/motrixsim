@@ -1,5 +1,7 @@
 # 🤖 刚体
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 在 MotrixSim 的世界中，Body 可以是单个刚体 (Single Body)，也可以是一个由关节 (Joint) 和连杆 (Link) 构成的多体系统 (Articulated Body)。如果用一幅图来表示，就是
 
 ![body](/_static/images/body.png)

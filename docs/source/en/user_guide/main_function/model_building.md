@@ -1,5 +1,7 @@
 # 🔨 Programmatic Model Building
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 `motphys-scene-descriptor` (`MSD`) provides scene description and composition capabilities in MotrixSim. In Python, it is exposed through [`motrixsim.msd`](../../api_reference/msd/msd.md).
 
 If we split the simulation workflow into two stages:

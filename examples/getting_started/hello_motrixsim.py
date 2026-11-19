@@ -13,9 +13,15 @@
 # limitations under the License.
 # ==============================================================================
 
+
 # tag::start
 
-import motrixsim as mx
+import sys
+
+if "--gpu" in sys.argv:
+    import motrixsim.gpu as mx
+else:
+    import motrixsim as mx
 
 model = mx.load_model("examples/assets/boston_dynamics_spot/scene.xml")
 with mx.render.RenderApp("warn") as render:

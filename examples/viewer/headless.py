@@ -17,7 +17,7 @@ import argparse
 import time
 from collections import deque
 
-from motrixsim import SceneData, load_model, step
+from motrixsim import SceneData, msd, step
 from motrixsim.render import RenderApp
 
 
@@ -29,9 +29,11 @@ def main():
     with RenderApp(headless=True) as renderer:
         # The scene description file
         path = "examples/assets/go1/scene.xml"
-        # Load the scene model
-        model = load_model(path)
-        model.cameras.set_system_render_target("image", 256, 256)
+        # Load the scene world and configure the system camera before building
+        world = msd.from_file(path)
+        world.system_camera.render_target = msd.RenderTarget.Image
+        world.system_camera.resolution = [256, 256]
+        model = world.build()
         data = SceneData(model)
         renderer.launch(model)
         image_index = 0

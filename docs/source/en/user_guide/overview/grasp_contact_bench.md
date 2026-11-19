@@ -3,7 +3,7 @@
 :::{tip}
 For models and code, see the [MotrixSim Docs](https://github.com/Motphys/motrixsim-docs) repository.
 
-Before running the examples, please refer to {doc}`../overview/environment_setup` to complete the environment setup.
+Before running the examples, please refer to {ref}`Path 2: Clone the Repository and Run Examples <install-from-repository>` to complete the environment setup.
 :::
 
 In robot simulation, "grasping" seems simple — the gripper closes, the object is held, the arm lifts. But for policy training and sim-to-real transfer, **merely holding the object is far from enough**. Whether the contact forces are smooth and physically consistent directly affects whether trained policies can transfer to real robots.

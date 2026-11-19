@@ -1,5 +1,7 @@
 # Gyroscope
 
+`{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 The gyroscope sensor (gyro) is used to measure the three-axis angular velocity at the mounting point in the **local coordinate system**. In robot simulation, the gyroscope is a core sensor for attitude control and motion estimation, widely used in drones, robotic arms, mobile robots, and other fields.
 
 ## 🎯 Functional Description

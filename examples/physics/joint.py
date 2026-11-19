@@ -120,7 +120,7 @@ def main():
         # Try to set vel directly
         joint_A.set_dof_vel(data, np.array([0.1]))
         # Use joint dof_vel_index to get dof_vel
-        dof_vel_index = joint_A.dof_pos_index
+        dof_vel_index = joint_A.dof_vel_index
         dof_vel = data.dof_vel[dof_vel_index]
         print(f"dof_vel of joint_A is : {dof_vel}")
         # Or use get_dof_vel() directly. It's the same with dof_pos

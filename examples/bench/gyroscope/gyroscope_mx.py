@@ -13,11 +13,18 @@
 # limitations under the License.
 # ==============================================================================
 
+import sys
 
 import numpy as np
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import run
 from motrixsim.render import RenderApp
+
+USE_GPU = "--gpu" in sys.argv
+if USE_GPU:
+    from motrixsim.gpu import SceneData, load_model, step
+else:
+    from motrixsim import SceneData, load_model, step
 
 # Mouse controls:
 # - Press and hold left button then drag to rotate the camera/view

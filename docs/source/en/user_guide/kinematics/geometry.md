@@ -1,19 +1,23 @@
 # 🔷 Geometry
 
+{bdg-success-line}`CPU: fully supported` {bdg-warning-line}`GPU: partially supported`
+
 Geometry determines the appearance and collision properties of objects in the scene. Geometries can be added under `<body>` or `<worldbody>`, or used to configure default-related properties. [MJCF Geometry Configurable Attributes](https://mujoco.readthedocs.io/en/stable/XMLreference.html#body-geom)
 
 ## Geometry Types
 
 Currently supported geometry types are as follows:
-| Type | Description |
-| :-----------------| :-------------------------------------------------------------------------- |
-| Plane (`plane`) | Infinite plane dividing the entire scene, can only be configured under `worldbody` or a static `body`. In the plane’s local coordinate system, the Z-axis is the normal direction. The region below the plane (−Z direction) is the collision area. The first two values of the `size` parameter are only for visualization and do not affect collision volume. |
-| Height field (`hfield`) | Requires referencing an asset under the corresponding `hfield` tag. No need to configure the `size` attribute. For an example, see [`examples/assets/hfield.xml`](../../../../examples/assets/hfield.xml). |
-| Sphere (`sphere`) | The `size` attribute has only 1 value, defining the radius of the sphere. |
-| Capsule (`capsule`)| Can be regarded as composed of two hemispheres and a cylinder. The `size` consists of the radius of the hemispheres and the half-height of the cylinder. |
-| Cylinder (`cylinder`)| The `size` consists of the radius of the circle and the half-height of the cylinder. |
-| Box (`box`) | The `size` consists of the half-lengths along the X, Y, and Z directions. |
-| Mesh (`mesh`) | Requires referencing an asset under the corresponding `mesh` tag. No need to configure the `size` attribute. For an example, see [`examples/assets/boston_dynamics_spot/spot.xml`](../../../../examples/assets/boston_dynamics_spot/spot.xml). |
+
+| Type                          | Description | CPU | GPU |
+| :---------------------------- | :---------- | :--: | :--: |
+| Plane (`plane`)               | Infinite plane dividing the entire scene, can only be configured under `worldbody` or a static `body`. In the plane’s local coordinate system, the Z-axis is the normal direction. The region below the plane (−Z direction) is the collision area. The first two values of the `size` parameter are only for visualization and do not affect collision volume. | ✅ | ✅ |
+| Height field (`hfield`)       | Requires referencing an asset under the corresponding `hfield` tag. No need to configure the `size` attribute. For an example, see [`examples/assets/hfield.xml`](../../../../examples/assets/hfield.xml).                                                                                                                                                      | ✅ | ✅ |
+| Sphere (`sphere`)             | The `size` attribute has only 1 value, defining the radius of the sphere.                                                                                                                                                                                                                                                                                       | ✅ | ✅ |
+| Capsule (`capsule`)           | Can be regarded as composed of two hemispheres and a cylinder. The `size` consists of the radius of the hemispheres and the half-height of the cylinder.                                                                                                                                                                                                        | ✅ | ✅ |
+| Cylinder (`cylinder`)         | The `size` consists of the radius of the circle and the half-height of the cylinder.                                                                                                                                                                                                                                                                            | ✅ | ✅ |
+| Box (`box`)                   | The `size` consists of the half-lengths along the X, Y, and Z directions.                                                                                                                                                                                                                                                                                       | ✅ | ✅ |
+| Mesh (`mesh`)                 | Requires referencing an asset under the corresponding `mesh` tag. No need to configure the `size` attribute. For an example, see [`examples/assets/boston_dynamics_spot/spot.xml`](../../../../examples/assets/boston_dynamics_spot/spot.xml).                                                                                                                  | ✅ | ✅ |
+| Signed distance field (`sdf`) | Supported in the CPU version. References a `mesh` asset to generate an SDF collision shape that can represent non-convex structures such as grooves and holes. No need to configure the `size` attribute. See [Signed Distance Field (SDF)](geometry/sdf.md) for usage and supported collisions.                                                                | ✅ | ❌ |
 
 ## Main Interfaces
 
@@ -43,5 +47,6 @@ See the source code at [`examples/physics/geom.py`](../../../../examples/physics
 ```{toctree}
 :maxdepth: 1
 geometry/hfield
+geometry/sdf
 
 ```

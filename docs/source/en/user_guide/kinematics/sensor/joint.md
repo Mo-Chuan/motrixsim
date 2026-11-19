@@ -1,5 +1,7 @@
 # Joint Sensor
 
+`{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 Joint sensors are used to measure the position and velocity information of robot joints, and are core sensor types for robot control and status monitoring. They include joint position sensors (jointpos) and joint velocity sensors (jointvel).
 
 ## 🎯 Functional Description

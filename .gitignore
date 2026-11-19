@@ -16,3 +16,10 @@ docs/source/user_guide
 
 # Benchmark results
 examples/bench/grasp/.result/
+
+# Generated example outputs
+/examples/output/
+
+# Local scratch / debug documents (never commit these)
+*.local.md
+NOTES.md

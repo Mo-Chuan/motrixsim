@@ -1,5 +1,7 @@
 # Contact Sensor
 
+{bdg-success-line}`CPU: fully supported` {bdg-danger-line}`GPU: not supported`
+
 Contact sensors are used to detect and report contact information between two objects (or geometries), including contact point position, contact force, normal vectors, and other detailed data. In robot simulation, contact sensors are commonly used for foot contact detection, grasping force feedback, collision detection, and other application scenarios.
 
 ## 🎯 Functionality Description

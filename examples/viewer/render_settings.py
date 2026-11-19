@@ -14,8 +14,15 @@
 # ==============================================================================
 
 
-from motrixsim import SceneData, load_model, run, step
+import sys
+
+from motrixsim import run
 from motrixsim.render import RenderApp, RenderSettings
+
+if "--gpu" in sys.argv:
+    from motrixsim.gpu import SceneData, load_model, step
+else:
+    from motrixsim import SceneData, load_model, step
 
 # Mouse controls:
 # - Press and hold left button then drag to rotate the camera/view

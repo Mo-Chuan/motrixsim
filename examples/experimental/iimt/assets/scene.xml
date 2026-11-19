@@ -1,0 +1,82 @@
+<mujoco model="go2 scene">
+  <include file="cmr.xml"/>
+  <include file="store2/Store.xml"/>
+  <option timestep="0.01" iterations="300"/>
+
+  <statistic center="0 0 0.1" extent="0.8"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="-130" elevation="-20"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3"
+      markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+    <mesh name="basket" file="./meshes/basket.stl"/>
+    <texture name="texplane" type="2d" file="../../../assets/common/plane.png" width="512" height="512" />
+    <material name="matplane" reflectance="0." texture="texplane" texrepeat="0.2 0.2" texuniform="true"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0 0 0.01" type="plane" material="matplane"/>
+    <!-- <geom name="table" pos="1 1 0.5" size="0.5 0.5 0.5" type="box"/> -->
+    <body name="item0" pos="0.6 -0.4 1"/>
+    <body name="table" pos="0 -3.02 0.435">
+      <geom size="0.5 0.5 0.5" type="box"/>
+      <!-- <geom size="0.5 0.01 0.01" pos="0. 0.51 0.437" quat="0 0 0.1 1" type="box" rgba="0 1 0 1" class="collision_only"/> -->
+      <site name="table_site" size="0.01" pos="0 0.1 0.6" quat="0 1 0 0"/>
+      <site name="table2_site" size="0.01" pos="0 0.1 0.75" quat="0 1 0 0"/>
+      <site name="table3_site" size="0.01" pos="0 0.5 0.65" quat="0 1 0 0"/>
+    </body>
+    <!-- <body pos="0.2 -3. 1">
+      <joint type="free"/>
+      <geom name="item0_geom" size="0.03 0.03 0.03" type="box" rgba="1 0 0 1"/>
+      <site name="item0_site" size="0.01" quat="0.0 0.0 1 0"/>
+    </body> -->
+    <body name="target" pos="0.5 -0.5 1"/>
+
+    <body name="basket" pos="0.0 -2.7 1" quat="0 0 1 1">
+      <joint type="free"/>
+      <geom type="box" size=".005 0.05 0.17" pos="0.16 0.05 0"  quat="1 0 0 -0.1" rgba="0.05 0.15 0.65 0.85" class="collision_only" group="2"/>
+      <geom type="box" size=" .005 .05 0.17" pos="-0.16 0.05 0"  quat="1 0 0 0.1" rgba="0.05 0.15 0.65 0.85" class="collision_only" group="2"/>
+      <geom type="box" size="0.17 0.05 .005" pos="0 0.05 -0.16"  quat="1 -0.1 0 0" rgba="0.05 0.15 0.65 0.85" class="collision_only" group="2"/>
+      <geom type="box" size="0.17 0.05 .005" pos="0 0.05 0.16"  quat="1 0.1 0 0" rgba="0.05 0.15 0.65 0.85" class="collision_only" group="2"/>
+      <geom type="box" size="0.155 0.01 .155" rgba="0.05 0.15 0.65 0.55" class="collision_friction" group="2"/>
+      <geom type="mesh" mesh="basket" rgba="1 1 1 0.18" class="visual" />
+      <site name="basket_site" size="0.01" pos="0 0.05 -0.15" quat="1 1 0 0"/>
+      <site name="basket_place_site" size="0.01" pos="0 0.25 0" quat="1 1 0 0"/>
+      <site name="basket2_site" size="0.01" pos="0 0.07 0.18" quat="1 1 0 0"/>
+      <site name="target8_site" size="0.01" pos="-0.08 0.13 0.03" quat="1 -1 0 0"/>
+      <geom type="box" size="0.155 0.008 .017" rgba="0.05 0.15 0.65 0.85" pos="0 0.105 0.18" class="collision_friction" group="2"/>
+      <geom type="box" size="0.155 0.008 .017" rgba="0.05 0.15 0.65 0.85" pos="0 0.105 -0.18" class="collision_friction" group="2"/>
+      <geom type="box" size="0.017 0.008 0.155" rgba="0.05 0.15 0.65 0.85" pos="0.18 0.105 0" class="collision_friction" group="2"/>
+      <geom type="box" size="0.017 0.008 0.155" rgba="0.05 0.15 0.65 0.85" pos="-0.18 0.105 0" class="collision_friction" group="2"/>
+
+    </body>
+  </worldbody>
+  <sensor>
+    <!-- <framepos objtype="site" objname="item0_site" name="item0_pos"/>
+    <framequat objtype="site" objname="item0_site" name="item0_quat"/> -->
+        <!-- <framepos objtype="site" objname="item1_site" name="item1_pos"/>
+    <framequat objtype="site" objname="item1_site" name="item1_quat"/>
+        <framepos objtype="site" objname="item2_site" name="item2_pos"/>
+    <framequat objtype="site" objname="item2_site" name="item2_quat"/> -->
+    <framepos objtype="site" objname="table_site" name="table_pos"/>
+    <framequat objtype="site" objname="table_site" name="table_quat"/>
+    <framepos objtype="site" objname="table2_site" name="table2_pos"/>
+    <framequat objtype="site" objname="table2_site" name="table2_quat"/>
+    <framepos objtype="site" objname="table3_site" name="table3_pos"/>
+    <framequat objtype="site" objname="table3_site" name="table3_quat"/>
+    <framepos objtype="site" objname="basket_site" name="basket_pos"/>
+    <framequat objtype="site" objname="basket_site" name="basket_quat"/>
+    <framepos objtype="site" objname="basket2_site" name="basket2_pos"/>
+    <framequat objtype="site" objname="basket2_site" name="basket2_quat"/>
+    <framepos objtype="site" objname="basket_place_site" name="basket_place_pos"/>
+    <framequat objtype="site" objname="basket_place_site" name="basket_place_quat"/>
+  </sensor>
+</mujoco>

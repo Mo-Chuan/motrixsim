@@ -13,8 +13,16 @@
 # limitations under the License.
 # ==============================================================================
 
-from motrixsim import SceneData, SceneModel, load_model, run, step
+
+import sys
+
+from motrixsim import run
 from motrixsim.render import RenderApp
+
+if "--gpu" in sys.argv:
+    from motrixsim.gpu import SceneData, SceneModel, load_model, step
+else:
+    from motrixsim import SceneData, SceneModel, load_model, step
 
 
 def simulate(render: RenderApp, model: SceneModel, data: SceneData):

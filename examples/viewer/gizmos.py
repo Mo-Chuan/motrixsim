@@ -14,11 +14,18 @@
 # ==============================================================================
 
 
+import sys
+
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import run
 from motrixsim.render import Color, RenderApp
+
+if "--gpu" in sys.argv:
+    from motrixsim.gpu import SceneData, load_model, step
+else:
+    from motrixsim import SceneData, load_model, step
 
 
 def main():
@@ -44,9 +51,6 @@ def main():
         render.gizmos.collider_color = Color.rgb(0.5, 1, 0.5)
         render.gizmos.joint_color = Color.rgb(1, 1, 0.5)
         # end
-
-        # enable gizmos editor
-        render.opt.set_left_panel_vis(True)
         # end
 
         def phys_step():

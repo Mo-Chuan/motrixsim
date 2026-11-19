@@ -173,13 +173,13 @@ def run_round(
 
 
 def validate_lidars(model, data: SceneData, benchmark_case: BenchmarkCase, raycasts_per_lidar: int) -> None:
-    expected_values = benchmark_case.num_envs * raycasts_per_lidar * 3
+    expected_values = benchmark_case.num_envs * raycasts_per_lidar * 4
     for lidar_index in range(benchmark_case.num_lidars):
         values = model.get_sensor_value(lidar_sensor_name(lidar_index), data)
         if values.size != expected_values:
             raise RuntimeError(
                 f"lidar {lidar_index} output has {values.size} values; expected {expected_values} "
-                f"for {benchmark_case.num_envs * raycasts_per_lidar} point-return raycasts"
+                f"for {benchmark_case.num_envs * raycasts_per_lidar} distance + point raycasts"
             )
 
 
@@ -210,6 +210,7 @@ def run_case(args: argparse.Namespace, benchmark_case: BenchmarkCase) -> None:
     print("=" * 78)
     print(f"Case:               {benchmark_case.name} ({benchmark_case.label})")
     print(f"  Scene:             {args.scene.resolve()}")
+    print("  Returns:           distance point (stride 4)")
     print(f"  Grid/lidar:        {args.hscan} x {args.vscan}")
     print(f"  Lidars/model:      {benchmark_case.num_lidars}")
     print(f"  Environments:      {benchmark_case.num_envs}")

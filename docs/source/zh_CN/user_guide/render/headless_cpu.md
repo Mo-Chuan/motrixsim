@@ -1,4 +1,6 @@
-# 🖥️ 无 GPU 环境下的 CPU 软渲染
+# 🖥️ CPU 软渲染
+
+{bdg-success-line}`CPU 完全支持`
 
 在一些环境中没有可用的渲染 GPU（例如只配了计算卡的算力中心节点、不带显卡的云主机或 CI runner），但仍然希望在跑完仿真/训练之后离线生成回放视频或截图。本章介绍如何让 MotrixSim 的 [headless 渲染](../main_function/managed_viewer.md)运行在纯 CPU 的软件光栅化路径上。
 

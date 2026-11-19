@@ -1,5 +1,7 @@
 # 🧩 ACD 凸分解
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 ACD（Approximate Convex Decomposition）用于把非凸 mesh 分解为多个凸包。在 MotrixSim 中，
 它主要服务于 mesh 碰撞体：复杂模型可以保留原始视觉 mesh，同时用更适合物理碰撞的凸包集合参与
 仿真。

@@ -1,5 +1,7 @@
 # 🔩 Joint
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 A joint defines the degrees of freedom (DoF) between its associated rigid body ([Body](body.md)) and its parent body. Each rigid body can define multiple joints to combine various degrees of freedom. If a body does not define any joints, it is rigidly connected to its parent. Joints cannot be defined in the world body. The state data (position, velocity) of joints is stored in [SceneData](../main_function/scene_data.md). Since joints can define different numbers of DoF, the length of the state data varies accordingly.
 
 ## Joint Types

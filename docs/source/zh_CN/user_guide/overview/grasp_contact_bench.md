@@ -3,7 +3,7 @@
 :::{tip}
 模型和代码详见 [MotrixSim Docs](https://github.com/Motphys/motrixsim-docs) 仓库
 
-在运行示例之前，请先参考 {doc}`../overview/environment_setup` 完成环境准备。
+在运行示例之前，请先参考 {ref}`路径二：克隆仓库运行示例 <install-from-repository>` 完成环境准备。
 :::
 
 在机器人仿真中，"抓取"看起来很简单——夹爪合拢、物体被夹住、机械臂抬起。但对于策略训练和 sim-to-real 迁移来说，**仅仅"抓住"是远远不够的**。仿真器提供的接触力是否平滑、是否符合物理规律，都会直接影响训练出的策略能否迁移到真实机器人上。

@@ -14,8 +14,15 @@
 # ==============================================================================
 
 
-from motrixsim import SceneData, load_model, run, step
+import sys
+
+from motrixsim import run
 from motrixsim.render import RenderApp
+
+if "--gpu" in sys.argv:
+    from motrixsim.gpu import SceneData, load_model, step
+else:
+    from motrixsim import SceneData, load_model, step
 
 
 # Mouse controls:
@@ -24,7 +31,6 @@ from motrixsim.render import RenderApp
 def main():
     # Create render window for visualization
     with RenderApp() as render:
-        render.opt.set_left_panel_vis(True)
         # The scene description file
         path = "examples/assets/partial_rendering.xml"
         # Load the scene model

@@ -11,6 +11,7 @@
     gidenoiseoffset="3"
     rraycount="256"
     rdenoiseoffset="3"
+    roughnessthreshold="0.5"
     />
   </visual>
   <include file="./ssgi_playground.xml"/>

@@ -1,5 +1,7 @@
 # Frame Sensor
 
+`{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 Frame sensors are used to measure the position, rotation, velocity, and acceleration information of objects in specified reference coordinate systems. These sensors provide more flexible measurement methods than local coordinate system sensors, allowing measurements relative to arbitrary reference points.
 
 ```{warning}

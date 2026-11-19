@@ -188,7 +188,7 @@ assets/office_ibl/
 -   KTX2 为 HDR 贴图，建议搭配 `<tonemapping>` 把高动态范围映射到显示范围；可选地再叠加
     `<ssgi>` 等屏幕空间全局光照以增强真实感。
 
-完整示例可参考仓库中的 `examples/pro/assets/nav_scene_1/scene_ibl.xml`，它在 3DGS 导航场景上
+完整示例可参考仓库中的 `examples/assets/nav_scene_1/scene_ibl.xml`，它在 3DGS 导航场景上
 叠加了 IBL 与 SSGI 配置。
 
 ## 相关参考

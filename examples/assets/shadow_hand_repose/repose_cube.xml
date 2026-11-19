@@ -31,7 +31,7 @@
         <material name="cube" rgba="1 1 1 1" reflectance="0.5" metallic="0.0" roughness="1.0">
             <layer texture="Cube_Side_Tex" role="rgb" />
         </material>
-        <material name="cube_target" rgba="1 1 1 0.7" reflectance="0.5" metallic="0.0" roughness="1.0">
+        <material name="cube_target" rgba="1 1 1 0.7" reflectance="0.5" metallic="0.0" roughness="1.0" alpha_mode="blend">
             <layer texture="Cube_Side_Tex" role="rgb" />
         </material>
         <mesh name="cube_vis_mesh" file="Cube_Side.obj" scale="0.8333 0.8333 0.8333" />

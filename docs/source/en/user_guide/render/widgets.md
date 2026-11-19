@@ -139,3 +139,5 @@ Avoid frequently creating and destroying widgets, as this will affect performanc
 [`ImageWidget`]: motrixsim.render.widgets.ImageWidget
 [`Image`]: motrixsim.render.Image
 [`RenderWidgets`]: motrixsim.render.RenderWidgets
+
+The GPU backend does not support `CameraViewport` multi-viewport; the managed viewer `motrixsim.viewer.launch()` is CPU-only.

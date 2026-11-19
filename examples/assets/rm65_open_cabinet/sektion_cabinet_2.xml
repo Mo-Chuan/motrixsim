@@ -34,7 +34,7 @@
     <material name="Black" rgba="0 0 0 1" />
     <material name="Front" rgba="0.4 0.4 0.4 1.0" />
     <material name="default_material" rgba="0.7 0.7 0.7 1" />
-    <material name="collision_material" rgba="1.0 0.28 0.1 0.9" />
+    <material name="collision_material" rgba="1.0 0.28 0.1 0.9" alpha_mode="blend" />
     <mesh name="cabinet.obj" file="cabinet.obj" />
     <mesh name="sektion_convexdecomposition0.obj" file="sektion_convexdecomposition0.obj" />
     <mesh name="sektion_convexdecomposition1.obj" file="sektion_convexdecomposition1.obj" />

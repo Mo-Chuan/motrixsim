@@ -1,5 +1,7 @@
 # ACD Convex Decomposition
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 ACD (Approximate Convex Decomposition) decomposes a non-convex mesh into multiple convex hulls. In MotrixSim, it is mainly used for mesh colliders: complex models can keep their original visual mesh while using a set of convex hulls that is better suited for physical collision.
 
 The demo below first shows the same room scene in render-only mode, then enables collider visualization and compares convex hulls with ACD disabled and enabled. With ACD enabled, the collider is approximated by multiple local convex hulls, which better covers non-convex structures such as cabinets, sofas, and decorative objects.

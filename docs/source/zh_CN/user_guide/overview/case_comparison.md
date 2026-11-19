@@ -3,7 +3,7 @@
 :::{tip}
 模型和代码详见 [MotrixSim Docs](https://github.com/Motphys/motrixsim-docs) 仓库
 
-在运行示例之前，请先参考 {doc}`../overview/environment_setup` 完成环境准备。
+在运行示例之前，请先参考 {ref}`路径二：克隆仓库运行示例 <install-from-repository>` 完成环境准备。
 :::
 
 我们展示一些 MotrixSim 与 MuJoCo 之间仿真效果的对比，以让您直观的感受到 MotrixSim 的仿真优势

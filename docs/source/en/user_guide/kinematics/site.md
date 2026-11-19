@@ -1,5 +1,7 @@
 # 📍 Site
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 ## Overview
 
 A `Site` is an important concept in MotrixSim, representing a point of interest in the model. A `Site` is essentially a virtual marker used to indicate specific positions and orientations within the model framework.

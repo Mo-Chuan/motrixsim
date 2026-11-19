@@ -1,5 +1,7 @@
 # Subtree Sensor
 
+`{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 Subtree sensors are used to measure the overall physical characteristics of the kinematic subtree rooted at a specified rigid body, including center of mass position, center of mass linear velocity, and center of mass angular momentum. These sensors are very useful for analyzing the overall dynamic characteristics of complex mechanical systems.
 
 ## 🎯 Functional Description

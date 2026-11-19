@@ -1,5 +1,7 @@
 # ⚙️ Global Settings (Options)
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 `Options` is the global configuration object in MotrixSim, used to set various parameters for physical simulation. These parameters affect the accuracy, stability, and performance of the simulation.
 
 ## Basic Concepts

@@ -1,5 +1,11 @@
 # 📹 CameraViewport
 
+本教程使用视口相机接口，需要 SDK 提供 `target_camera` 和[相机教程](camera.md)中的视口相机切换方法。
+
+`target_camera` 指定控件合成到哪个模型相机的输出上。系统相机传 `model.cameras.system_camera`，场景相机可传 `model.cameras["back"]`。省略或传 `None` 固定使用系统相机。该绑定不会跟随当前交互视口：视口切换到其他相机时，控件不会一起移动到新相机上。`render.system_camera` 是运行期控制器，不能作为目标参数。
+
+创建运行期控件前必须调用 `render.launch(model)`。使用自定义 blueprint 时，应包含一个绑定目标相机的 `ui.Viewport` 来显示其输出。
+
 ## 概述
 
 CameraViewport 允许您在渲染窗口中创建多个相机视口组件，用于同时显示不同相机的实时渲染画面。这对于多角度观察、传感器数据可视化等场景非常有用。
@@ -25,8 +31,11 @@ CameraViewport 允许您在渲染窗口中创建多个相机视口组件，用�
 使用 `render.widgets.create_camera_viewport()` 方法创建相机视口 widget：
 
 ```python
+render.launch(model)
+cameras = model.cameras
 viewport = render.widgets.create_camera_viewport(
     camera=cameras[0],
+    target_camera=model.cameras.system_camera,
     layout=Layout(left=10, top=10, width=240, height=180),
     sim_world_index=0
 )
@@ -34,7 +43,8 @@ viewport = render.widgets.create_camera_viewport(
 
 **参数说明**：
 
--   **camera**: 要显示的相机对象（必需）
+-   **camera**: 提供显示图像的源模型相机（必需）。在构建模型前，先在 MSD 层配置其图像渲染目标和分辨率。
+-   **target_camera**: 仅关键字参数，指定控件合成到哪个模型相机的输出上；省略或传 `None` 使用系统相机。
 -   **layout**: 布局配置（可选，默认为 left=50, top=50, width=200, height=200）
 -   **sim_world_index**: 模拟世界索引（可选，默认为 0）
 

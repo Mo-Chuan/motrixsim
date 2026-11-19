@@ -13,9 +13,16 @@
 # limitations under the License.
 # ==============================================================================
 
+import sys
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import msd, run, ui
 from motrixsim.render import RenderApp
+
+USE_GPU = "--gpu" in sys.argv
+if USE_GPU:
+    from motrixsim.gpu import SceneData, step
+else:
+    from motrixsim import SceneData, step
 
 
 # Mouse controls:
@@ -24,16 +31,19 @@ from motrixsim.render import RenderApp
 def main():
     # The scene description file
     path = "examples/assets/keyboard_car.xml"
-    # Load the scene model
-    model = load_model(path)
+    # Configure the camera tracking on the MSD layer before building the immutable model
+    world = msd.from_file(path)
+    camera_desc = world.hierarchy.cameras[0]
+    camera_desc.rotation_track = msd.RotationTrack.LookAtLink
+    camera_desc.track_target = "car"
+    model = world.build()
+    if USE_GPU:
+        model = model.to_gpu()
     camera = model.cameras[0]
-    camera.position_track = "free"
-    camera.rotation_track = "look_at_link"
-    camera.track_target_link = model.get_link("car")
 
     # Create render window for visualization
-    with RenderApp() as render:
-        render.set_main_camera(camera)
+    view = ui.Viewport(camera=ui.CameraRef(camera.index), title="Scene")
+    with RenderApp(blueprint=view) as render:
         # Create the render instance of the model
         render.launch(model)
         # Create the physics data of the model

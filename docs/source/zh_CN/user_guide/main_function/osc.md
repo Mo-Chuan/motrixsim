@@ -1,5 +1,7 @@
 # 🎯 操作空间控制器
 
+{bdg-success-line}`CPU 完全支持` {bdg-danger-line}`GPU 不支持`
+
 MotrixSim 在 `motrixsim.osc` 模块中提供了操作空间控制器（OSC）。该模块暴露了一个无状态的求解器类 [`OscSolver`]，用于计算机器人末端执行器任务空间控制所需的关节力矩。
 
 ## 基本概念

@@ -20,7 +20,7 @@ import numpy as np
 import onnxruntime as ort
 from scipy.spatial.transform import Rotation
 
-from motrixsim import SceneData, SceneModel, load_model, step
+from motrixsim import SceneData, SceneModel, msd, step
 from motrixsim.render import CaptureTask, Layout, RenderApp
 
 default_joint_pos = np.array([0.1, 0.9, -1.8, -0.1, 0.9, -1.8, 0.1, 0.9, -1.8, -0.1, 0.9, -1.8])
@@ -101,28 +101,42 @@ def is_fall(model: SceneModel, data: SceneData):
 def main():
     # Create render window for visualization
     with RenderApp() as render:
-        render.opt.set_left_panel_vis(True)
         # The scene description file
         path = "examples/assets/go1/scene.xml"
-        # Load the scene model
-        model = load_model(path)
+        # Load the scene world and configure cameras before building the immutable model
+        world = msd.from_file(path)
+        robot = world.find_body("trunk")
         # tag: camera render target
-        cameras = model.cameras
-        cameras[0].set_render_target("image", 320, 240)  # let this camera render to a image with 320x240 resolution
+        rgb_camera = robot.find_camera("track")
+        rgb_camera.render_target = msd.RenderTarget.Image  # let this camera render to an image
+        rgb_camera.resolution = [320, 240]  # with 320x240 resolution
         # endtag
 
         # tag: depth camera
-        cameras[1].set_render_target("image", 640, 480)
-        cameras[1].depth_only = True  # This is a depth only camera
-        cameras[1].set_near_far(0.1, 1)  # Set the near and far plane of the camera
+        depth_camera = robot.find_camera("top")
+        depth_camera.render_target = msd.RenderTarget.Image
+        depth_camera.resolution = [640, 480]
+        depth_camera.depth_only = True  # This is a depth only camera
+        depth_camera.znear = 0.1  # Set the near plane of the camera
+        depth_camera.zfar = 1.0  # Set the far plane of the camera
         # endtag
+        model = world.build()
+        cameras = model.cameras
         preview_cameras = [None, *cameras[2:]]
         preview_camera_idx = 0
-        render.widgets.create_camera_viewport(camera=cameras[0], layout=Layout(right=0, top=0, width=160, height=120))
-        render.widgets.create_camera_viewport(camera=cameras[1], layout=Layout(right=0, top=120, width=160, height=120))
-
-        # Create the render instance of the model
+        # Create the render instance before adding camera widgets.
         render.launch(model)
+        render.widgets.create_camera_viewport(
+            camera=cameras[0],
+            layout=Layout(right=0, top=0, width=160, height=120),
+            target_camera=model.cameras.system_camera,
+        )
+        render.widgets.create_camera_viewport(
+            camera=cameras[1],
+            layout=Layout(right=0, top=120, width=160, height=120),
+            target_camera=model.cameras.system_camera,
+        )
+
         # Create the physics data of the model
         data = SceneData(model)
 
@@ -200,15 +214,16 @@ def main():
                     break
             # endtag
             # tag: switch camera
+            # Click the viewport before using the arrow keys to switch its camera.
             if render.input.is_key_just_pressed("right"):
                 # change to next camera
                 preview_camera_idx = (preview_camera_idx + 1) % len(preview_cameras)
-                render.set_main_camera(preview_cameras[preview_camera_idx])
+                render.set_active_viewport_camera(preview_cameras[preview_camera_idx])
 
             if render.input.is_key_just_pressed("left"):
                 # change to previous camera
                 preview_camera_idx = (preview_camera_idx + len(preview_cameras) - 1) % len(preview_cameras)
-                render.set_main_camera(preview_cameras[preview_camera_idx])
+                render.set_active_viewport_camera(preview_cameras[preview_camera_idx])
 
 
 # endtag

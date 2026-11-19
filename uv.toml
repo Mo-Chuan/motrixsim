@@ -1,0 +1,5 @@
+prerelease = "allow"
+
+[[index]]
+name = "pypi"
+url = "https://pypi.org/simple"

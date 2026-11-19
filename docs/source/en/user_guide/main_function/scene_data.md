@@ -1,5 +1,7 @@
 # 💾 Data
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 In the previous chapter, we learned that [`SceneModel`](scene_model.md) is used to describe the static physical model. This chapter focuses on the creation and usage of `SceneData`.
 
 ## Basic Concepts
@@ -12,14 +14,14 @@ State updates in `SceneData` require calling kinematic functions to update the s
 
 ### Basic Creation
 
-```{literalinclude} ../../../../examples/getting_started/empty.py
+```{literalinclude} ../../../../examples/getting_started/falling_ball.py
 :language: python
 :dedent:
 :start-after: "# tag::create_data[]"
 :end-before:  "# end::create_data[]"
 ```
 
-For the complete example, see [`examples/getting_started/empty.py`](../../../../examples/getting_started/empty.py).
+For the complete example, see [`examples/getting_started/falling_ball.py`](../../../../examples/getting_started/falling_ball.py).
 
 ### Multiple Data Instances
 

@@ -1,5 +1,7 @@
 # 🏗️ 模型
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 MotrixSim 中的模型 `SceneModel` 和数据 `SceneData` 是构建仿真环境的必要组成对象，贯穿整个物理仿真过程。本章节主要介绍 `SceneModel` 的创建和使用方法，而 [`SceneData`](scene_data.md) 将在下一章节详细描述。
 
 ## 基本概念
@@ -35,14 +37,14 @@ uv add "motrixsim[usd]"
 
 下面的示例使用 `load_model` 加载 MJCF 场景：
 
-```{literalinclude} ../../../../examples/getting_started/empty.py
+```{literalinclude} ../../../../examples/getting_started/falling_ball.py
 :language: python
 :dedent:
 :start-after: "# tag::load_model_from_file[]"
 :end-before:  "# end::load_model_from_file[]"
 ```
 
-完整示例代码参见 [`examples/getting_started/empty.py`](../../../../examples/getting_started/empty.py)。
+完整示例代码参见 [`examples/getting_started/falling_ball.py`](../../../../examples/getting_started/falling_ball.py)。
 
 对于 USD 场景，使用同一个入口即可直接加载为 `SceneModel`：
 

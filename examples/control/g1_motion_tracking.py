@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from motrixsim import SceneData, msd
+from motrixsim import SceneData, msd, ui
 from motrixsim.render import RenderApp
 
 EXAMPLES_DIR = Path(__file__).resolve().parent.parent
@@ -99,12 +99,13 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _build_follow_camera():
+def _build_follow_camera(base_link_name: str):
     pos = " ".join(str(value) for value in CAMERA_POSITION)
     xyaxes = " ".join(f"{value:.17g}" for value in _build_camera_xyaxes(CAMERA_POSITION))
     camera_mjcf = f"""<mujoco model="camera">
   <worldbody>
-    <camera name="follower" pos="{pos}" xyaxes="{xyaxes}" trackposspeed="2" trackrotspeed="2" />
+    <camera name="follower" pos="{pos}" xyaxes="{xyaxes}"
+      mode="targetbody" target="{base_link_name}" trackposspeed="2" trackrotspeed="2" />
   </worldbody>
 </mujoco>"""
     return msd.from_str(camera_mjcf)
@@ -113,14 +114,18 @@ def _build_follow_camera():
 def _load_model(scene_path: Path, g1_robot_cls):
     scene = msd.from_file(str(scene_path))
     g1_robot = msd.from_file(g1_robot_cls.mjcf_path)
-    g1_robot.attach(_build_follow_camera(), g1_robot_cls.base_link_name)
+    g1_robot.attach(_build_follow_camera(g1_robot_cls.base_link_name), g1_robot_cls.base_link_name)
     scene.attach(g1_robot)
-    model = scene.build()
 
+    # NOTE: camera descriptors must be configured *after* scene.attach(); settings
+    # applied on detached worlds are dropped when the scene tree is assembled.
+    follower_desc = scene.find_body(g1_robot_cls.base_link_name).find_camera("follower")
+    follower_desc.position_track = msd.PositionTrack.FixedLocal
+    follower_desc.rotation_track = msd.RotationTrack.LookAtLink
+    follower_desc.track_target = g1_robot_cls.base_link_name
+
+    model = scene.build()
     camera = model.cameras["follower"]
-    camera.rotation_track = "look_at_link"
-    camera.position_track = "fixed_local"
-    camera.track_target_link = model.get_link(g1_robot_cls.base_link_name)
     return model, camera
 
 
@@ -162,8 +167,8 @@ def main() -> None:
         motion_data=motion_reference.current(),
     )
 
-    with RenderApp() as render:
-        render.set_main_camera(camera)
+    view = ui.Viewport(camera=ui.CameraRef(camera.index), title="Scene")
+    with RenderApp(blueprint=view) as render:
         render.launch(model)
 
         phys_dt = float(model.options.timestep)

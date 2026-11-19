@@ -1,4 +1,4 @@
-<mujoco model="g1 12dof legged gym terrain">
+<mujoco model="g1 12dof stairs terrain">
   <include file="materials.xml"/>
   <statistic center="0 0 0.1" extent="5"/>
 

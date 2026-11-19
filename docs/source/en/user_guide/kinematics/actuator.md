@@ -1,17 +1,19 @@
 # 🔋 Actuators
 
+{bdg-success-line}`CPU: fully supported` {bdg-warning-line}`GPU: partially supported`
+
 Actuators are the core components responsible for controlling the motion of robot joints. MotrixSim supports multiple types of actuators.
 
 Each actuator can be configured with different types and parameters to suit various application scenarios. Actuators can be motors, position controllers, velocity controllers, or general controllers. They enable precise control of the robot by setting target positions, velocities, or other parameters.
 
 The currently supported actuator types are:
 
-| Type     | Description                                                       |
-| :------- | :---------------------------------------------------------------- |
-| Motor    | Drives the robot's joints, providing basic actuation capability.  |
-| Position | Precisely controls the joint angle or position.                   |
-| Velocity | Controls the joint's movement speed.                              |
-| General  | Provides more flexible control, allowing custom control policies. |
+| Type     | Description                                                       | CPU | GPU |
+| :------- | :---------------------------------------------------------------- | :-: | :-: |
+| Motor    | Drives the robot's joints, providing basic actuation capability.  | ✅  | ✅  |
+| Position | Precisely controls the joint angle or position.                   | ✅  | ✅  |
+| Velocity | Controls the joint's movement speed.                              | ✅  | ✅  |
+| General  | Provides more flexible control, allowing custom control policies. | ✅  | ✅  |
 
 Parameter settings are compatible with [MuJoCo actuator](https://mujoco.readthedocs.io/en/stable/XMLreference.html#actuator) attributes.
 
@@ -35,3 +37,15 @@ Below is a complete code script covering all the above content:
 [`model.get_actuator`]: motrixsim.SceneModel.get_actuator
 [`actuator.set_ctrl`]: motrixsim.Actuator.set_ctrl
 [`model.actuator_names`]: motrixsim.SceneModel.actuator_names
+
+## GPU Version Differences
+
+Several newer MJCF advanced configurations available on the CPU side are not yet implemented in the GPU simulator:
+
+| MJCF field                                              | CPU | GPU | Notes                                              |
+| ------------------------------------------------------- | :-: | :-: | -------------------------------------------------- |
+| Position actuator `dampratio`                           | ✅  | ✅  | Critical damping ratio for position-control tuning |
+| `dyntype` / `dynprm` (Integrator/Filter/Filterexact)    | ✅  | ❌  | Actuator dynamic response types                    |
+| General actuator `actrange` / `actlimited` / `actearly` | ✅  | ❌  | Activity range limits for general actuators        |
+
+Loading an MJCF that uses `dyntype` / `dynprm` or `actrange` / `actlimited` / `actearly` will not error on the GPU version, but the simulator will ignore them, potentially diverging from the CPU result.

@@ -33,7 +33,7 @@ from common import (
     compute_ctrl_for_time,
 )
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import SceneData, msd, run, step
 from motrixsim.render import CaptureTask, RenderApp
 
 _Obj = flags.DEFINE_string("object", "cube", "Object to grasp. Choices: [cube, ball, bottle]")
@@ -44,7 +44,11 @@ _HoldDuration = flags.DEFINE_float("hold_duration", DEFAULT_HOLD_DURATION, "Hold
 
 def main(argv):
     path = f"examples/assets/franka_emika_panda/scene_pick_{_Obj.value}.xml"
-    model = load_model(path)
+    # Configure the offscreen capture camera on the MSD layer before building
+    world = msd.from_file(path)
+    world.hierarchy.cameras[0].render_target = msd.RenderTarget.Image
+    world.hierarchy.cameras[0].resolution = [320, 240]
+    model = world.build()
     data = SceneData(model)
     dt = model.options.timestep
 
@@ -74,8 +78,6 @@ def main(argv):
     total_duration = SETTLING_END_TIME + _HoldDuration.value
 
     with RenderApp() as render:
-        render.opt.set_left_panel_vis(True)
-        model.cameras[0].set_render_target("image", 320, 240)
         render.launch(model)
 
         def phys_step():

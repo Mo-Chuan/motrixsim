@@ -1,5 +1,7 @@
 # 🔋 驱动器
 
+{bdg-success-line}`CPU 完全支持` {bdg-warning-line}`GPU 部分支持`
+
 驱动器 (Actuator) 是控制机器人关节运动的核心组件，MotrixSim 支持多种类型的驱动器。
 
 每个驱动器都可以配置不同的类型和参数，以适应不同的应用场景。
@@ -7,12 +9,12 @@
 
 现支持的驱动器类型有：
 
-| 类型             | 解释                                               |
-| :--------------- | :------------------------------------------------- |
-| 马达（Motor）    | 用于驱动机器人的关节，提供基本的运动能力。         |
-| 位置（Position） | 精确控制关节的角度或位置。                         |
-| 速度（Velocity） | 控制关节的运动速度。                               |
-| 通用（General）  | 提供更灵活的控制方式，可以根据需要自定义控制策略。 |
+| 类型             | 解释                                               | CPU | GPU |
+| :--------------- | :------------------------------------------------- | :-: | :-: |
+| 马达（Motor）    | 用于驱动机器人的关节，提供基本的运动能力。         | ✅  | ✅  |
+| 位置（Position） | 精确控制关节的角度或位置。                         | ✅  | ✅  |
+| 速度（Velocity） | 控制关节的运动速度。                               | ✅  | ✅  |
+| 通用（General）  | 提供更灵活的控制方式，可以根据需要自定义控制策略。 | ✅  | ✅  |
 
 设置可兼容 [MuJoCo actuator](https://mujoco.readthedocs.io/en/stable/XMLreference.html#actuator) 的参数。
 
@@ -37,3 +39,15 @@
 [`model.get_actuator`]: motrixsim.SceneModel.get_actuator
 [`actuator.set_ctrl`]: motrixsim.Actuator.set_ctrl
 [`model.actuator_names`]: motrixsim.SceneModel.actuator_names
+
+## GPU 版本差异
+
+CPU 版较新加入的若干 MJCF 高级配置，GPU 版仿真层尚未实现：
+
+| MJCF 字段                                                | CPU | GPU | 说明                               |
+| -------------------------------------------------------- | :-: | :-: | ---------------------------------- |
+| Position actuator `dampratio`                            | ✅  | ✅  | 临界阻尼比，用于参数化位置控制响应 |
+| `dyntype` / `dynprm` (Integrator / Filter / Filterexact) | ✅  | ❌  | 执行器动态响应类型                 |
+| General actuator `actrange` / `actlimited` / `actearly`  | ✅  | ❌  | 通用执行器的活动范围限制           |
+
+加载含 `dyntype` / `dynprm` 或 `actrange` / `actlimited` / `actearly` 的 MJCF 时 GPU 版不会报错，但仿真行为会忽略这些字段，可能与 CPU 仿真结果有差异。

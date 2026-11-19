@@ -83,5 +83,4 @@ MotrixSim 的 Named Access 支持两种访问方式：
 | ----------------------------------------------- | -------- | -------------------- |
 | [`RenderApp`](motrixsim.render.RenderApp)       | 主渲染器 | 模型加载、场景同步   |
 | [`RenderGizmos`](motrixsim.render.RenderGizmos) | 即时绘制 | 球体、立方体绘制     |
-| [`RenderUI`](motrixsim.render.RenderUI)         | 用户界面 | 按钮、开关控件       |
 | [`Input`](motrixsim.render.Input)               | 输入处理 | 键盘、鼠标、射线检测 |

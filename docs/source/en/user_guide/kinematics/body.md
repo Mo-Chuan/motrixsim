@@ -1,5 +1,7 @@
 # 🤖 Rigid Body (Body)
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 In the world of MotrixSim, a Body can be a single rigid body or an articulated body composed of joints and links. Visually, it can be represented as follows:
 
 ![body](/_static/images/body.png)

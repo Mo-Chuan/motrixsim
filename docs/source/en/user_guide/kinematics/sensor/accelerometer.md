@@ -1,5 +1,7 @@
 # Accelerometer
 
+`{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 The accelerometer sensor is used to measure the three-axis linear acceleration at the mounting point in the **local coordinate system**. In robot simulation, accelerometers are commonly used to perceive the robot's motion state and provide important feedback information for control algorithms.
 
 ## 🎯 Functional Description

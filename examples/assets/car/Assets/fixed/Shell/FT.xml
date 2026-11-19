@@ -6,7 +6,7 @@
     <!-- Textures -->
 
     <!-- Materials -->
-    <material name="Material" rgba="0.800000011920929 0.800000011920929 0.800000011920929 0.4" reflectance="0.5" metallic="0.0" roughness="0.5"/>
+    <material name="Material" rgba="0.800000011920929 0.800000011920929 0.800000011920929 0.4" reflectance="0.5" metallic="0.0" roughness="0.5" alpha_mode="blend"/>
 
     <!-- Visual meshes -->
     <mesh class="visual" name="CAR_001" file="CAR_001.obj"/>

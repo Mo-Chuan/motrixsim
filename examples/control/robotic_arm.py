@@ -13,9 +13,16 @@
 # limitations under the License.
 # ==============================================================================
 
+import sys
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import run
 from motrixsim.render import RenderApp
+
+USE_GPU = "--gpu" in sys.argv
+if USE_GPU:
+    from motrixsim.gpu import SceneData, load_model, step
+else:
+    from motrixsim import SceneData, load_model, step
 
 
 def lerp(a, b, t):

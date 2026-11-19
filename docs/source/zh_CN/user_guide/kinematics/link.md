@@ -1,5 +1,7 @@
 # 📏 连杆
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 我们将多体系统中的刚性构件称为连杆（Link）。在 MotrixSim 中，连杆是一个重要的概念，它代表了多体系统中的每个刚性部分。每个连杆都可以有不同的属性和行为，并通过 Joint（关节）连接到其他连杆。
 
 ![link](/_static/images/link.png)

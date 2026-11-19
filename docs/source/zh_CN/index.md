@@ -1,112 +1,24 @@
 # MotrixSim
 
-MotrixSim 是一个高性能的物理仿真引擎，专为多体动力学和机器人仿真设计。它提供了一个高效、稳定的物理仿真平台，支持广泛的应用场景，包括机器人控制、强化学习、工业仿真等。
+MotrixSim 是一个高性能的多体动力学物理仿真引擎，为机器人仿真设计。它提供一个高效、稳定的物理仿真平台，适用于机器人控制算法开发、强化学习环境构建、工业实时仿真以及教学科研等场景。
 
-::::{grid} 1 2 3 3
-
-:::{grid-item}
-
-```{video} _static/videos/g1_parlour.mp4
-:poster: _static/images/poster/g1_parlour.jpg
-:nocontrols:
+```{video} _static/videos/motrixsim-prom-10m.mp4
 :autoplay:
 :playsinline:
 :muted:
 :loop:
-:width: 100%
+:width: 80%
 ```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/complex_car.mp4
-:poster: _static/images/poster/complex_car.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/go2-ssgi.mp4
-:poster: _static/images/poster/go2-ssgi.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/arm.mp4
-:poster: _static/images/poster/arm.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/g1_terrian.mp4
-:poster: _static/images/poster/g1_terrian.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/shadow_hand_repose.mp4
-:poster: _static/images/poster/shadow_hand_repose.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-::::
 
 ## 主要特性
 
--   **物理仿真**: 支持刚体动力学、碰撞检测等完整的物理仿真功能
--   **广义坐标建模**: 采用广义坐标系统，支持复杂的多体系统建模
--   **全新求解器**: 采用自研的约束模型和求解器，提供高效、稳定的多体动力学计算
--   **高性能计算**: CPU 版本基于 Rust 开发，提供出色的性能和内存安全性
--   **Python API**: 简洁易用的 Python 接口，便于快速开发和原型制作
--   **机器人支持**: 专门优化的机器人仿真功能，高度兼容 MJCF 模型格式
-
-## 适用场景
-
--   机器人控制算法开发和测试
--   强化学习环境构建
--   工业实时物理仿真
--   物理现象模拟和分析
--   工程设计验证
--   教育和研究
+-   **物理仿真**：完整的刚体动力学、碰撞检测与接触求解，支持复杂多体系统建模
+-   **多环境并行仿真**：单进程内并行仿真数千个模型实例，面向大规模强化学习训练与批量评估（[文档](user_guide/main_function/parallel.md)）
+-   **GPU 加速**：1.0 版本提供 GPU 版本，面向大规模并行仿真优化（[文档](user_guide/gpu_version/index.md)）
+-   **约束求解器**：自研的约束模型和求解器，提供高效、稳定的多体动力学计算
+-   **高性能 CPU 内核**：基于 Rust 开发，兼顾计算性能与内存安全
+-   **Python API**：简洁易用的接口，便于快速开发和原型制作（[快速入门](user_guide/getting_started/hello_motrixsim.md)）
+-   **机器人仿真支持**：高度兼容 MJCF 模型格式，内置逆运动学（[IK](user_guide/main_function/ik.md)）、传感器、渲染等机器人仿真常用功能
 
 ## MotrixSim 生态与研究
 
@@ -124,4 +36,5 @@ user_guide/index
 :maxdepth: 1
 
 api_reference/index
+user_guide/getting_started/mjcf_reference
 ```

@@ -1,0 +1,4 @@
+<mujoco model="Microduck keyboard control">
+  <include file="flat_scene.xml"/>
+  <include file="microduck.xml"/>
+</mujoco>

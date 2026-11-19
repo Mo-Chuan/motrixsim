@@ -1,5 +1,7 @@
 # 🛸 浮动基
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 在 [Body](body.md) 中，我们介绍了 Body 与 World 有三种连接方式，分别是：
 
 -   固定连接（Fixed）

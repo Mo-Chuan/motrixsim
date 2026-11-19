@@ -1,5 +1,7 @@
 # 关节传感器（Joint）
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 关节传感器用于测量机器人关节的位置和速度信息，是机器人控制和状态监测的核心传感器类型。包括关节位置传感器（jointpos）和关节速度传感器（jointvel）两种。
 
 ## 🎯 功能描述

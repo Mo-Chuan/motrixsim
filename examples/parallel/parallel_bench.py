@@ -13,11 +13,16 @@
 # limitations under the License.
 # ==============================================================================
 
+import sys
 import time
 
 from absl import app, flags
 
-import motrixsim as mtx
+if "--gpu" in sys.argv:
+    sys.argv.remove("--gpu")
+    import motrixsim.gpu as mtx
+else:
+    import motrixsim as mtx
 
 _File = flags.DEFINE_string("file", None, "path to model", required=True)
 _BatchSize = flags.DEFINE_integer("batch", 1024, "number of instances to simulate", lower_bound=0)

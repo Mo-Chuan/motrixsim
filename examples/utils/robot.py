@@ -14,6 +14,8 @@
 # ==============================================================================
 
 
+from pathlib import Path
+
 import numpy as np
 
 import motrixsim as mx
@@ -317,3 +319,55 @@ class G1Robot12Dof(RobotBase):
     def gyro(self, data: SceneData) -> np.ndarray:
         """Get the gyroscope angular velocity."""
         return self._model.get_sensor_value("gyro", data)
+
+
+class MicroduckRobot(RobotBase):
+    """Name-ordered state and position actuators for the bundled Microduck policy."""
+
+    asset_dir = Path(__file__).resolve().parents[1] / "assets" / "microduck"
+    mjcf_path = str(asset_dir / "microduck.xml")
+    base_link_name = "trunk_base"
+    DEFAULT_POSE = {
+        "left_hip_yaw": 0.0,
+        "left_hip_roll": -0.08726646259971647,
+        "left_hip_pitch": -0.457924,
+        "left_knee": -0.004940,
+        "left_ankle": 0.452984,
+        "neck_pitch": 0.3490658503988659,
+        "head_pitch": 0.3490658503988659,
+        "head_yaw": 0.0,
+        "head_roll": 0.0,
+        "right_hip_yaw": 0.0,
+        "right_hip_roll": 0.08726646259971647,
+        "right_hip_pitch": 0.457924,
+        "right_knee": 0.004940,
+        "right_ankle": -0.452984,
+    }
+
+    def __init__(self, body: Body):
+        super().__init__(body)
+        model = self.model
+        if len(model.actuators) != len(self.DEFAULT_POSE) or {a.target_name for a in model.actuators} != set(
+            self.DEFAULT_POSE
+        ):
+            raise ValueError("Microduck policy requires the bundled 14 position actuators")
+        actuators = {a.target_name: a for a in model.actuators}
+        joints = [model.get_joint(name) for name in self.DEFAULT_POSE]
+        self.qpos_indices = np.array([j.dof_pos_index for j in joints])
+        self.qvel_indices = np.array([j.dof_vel_index for j in joints])
+        self.ctrl_indices = np.array([actuators[name].index for name in self.DEFAULT_POSE])
+        self.ctrl_ranges = np.array([actuators[name].ctrl_range for name in self.DEFAULT_POSE], dtype=np.float32)
+        self._ctrl = np.zeros(len(model.actuators), dtype=np.float32)
+
+    def dof_pos(self, data: SceneData) -> np.ndarray:
+        return data.dof_pos[self.qpos_indices]
+
+    def dof_vel(self, data: SceneData) -> np.ndarray:
+        return data.dof_vel[self.qvel_indices]
+
+    def gyro(self, data: SceneData) -> np.ndarray:
+        return self.base_link.get_rotation_mat(data).T @ self.base_link.get_angular_velocity(data)
+
+    def set_actuator_ctrls(self, data: SceneData, ctrls: np.ndarray) -> None:
+        self._ctrl[self.ctrl_indices] = ctrls
+        data.actuator_ctrls = self._ctrl

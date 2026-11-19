@@ -1,5 +1,7 @@
 # ⚙️ 全局设置
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 `Options` 是 MotrixSim 中的全局配置对象，用于设置物理仿真的各项参数。这些参数会影响仿真的精度、稳定性和性能。
 
 ## 基本概念

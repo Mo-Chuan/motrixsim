@@ -1,0 +1,116 @@
+<mujoco model="weld flange motion platform">
+  <!-- Two independent 6-DoF Cartesian + yaw/pitch/roll chains, bolted flange to
+       flange in the middle.  The weld equality closes the loop: 12 joint DoF
+       minus 6 weld rows leaves a 6-DoF moving platform.  The lower chain is the
+       active positioner (lift + three rotations), the upper chain is a passive
+       follower with light joint damping.  This is a rigid flange seam, not a
+       grasp and not a ball joint replacement.  Gravity and contacts are off so
+       the scene isolates the equality solver from contact and payload sag. -->
+  <compiler angle="radian"/>
+  <option timestep="0.002" gravity="0 0 0"/>
+  <worldbody>
+    <light type="directional" pos="2.0 -2.4 3.0" dir="-0.35 0.5 -0.8" diffuse="0.9 0.9 0.95"/>
+    <light type="directional" pos="-2.2 -1.4 1.8" dir="0.55 0.55 -0.62" diffuse="0.35 0.38 0.45"/>
+
+    <body name="rig" pos="0 0 0">
+      <geom type="box" pos="0 0 -0.03" size="0.85 0.65 0.03" rgba="0.07 0.09 0.12 1" contype="0" conaffinity="0"/>
+      <!-- lower pedestal and X rail -->
+      <geom type="cylinder" pos="0 0 0.09" size="0.16 0.09" rgba="0.20 0.23 0.28 1" contype="0" conaffinity="0"/>
+      <geom type="box" pos="0 0 0.185" size="0.26 0.10 0.012" rgba="0.42 0.45 0.50 1" contype="0" conaffinity="0"/>
+      <!-- gantry that carries the passive chain from above -->
+      <geom type="box" pos="-0.62 0 0.71" size="0.055 0.07 0.71" rgba="0.16 0.18 0.22 1" contype="0" conaffinity="0"/>
+      <geom type="box" pos="0.62 0 0.71" size="0.055 0.07 0.71" rgba="0.16 0.18 0.22 1" contype="0" conaffinity="0"/>
+      <geom type="box" pos="0 0 1.47" size="0.70 0.09 0.05" rgba="0.20 0.23 0.28 1" contype="0" conaffinity="0"/>
+      <geom type="box" pos="0 0 1.42" size="0.24 0.09 0.012" rgba="0.42 0.45 0.50 1" contype="0" conaffinity="0"/>
+      <camera name="overview" pos="0 -2.0 2.1" xyaxes="1 0 0 0 0.560 0.829"/>
+      <camera name="front" pos="0 -3.6 1.2" xyaxes="1 0 0 0 0.11 0.994"/>
+
+      <!-- ============= active lower chain (teal accents) ============= -->
+      <body name="a_x" pos="0 0 0.205">
+        <joint name="a_slide_x" type="slide" axis="1 0 0" range="-0.08 0.08" limited="true" damping="1.0" armature="0.05"/>
+        <geom type="box" size="0.14 0.12 0.035" rgba="0.16 0.45 0.50 1" contype="0" conaffinity="0"/>
+        <body name="a_y" pos="0 0 0.050">
+          <joint name="a_slide_y" type="slide" axis="0 1 0" range="-0.08 0.08" limited="true" damping="1.0" armature="0.05"/>
+          <geom type="box" size="0.115 0.115 0.03" rgba="0.20 0.55 0.60 1" contype="0" conaffinity="0"/>
+          <body name="a_z" pos="0 0 0.060">
+            <joint name="a_lift" type="slide" axis="0 0 1" range="-0.06 0.06" limited="true" armature="0.05"/>
+            <geom type="cylinder" pos="0 0 0.005" size="0.068 0.10" rgba="0.72 0.76 0.80 1" contype="0" conaffinity="0"/>
+            <geom type="box" pos="0 0 0.10" size="0.09 0.09 0.025" rgba="0.20 0.55 0.60 1" contype="0" conaffinity="0"/>
+            <body name="a_yaw" pos="0 0 0.130">
+              <joint name="a_yaw" type="hinge" axis="0 0 1" range="-0.35 0.35" limited="true" armature="0.02"/>
+              <geom type="cylinder" size="0.145 0.021" rgba="0.13 0.62 0.68 1" contype="0" conaffinity="0"/>
+              <body name="a_pitch" pos="0 0 0.050">
+                <joint name="a_pitch" type="hinge" axis="0 1 0" range="-0.35 0.35" limited="true" armature="0.02"/>
+                <geom type="cylinder" euler="1.5707963 0 0" size="0.125 0.017" rgba="0.10 0.50 0.56 1" contype="0" conaffinity="0"/>
+                <body name="a_roll" pos="0 0 0.070">
+                  <joint name="a_roll" type="hinge" axis="1 0 0" range="-0.35 0.35" limited="true" armature="0.02"/>
+                  <geom type="cylinder" euler="0 1.5707963 0" size="0.110 0.015" rgba="0.13 0.62 0.68 1" contype="0" conaffinity="0"/>
+                  <body name="a_flange" pos="0 0 0.090">
+                    <geom type="cylinder" pos="0 0 -0.005" size="0.032 0.05" rgba="0.72 0.76 0.80 1" contype="0" conaffinity="0"/>
+                    <geom type="cylinder" pos="0 0 0.03" size="0.095 0.015" mass="0.5" rgba="0.80 0.84 0.88 1" contype="0" conaffinity="0"/>
+                    <geom type="cylinder" pos="0 0 0.046" size="0.060 0.002" rgba="0.35 0.38 0.42 1" contype="0" conaffinity="0"/>
+                    <site name="flange_a" pos="0 0 0.045" size="0.012" rgba="0.2 1 0.6 1"/>
+                    <!-- the moving platform is bolted to this flange -->
+                    <geom type="box" pos="0.07 0.12 0.0625" size="0.07 0.06 0.0275" mass="0.15" rgba="0.52 0.56 0.62 1" contype="0" conaffinity="0"/>
+                    <geom type="box" pos="0.30 0.38 0.075" size="0.22 0.22 0.012" mass="1.2" rgba="0.30 0.25 0.42 1" contype="0" conaffinity="0"/>
+                    <geom type="box" pos="0.19 0.27 0.092" size="0.10 0.10 0.007" mass="0.05" rgba="0.95 0.45 0.15 1" contype="0" conaffinity="0"/>
+                    <geom type="box" pos="0.41 0.27 0.092" size="0.10 0.10 0.007" mass="0.05" rgba="0.15 0.75 0.85 1" contype="0" conaffinity="0"/>
+                    <geom type="box" pos="0.19 0.49 0.092" size="0.10 0.10 0.007" mass="0.05" rgba="0.90 0.85 0.20 1" contype="0" conaffinity="0"/>
+                    <geom type="box" pos="0.41 0.49 0.092" size="0.10 0.10 0.007" mass="0.05" rgba="0.85 0.20 0.30 1" contype="0" conaffinity="0"/>
+                    <geom type="box" pos="0.30 0.38 0.142" size="0.06 0.06 0.06" mass="0.5" rgba="0.85 0.72 0.25 1" contype="0" conaffinity="0"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- ============ passive upper chain (amber accents) ============ -->
+      <body name="b_x" pos="0 0 1.40">
+        <joint name="b_slide_x" type="slide" axis="1 0 0" range="-0.08 0.08" limited="true" damping="0.5" armature="0.05"/>
+        <geom type="box" size="0.14 0.12 0.03" rgba="0.55 0.36 0.12 1" contype="0" conaffinity="0"/>
+        <body name="b_y" pos="0 0 -0.05">
+          <joint name="b_slide_y" type="slide" axis="0 1 0" range="-0.08 0.08" limited="true" damping="0.5" armature="0.05"/>
+          <geom type="box" size="0.115 0.115 0.028" rgba="0.68 0.45 0.14 1" contype="0" conaffinity="0"/>
+          <body name="b_z" pos="0 0 -0.06">
+            <joint name="b_lift" type="slide" axis="0 0 1" range="-0.06 0.06" limited="true" damping="0.5" armature="0.05"/>
+            <geom type="cylinder" pos="0 0 -0.005" size="0.068 0.10" rgba="0.72 0.76 0.80 1" contype="0" conaffinity="0"/>
+            <geom type="box" pos="0 0 -0.10" size="0.09 0.09 0.025" rgba="0.68 0.45 0.14 1" contype="0" conaffinity="0"/>
+            <body name="b_yaw" pos="0 0 -0.13">
+              <joint name="b_yaw" type="hinge" axis="0 0 1" range="-0.35 0.35" limited="true" damping="0.15" armature="0.02"/>
+              <geom type="cylinder" size="0.145 0.021" rgba="0.86 0.58 0.18 1" contype="0" conaffinity="0"/>
+              <body name="b_pitch" pos="0 0 -0.05">
+                <joint name="b_pitch" type="hinge" axis="0 1 0" range="-0.35 0.35" limited="true" damping="0.15" armature="0.02"/>
+                <geom type="cylinder" euler="1.5707963 0 0" size="0.125 0.017" rgba="0.74 0.49 0.15 1" contype="0" conaffinity="0"/>
+                <body name="b_roll" pos="0 0 -0.07">
+                  <joint name="b_roll" type="hinge" axis="1 0 0" range="-0.35 0.35" limited="true" damping="0.15" armature="0.02"/>
+                  <geom type="cylinder" euler="0 1.5707963 0" size="0.110 0.015" rgba="0.86 0.58 0.18 1" contype="0" conaffinity="0"/>
+                  <body name="b_flange" pos="0 0 -0.295">
+                    <geom type="cylinder" pos="0 0 0.135" size="0.032 0.16" rgba="0.42 0.45 0.50 1" contype="0" conaffinity="0"/>
+                    <geom type="cylinder" pos="0 0 -0.03" size="0.095 0.015" mass="0.5" rgba="0.80 0.84 0.88 1" contype="0" conaffinity="0"/>
+                    <geom type="cylinder" pos="0 0 -0.046" size="0.060 0.002" rgba="0.35 0.38 0.42 1" contype="0" conaffinity="0"/>
+                    <site name="flange_b" pos="0 0 -0.045" size="0.012" rgba="1 0.65 0.2 1"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <equality>
+    <!-- rigid flange seam; the site frames coincide at the reference pose -->
+    <weld name="flange_seam" site1="flange_a" site2="flange_b"
+          solref="0.002 1" solimp="0.97 0.99 0.001 0.5 2"/>
+  </equality>
+
+  <actuator>
+    <position name="lift_drive" joint="a_lift" kp="6000" kv="200"/>
+    <position name="yaw_drive" joint="a_yaw" kp="600" kv="40"/>
+    <position name="pitch_drive" joint="a_pitch" kp="600" kv="40"/>
+    <position name="roll_drive" joint="a_roll" kp="600" kv="40"/>
+  </actuator>
+</mujoco>

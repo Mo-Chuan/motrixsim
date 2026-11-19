@@ -14,13 +14,14 @@
 # ==============================================================================
 
 """
-ImageWidget Demo - Display Random Images
+Image Presentation Demo - Display Random Images
 
-This example demonstrates the ImageWidget system with dynamically generated images.
+This example demonstrates ImageWidget and custom ui.Image with dynamically generated images.
 
 Features demonstrated:
 - Creating images from numpy arrays using render.create_image()
 - Displaying multiple image widgets with different layouts
+- Displaying the same images in embedded and standalone custom UI Views
 - Updating image content efficiently using the pixels property setter
 - Interactive controls for image manipulation
 
@@ -34,7 +35,7 @@ Controls:
 
 import numpy as np
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import SceneData, load_model, run, step, ui
 from motrixsim.render import Layout, RenderApp
 
 
@@ -124,8 +125,24 @@ def main():
     print("=" * 60)
     print()
 
+    # Panels are declared once in the construction blueprint; image content is bound after
+    # startup with set_image().
+    with ui.View(title="Retained Images") as image_panel:
+        with ui.Column():
+            ui.Text("Random noise at a fixed 320x240 presentation size")
+            random_preview = ui.Image(width=320, height=240)
+            ui.Text("Gradient at its original pixel size")
+            gradient_preview = ui.Image()
+    checkerboard_view = ui.Image(title="Checkerboard Preview")
+    blueprint = ui.Horizontal(
+        [
+            ui.Viewport(camera=ui.CameraRef.system(), title="Widget output"),
+            ui.Tabs([image_panel, checkerboard_view]),
+        ]
+    )
+
     # Create render app for visualization
-    with RenderApp() as render:
+    with RenderApp(blueprint=blueprint) as render:
         # Load a simple model (any model will work)
         path = "examples/assets/go1/scene.xml"
         model = load_model(path)
@@ -165,18 +182,30 @@ def main():
         print("  img3: Checkerboard (320x240)")
         print()
 
+        # The same render.Image can be shared by ImageWidget, embedded ui.Image nodes, and
+        # standalone Image Views. Pixel updates below are reflected by every consumer after sync.
+        random_preview.set_image(img1)
+        gradient_preview.set_image(img2)
+        checkerboard_view.set_image(img3)
+
         # ====================================================================
         # Create Image Widgets
         # ====================================================================
 
         # Widget 1: Top-left
-        widget1 = render.widgets.create_image_widget(img1, layout=Layout(left=10, top=10, width=240, height=180))
+        widget1 = render.widgets.create_image_widget(
+            img1, layout=Layout(left=10, top=10, width=240, height=180), target_camera=model.cameras.system_camera
+        )
 
         # Widget 2: Top-right
-        widget2 = render.widgets.create_image_widget(img2, layout=Layout(left="50%", top=10, width=240, height=180))
+        widget2 = render.widgets.create_image_widget(
+            img2, layout=Layout(left="50%", top=10, width=240, height=180), target_camera=model.cameras.system_camera
+        )
 
         # Widget 3: Bottom-left
-        widget3 = render.widgets.create_image_widget(img3, layout=Layout(left=10, top="50%", width=240, height=180))
+        widget3 = render.widgets.create_image_widget(
+            img3, layout=Layout(left=10, top="50%", width=240, height=180), target_camera=model.cameras.system_camera
+        )
 
         # Store initial layouts
         initial_layouts = {

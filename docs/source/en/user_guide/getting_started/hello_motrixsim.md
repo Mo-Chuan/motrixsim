@@ -1,137 +1,131 @@
-# 🚀 Quick Start: Hello MotrixSim
+# 🚀 Quick Start: Run Your First Simulation
 
-This tutorial demonstrates a complete hands-on example—loading the Spot quadruped robot and running a physics simulation—to guide you through your first MotrixSim experience from scratch. You will learn how to create a project, write code, and run your first physics simulation program.
+Use a falling-ball experiment to learn how to create a model, manage state, step physics, and display the results. Then change gravity and observe how the simulation changes.
 
-## Create Your First MotrixSim Project
+## Preparation
 
-Let's create a complete MotrixSim project from scratch.
+Complete [installation](installation.md), then work from your own project root or the cloned repository root. The scene is defined directly in the program and contains a ground plane and a ball.
 
-### Step 1: Create Project Directory
+## 1. Create the Program
 
-First, create a new directory for your project:
-
-```bash
-mkdir motrixsim-examples
-cd motrixsim-examples
-```
-
-### Step 2: Initialize Python Project
-
-Initialize a new Python project using `uv`:
-
-```bash
-uv init
-```
-
-This creates a basic project structure, including `pyproject.toml` and `.python-version` files.
-
-### Step 3: Install MotrixSim
-
-Install MotrixSim using `uv`:
-
-```bash
-uv add motrixsim
-```
-
-If you haven't installed `uv` yet, please refer to the [Installation Guide](installation.md).
-
-### Step 4: Prepare Model Files
-
-Prepare an MJCF format model file. You can use any MJCF model, or if you don't have one, download sample models from our repository:
-
-**Method 1: Download Repository ZIP**
-
-1. Visit <https://github.com/Motphys/motrixsim-docs>
-2. Click the green `Code` button and select `Download ZIP`
-3. Extract the downloaded file
-4. Copy the `motrixsim-docs-main/examples/assets/boston_dynamics_spot` folder to your project's `assets/` directory:
-
-```bash
-# In project root directory
-mkdir -p assets
-# Copy the extracted boston_dynamics_spot folder to assets/ directory
-```
-
-**Method 2: Using git clone**
-
-```bash
-# Clone documentation repository (use --depth 1 for latest version only, faster)
-git clone --depth 1 https://github.com/Motphys/motrixsim-docs.git temp-docs
-
-# Copy model files to project
-mkdir -p assets
-cp -r temp-docs/examples/assets/boston_dynamics_spot assets/
-
-# Clean up temporary files
-rm -rf temp-docs
-```
-
-After downloading, ensure your directory structure looks like this:
-
-```
-motrixsim-examples/
-├── assets/
-│   └── boston_dynamics_spot/
-│       └── scene.xml
-├── hello_motrixsim.py
-├── pyproject.toml
-└── ...
-```
-
-### Step 5: Create Your First Simulation Program
-
-Create a file named `hello_motrixsim.py`:
+Create `first_simulation.py` in your project root and add the following code:
 
 ```python
-# Import MotrixSim library
-import motrixsim as mx
+import sys
+import time
 
-# Load model file (contains physics and rendering data)
-model = mx.load_model("assets/boston_dynamics_spot/scene.xml")
+if "--gpu" in sys.argv:
+    import motrixsim.gpu as mx
+else:
+    import motrixsim as mx
 
-# Create renderer ("warn" indicates log level)
-with mx.render.RenderApp("warn") as render:
-    render.launch(model)          # Load model into renderer
-    data = mx.SceneData(model)    # Create physics data object
-    while True:                   # Infinite loop for simulation
-        model.step(data)          # Execute one physics simulation step
-        render.sync(data)         # Sync data to renderer
+from motrixsim.render import RenderApp, RenderClosedError
+
+SCENE = """<mujoco>
+  <option timestep="0.02" gravity="0 0 -9.81"/>
+  <worldbody>
+    <light type="directional" pos="0 -2 3" dir="0.45 0.35 -0.83"
+           diffuse="1 1 1" intensity="2732" castshadow="true"/>
+    <geom type="plane" size="3 3 0.1" rgba="0.7 0.7 0.7 1"/>
+    <body name="ball" pos="0 0 1">
+      <freejoint/>
+      <geom type="sphere" size="0.1" mass="1" rgba="0.2 0.5 0.9 1"/>
+    </body>
+  </worldbody>
+</mujoco>"""
+
+model = mx.load_mjcf_str(SCENE)
+data = mx.SceneData(model)
+
+with RenderApp() as render:
+    render.launch(model)
+    try:
+        while True:
+            mx.step(model, data)
+            render.sync(data)
+            time.sleep(0.02)
+    except RenderClosedError:
+        pass
 ```
 
-That's the complete code! With just a few lines, you accomplish all the essential steps for a MotrixSim simulation experiment.
+The scene uses MJCF XML. Start with these four settings:
 
-### Step 6: Run Your First Simulation
+| Setting | Meaning |
+| --- | --- |
+| `timestep="0.02"` | Each physics step advances simulation time by 0.02 seconds |
+| `gravity="0 0 -9.81"` | Gravitational acceleration along the negative world Z axis, in m/s² |
+| `body pos="0 0 1"` | Places the initial ball center 1 meter above the ground |
+| `freejoint` | Allows the ball to translate and rotate freely |
 
-Now, run your program:
+For the sphere, `size="0.1"` sets a radius of 0.1 meters and `mass="1"` sets a mass of 1 kilogram.
 
-**On Linux or Windows platforms:**
+## 2. Run and Observe
+
+From the directory containing the program, run:
 
 ```bash
-uv run hello_motrixsim.py
+uv run python first_simulation.py
 ```
 
-**On MacOS (aarch64-apple-darwin) platform:**
+On macOS Apple Silicon, use:
 
 ```bash
-uv run mxpython hello_motrixsim.py
+uv run mxpython first_simulation.py
 ```
 
-```{note}
-Since this example uses {doc}`../main_function/render`, on macOS ARM64 platform you need to use `uv run mxpython` to ensure correct loading of rendering-related dependencies and execution environment.
+A window opens with a blue ball falling toward the ground. After contact, it gradually settles near the ground. Close the window to exit. Run the command again to observe the fall from its initial position.
 
-If your code does not use RenderApp (physics simulation only), use `uv run` which is consistent with Windows and Linux platforms.
+```{figure} /_static/images/quickstart_ball_gravity.jpg
+:alt: Actual application window showing the blue ball resting on the ground after falling
+:width: 90%
+:align: center
+
+With gravity set to −9.81 m/s², the ball falls and contacts the ground.
 ```
 
-### Expected Results
+With GPU components installed, run the same program on the GPU backend:
 
-After running, you should see a simulation window similar to the image below, with the Spot quadruped robot naturally standing and maintaining balance under gravity:
+```bash
+uv run python first_simulation.py --gpu
+```
 
-![hello_motrixsim](/_static/images/hello_motrixsim.png)
+For the repository installation path, use `uv run --extra gpu python first_simulation.py --gpu`.
 
-**Congratulations!** You have successfully run your first MotrixSim simulation program.
+## 3. Understand the Simulation Loop
+
+The program follows the same sequence on CPU and GPU:
+
+| Step | Code | Purpose |
+| --- | --- | --- |
+| Create a model | `mx.load_mjcf_str(SCENE)` | Loads the scene description, including geometry, mass, connections, and physics parameters |
+| Create state | `mx.SceneData(model)` | Creates data for changing quantities such as positions and velocities |
+| Step physics | `mx.step(model, data)` | Updates state using the model's timestep |
+| Update the view | `render.sync(data)` | Sends the current state to the renderer |
+
+The `time.sleep(0.02)` call briefly waits after each step so that the fall is easy to observe. When the window closes, the program catches `RenderClosedError` and exits the rendering context.
+
+## 4. Change Gravity and Compare
+
+Close the window and set gravity to zero in the scene:
+
+```xml
+<option timestep="0.02" gravity="0 0 0"/>
+```
+
+Save and run the program again. The ball should remain at its initial position. Restore gravity to `0 0 -9.81` and run again to make the ball fall.
+
+```{figure} /_static/images/quickstart_ball_zero_gravity.jpg
+:alt: Actual application window showing the blue ball suspended above the ground in zero gravity
+:width: 90%
+:align: center
+
+With zero gravity, the ball remains at its initial height.
+```
+
+This experiment shows how scene parameters determine physical behavior, the simulation loop updates state, and the renderer displays the results.
 
 ## Next Steps
 
--   See [mjcf](mjcf_reference.md) for supported features
--   Learn how to use the [main features](../main_function/scene_model.md)
--   Explore more [example programs](../overview/examples.md)
+- [Models](../main_function/scene_model.md): Load external models and access their components.
+- [Data](../main_function/scene_data.md): Read and set simulation state.
+- [Example programs](../overview/examples.md): Run complete examples with robots, joints, sensors, and more.

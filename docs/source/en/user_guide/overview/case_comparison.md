@@ -3,7 +3,7 @@
 :::{tip}
 For models and code, see the [MotrixSim Docs](https://github.com/Motphys/motrixsim-docs) repository.
 
-Before running the examples, please refer to {doc}`../overview/environment_setup` to complete the environment setup.
+Before running the examples, please refer to {ref}`Path 2: Clone the Repository and Run Examples <install-from-repository>` to complete the environment setup.
 :::
 
 We present several comparisons between MotrixSim and MuJoCo simulation results to give you an intuitive sense of MotrixSim's simulation advantages.

@@ -1,5 +1,7 @@
 # 🦾 反向运动学
 
+{bdg-success-line}`CPU 完全支持` {bdg-danger-line}`GPU 不支持`
+
 MotrixSim 提供了一个高效且易于使用的反向运动学（IK）求解器，位于`motrixsim.ik`模块中。
 它支持两种 IK 求解器：基于高斯-牛顿法的求解器（[`GaussNewtonSolver`]）和阻尼最小二乘法（DLS）求解器（[`DlsSolver`]），以及简单的 IK 链模型（[`IkChain`]）。
 

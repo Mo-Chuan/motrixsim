@@ -13,14 +13,20 @@
 # limitations under the License.
 # ==============================================================================
 
+import sys
 import time
+from pathlib import Path
 
 import mujoco
-import mujoco.viewer
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from utils.mujoco_viewer import passive_viewer
 
 
 def main():
-    model = mujoco.MjModel.from_xml_path("examples/assets/gyroscope.xml")
+    path = Path(__file__).resolve().parents[2] / "assets/gyroscope.xml"
+    model = mujoco.MjModel.from_xml_path(str(path))
     data = mujoco.MjData(model)
 
     joint_name = "ball_1"
@@ -30,10 +36,10 @@ def main():
 
     # model.opt.timestep = 0.0001  # Set a small timestep for high precision simulation
 
-    with mujoco.viewer.launch_passive(model, data) as viewer:
+    with passive_viewer(model, data) as viewer:
         with viewer.lock():
             viewer.cam.distance = 5
-        while True:
+        while viewer.is_running():
             step_start = time.time()
             mujoco.mj_step(model, data)
             viewer.sync()

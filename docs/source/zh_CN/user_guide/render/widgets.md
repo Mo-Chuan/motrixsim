@@ -139,3 +139,5 @@ layout = Layout(left=10, top="60%", width=320, height=240)
 [`ImageWidget`]: motrixsim.render.widgets.ImageWidget
 [`Image`]: motrixsim.render.Image
 [`RenderWidgets`]: motrixsim.render.RenderWidgets
+
+GPU 后端暂不支持 `CameraViewport` 多视口；托管查看器 `motrixsim.viewer.launch()` 仅 CPU 版本提供。

@@ -33,7 +33,7 @@ Controls:
 - Delete: Remove vp3 from screen (requires restart to restore)
 """
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import SceneData, msd, run, step
 from motrixsim.render import Layout, RenderApp
 
 
@@ -58,21 +58,24 @@ def main():
 
     # Create render app for visualization
     with RenderApp() as render:
-        # Load the scene model
+        # Load the scene world and configure cameras before building
         path = "examples/assets/go1/scene.xml"
-        model = load_model(path)
+        world = msd.from_file(path)
 
-        # Configure cameras for rendering
-        # The go1 scene has multiple cameras that can be used as sensor cameras
+        # Find cameras by name, including those nested in the robot's link tree.
+        robot = world.find_body("trunk")
+        rgb_camera = robot.find_camera("track")
+        rgb_camera.render_target = msd.RenderTarget.Image
+        rgb_camera.resolution = [320, 240]
+
+        depth_camera = robot.find_camera("top")
+        depth_camera.render_target = msd.RenderTarget.Image
+        depth_camera.resolution = [320, 240]
+        depth_camera.depth_only = True
+        depth_camera.znear = 0.1
+        depth_camera.zfar = 1.0
+        model = world.build()
         cameras = model.cameras
-        if len(cameras) >= 2:
-            # Camera 0: RGB camera
-            cameras[0].set_render_target("image", 320, 240)
-
-            # Camera 1: Depth camera
-            cameras[1].set_render_target("image", 320, 240)
-            cameras[1].depth_only = True
-            cameras[1].set_near_far(0.1, 1.0)
 
         # Launch the renderer
         render.launch(model)
@@ -87,19 +90,28 @@ def main():
         # Viewport 1: Top-left with pixel-based layout
         # Demonstrates fixed pixel positioning and sizing
         vp1 = render.widgets.create_camera_viewport(
-            cameras[0], layout=Layout(left=10, top=10, width=240, height=180), sim_world_index=0
+            cameras[0],
+            layout=Layout(left=10, top=10, width=240, height=180),
+            sim_world_index=0,
+            target_camera=model.cameras.system_camera,
         )
 
         # Viewport 2: Top-right with percentage-based layout
         # Demonstrates responsive positioning using percentages
         vp2 = render.widgets.create_camera_viewport(
-            cameras[1], layout=Layout(left="60%", top=10, width=240, height=180), sim_world_index=0
+            cameras[1],
+            layout=Layout(left="60%", top=10, width=240, height=180),
+            sim_world_index=0,
+            target_camera=model.cameras.system_camera,
         )
 
         # Viewport 3: Bottom-left with mixed layout (pixels + percentage)
         # Demonstrates mixed layout values
         vp3 = render.widgets.create_camera_viewport(
-            cameras[0], layout=Layout(left=10, top="60%", width=320, height=240), sim_world_index=0
+            cameras[0],
+            layout=Layout(left=10, top="60%", width=320, height=240),
+            sim_world_index=0,
+            target_camera=model.cameras.system_camera,
         )
 
         # Store initial layouts for reset functionality

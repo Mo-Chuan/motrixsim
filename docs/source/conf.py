@@ -50,9 +50,17 @@ if not motrixsim_path:
         f"- Site-packages: {site.getsitepackages()}"
     )
 
-# 确保路径唯一性且优先加载
-if str(motrixsim_path) not in sys.path:
-    sys.path.insert(0, str(motrixsim_path))
+# 确保路径唯一性且优先加载。源码树里存在构建好的扩展模块时，必须插入包的
+# 父目录：插入包目录本身会让 `import motrixsim` 命中目录里的扩展模块
+# （无 `__path__`），导致 `motrixsim.gpu` 等子包无法导入。CI 使用 wheel
+# 安装（源码树没有扩展模块），此时保持插入包目录，让 import 落到 wheel。
+local_extension = next(
+    (p for p in motrixsim_path.iterdir() if p.suffix in {".so", ".pyd", ".dylib"}),
+    None,
+)
+sys_path_entry = motrixsim_path.parent if local_extension is not None else motrixsim_path
+if str(sys_path_entry) not in sys.path:
+    sys.path.insert(0, str(sys_path_entry))
 
 __version__ = "0.1.0"
 
@@ -198,12 +206,10 @@ html_theme_options = {
     "footer_start": ["copyright", "sphinx-version"],
     "footer_end": ["theme-version"],
     # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/header-links.html#navigation-bar-external-links
-    "external_links": [
-        {"name": "Issues", "url": "https://github.com/Motphys/motrixsim-docs/issues"},
-        {"name": "Discussions", "url": "https://github.com/Motphys/motrixsim-docs/discussions"},
-    ],
-    "header_links_before_dropdown": 2,
+    "header_links_before_dropdown": 10,
     # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/header-links.html#icon-links
+    # Issue/Discussion links live here (navbar_end, right-aligned) instead of
+    # external_links so they don't crowd the primary Reference navbar.
     "icon_links": [
         {
             # Label for this link
@@ -212,6 +218,18 @@ html_theme_options = {
             "url": "https://github.com/Motphys/motrixsim-docs",  # required
             # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
             "icon": "fa-brands fa-github",
+            "type": "fontawesome",
+        },
+        {
+            "name": "Issues",
+            "url": "https://github.com/Motphys/motrixsim-docs/issues",
+            "icon": "fa-regular fa-circle-question",
+            "type": "fontawesome",
+        },
+        {
+            "name": "Discussions",
+            "url": "https://github.com/Motphys/motrixsim-docs/discussions",
+            "icon": "fa-regular fa-comments",
             "type": "fontawesome",
         },
         {

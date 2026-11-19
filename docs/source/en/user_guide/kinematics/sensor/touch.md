@@ -1,5 +1,7 @@
 # Touch Sensor
 
+{bdg-success-line}`CPU: fully supported` {bdg-danger-line}`GPU: not supported`
+
 Touch sensors are used to detect contact and measure normal forces at specified site locations. In robot simulation, touch sensors are commonly used to implement tactile perception, collision detection, and force feedback control.
 
 ## 🎯 Functionality Description

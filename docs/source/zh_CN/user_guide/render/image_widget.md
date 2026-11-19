@@ -1,5 +1,11 @@
 # 🖼️ ImageWidget
 
+本教程使用视口相机接口，需要 SDK 提供 `target_camera` 和[相机教程](camera.md)中的视口相机切换方法。
+
+`target_camera` 指定控件合成到哪个模型相机的输出上。系统相机传 `model.cameras.system_camera`，场景相机可传 `model.cameras["back"]`。省略或传 `None` 固定使用系统相机。该绑定不会跟随当前交互视口：视口切换到其他相机时，控件不会一起移动到新相机上。`render.system_camera` 是运行期控制器，不能作为目标参数。
+
+创建运行期控件前必须调用 `render.launch(model)`。使用自定义 blueprint 时，应包含一个绑定目标相机的 `ui.Viewport` 来显示其输出。
+
 ## 概述
 
 ImageWidget 允许您在渲染窗口中显示自定义图像，这对于可视化传感器数据、显示调试信息、创建自定义 UI 等场景非常有用。
@@ -16,6 +22,8 @@ ImageWidget 允许您在渲染窗口中显示自定义图像，这对于可视�
 
 ```python
 import numpy as np
+
+render.launch(model)
 
 # 创建一个随机RGB图像
 pixels = np.random.randint(0, 256, (240, 320, 3), dtype=np.uint8)
@@ -44,6 +52,7 @@ image = render.create_image(pixels)
 ```python
 widget = render.widgets.create_image_widget(
     image=image,
+    target_camera=model.cameras.system_camera,
     layout=Layout(left=10, top=10, width=320, height=240)
 )
 ```
@@ -51,7 +60,8 @@ widget = render.widgets.create_image_widget(
 **参数说明**：
 
 -   **image**: Image 对象（必需）
--   **layout**: 布局配置（可选，默认为 left=50, top=50, width=200, height=200）
+-   **target_camera**: 仅关键字参数，指定控件合成到哪个模型相机的输出上；省略或传 `None` 使用系统相机。
+-   **layout**: 布局配置（可选，默认位于左上角，宽高自动）。
 
 **返回值**：返回一个 `ImageWidget` 对象。
 

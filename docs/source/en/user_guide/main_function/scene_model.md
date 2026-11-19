@@ -1,5 +1,7 @@
 # 🏗️ Model
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 In MotrixSim, the model `SceneModel` and the data `SceneData` are essential components for building a simulation environment and are used throughout the entire physics simulation process. This chapter mainly introduces the creation and usage of `SceneModel`, while [`SceneData`](scene_data.md) will be described in detail in the next chapter.
 
 ## Basic Concepts
@@ -35,14 +37,14 @@ Install the extra in the same Python environment where you run MotrixSim. If Mot
 
 The example below loads an MJCF scene with `load_model`:
 
-```{literalinclude} ../../../../examples/getting_started/empty.py
+```{literalinclude} ../../../../examples/getting_started/falling_ball.py
 :language: python
 :dedent:
 :start-after: "# tag::load_model_from_file[]"
 :end-before:  "# end::load_model_from_file[]"
 ```
 
-For the complete example, see [`examples/getting_started/empty.py`](../../../../examples/getting_started/empty.py).
+For the complete example, see [`examples/getting_started/falling_ball.py`](../../../../examples/getting_started/falling_ball.py).
 
 For USD scenes, the same entry point loads directly into `SceneModel`:
 

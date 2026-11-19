@@ -15,11 +15,17 @@
 
 from __future__ import annotations
 
+import sys
 import time
+from pathlib import Path
 
 import numpy as np
 
-from motrixsim import SceneData, msd
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from utils.lidar_bev_panel import LidarBevPanel
+
+from motrixsim import SceneData, msd, ui
 from motrixsim.render import Color, RenderApp, RenderSettings
 
 ROTATING_LIDAR_BODY_NAME = "rotating_lidar_mount"
@@ -59,7 +65,8 @@ LIDAR_MJCF = """<mujoco model="lidar_point_cloud_sensors">
   <sensor>
     <!-- hz spreads one complete 360-degree scan across a 0.1-second period. -->
     <lidar name="rotating_lidar" site="rotating_lidar_site"
-      asset="rotating_16_channel" exclude="parentbody" hz="10"/>
+      asset="rotating_16_channel" exclude="parentbody" hz="10"
+      returns="distance point time_offset normal"/>
     <!-- Omitting hz fires the complete Solid State grid every physics step. -->
     <lidar name="solid_state_lidar" site="solid_state_lidar_site"
       asset="solid_state_grid" exclude="none"/>
@@ -283,15 +290,47 @@ def update_lidar_mount(floating_base, data: SceneData, pose: np.ndarray) -> None
     )
 
 
-def print_lidar_stats(model, data: SceneData, sensor_name: str, origin: np.ndarray) -> None:
+def print_lidar_stats(model, data: SceneData, sensor_name: str, previous_seq: int = 0) -> int:
+    # Status is separate from the numeric payload. Until a new FullScan is latched,
+    # get_sensor_value() keeps returning the previous published frame.
+    status = model.get_lidar_status(sensor_name, data)
+    scan_seq = int(status.scan_seq.item())
+    if not status.ready.item() or scan_seq == previous_seq:
+        return previous_seq
+
     values = model.get_sensor_value(sensor_name, data)
-    points = values.reshape(-1, 3)
-    hit_mask = np.isfinite(points).all(axis=1) & np.any(points != 0.0, axis=1)
-    hits = points[hit_mask]
-    distances = np.linalg.norm(hits - origin, axis=1) if hits.size else np.array([])
-    hit_min = float(np.min(distances)) if distances.size else float("nan")
-    hit_max = float(np.max(distances)) if distances.size else float("nan")
-    print(f"{sensor_name}: shape={values.shape}, hits={hits.shape[0]}, min={hit_min:.3f}, max={hit_max:.3f}")
+    if sensor_name == ROTATING_LIDAR_SENSOR_NAME:
+        # Matches the explicit returns selection in LIDAR_MJCF:
+        # [distance, world_x, world_y, world_z, time_offset, normal_x, normal_y, normal_z].
+        beams = values.reshape(-1, 8)
+        time_offsets = beams[:, 4]
+        normals = beams[:, 5:8]
+    else:
+        # The static sensor keeps the default distance + world point output.
+        beams = values.reshape(-1, 4)
+        time_offsets = None
+        normals = None
+    distances = beams[:, 0]
+    points = beams[:, 1:4]
+    # The world origin is a valid point. Distance, not point != 0, determines validity.
+    hit = np.isfinite(distances) & (distances >= 0.0)
+    hit_distances = distances[hit]
+    hit_min = float(np.min(hit_distances)) if hit_distances.size else float("nan")
+    hit_max = float(np.max(hit_distances)) if hit_distances.size else float("nan")
+    summary = (
+        f"{sensor_name}: scan_seq={scan_seq}, shape={values.shape}, "
+        f"hits={hit_distances.size}/{len(beams)}, min={hit_min:.3f}, max={hit_max:.3f}"
+    )
+    if time_offsets is not None:
+        # Misses still have an acquisition time; do not apply the hit mask here.
+        summary += f", acquisition=[{time_offsets.min():.4f}, {time_offsets.max():.4f}]s"
+    if hit.any():
+        first_hit = int(np.flatnonzero(hit)[0])
+        summary += f", first_world_point={np.round(points[first_hit], 3).tolist()}"
+        if normals is not None:
+            summary += f", first_world_normal={np.round(normals[first_hit], 3).tolist()}"
+    print(summary)
+    return scan_seq
 
 
 def main():
@@ -311,9 +350,15 @@ def main():
         enable_ssgi=False,
     )
 
-    with RenderApp() as render:
+    bev_panel = LidarBevPanel(ROTATING_LIDAR_SENSOR_NAME)
+    blueprint = ui.Horizontal(
+        [ui.Options(title="Options"), ui.Viewport(camera=ui.CameraRef.system(), title="GameView"), bev_panel.view],
+        shares=[1, 4, 2],
+    )
+    with RenderApp(blueprint=blueprint) as render:
         render.launch(model, render_settings=render_settings)
         render.opt.set_lidar_point_vis(True)
+        bev_panel.bind(render)
         print("Lidar point cloud debug scene")
         print("- Green sphere marks the moving lidar origin.")
         print("- The floor is a generated HField terrain and participates in raycast hits.")
@@ -324,23 +369,30 @@ def main():
         print("- The green 360-degree Rings lidar runs at 10 Hz with 16 explicit elevations.")
         print("- Its mount only moves vertically to demonstrate scan-motion distortion.")
         print("- The yellow arrow shows its current azimuth phase; the site axes stay fixed.")
-        print("- The cyan fixed lidar uses a 60 x 20 degree solid-state Grid snapshot.")
+        print("- The cyan fixed lidar uses a 30 x 20 degree solid-state Grid snapshot.")
+        print("- Right panel: square XY bird's-eye hit map; choose Distance / Height / World normal.")
+        print("- Rings mark 1/3/6 world units; green center/arrow marks the fixed-XY lidar mount.")
+        print("- Ground-like returns are dimmed; highest world-Z return wins per pixel.")
+        print("- Rotating returns: distance, world point, time_offset (seconds), world normal (8 floats/beam).")
+        print("- Static returns: default distance + world point (4 floats/beam).")
+        print("- Summaries sample new FullScans twice per simulated second; scan_seq may skip between samples.")
+        print("- Acquisition offsets use physics-step poses/times, not substep interpolation; misses keep timestamps.")
         print("- Press ESC or close the window to exit.")
 
+        last_printed_seq = {ROTATING_LIDAR_SENSOR_NAME: 0, SOLID_STATE_LIDAR_SENSOR_NAME: 0}
+        next_summary_time = 0.0
         step = 0
         start_time = time.monotonic()
         while not render.is_closed:
             pose = lidar_pose(time.monotonic() - start_time)
             update_lidar_mount(lidar_floating_base, data, pose)
             model.step(data)
-            if step % 30 == 0:
-                print_lidar_stats(model, data, ROTATING_LIDAR_SENSOR_NAME, pose[:3])
-                print_lidar_stats(
-                    model,
-                    data,
-                    SOLID_STATE_LIDAR_SENSOR_NAME,
-                    SOLID_STATE_LIDAR_POSITION,
-                )
+            bev_panel.update(render, model, data)
+            sim_time = (step + 1) * model.options.timestep
+            if sim_time >= next_summary_time:
+                for sensor_name, previous_seq in last_printed_seq.items():
+                    last_printed_seq[sensor_name] = print_lidar_stats(model, data, sensor_name, previous_seq)
+                next_summary_time = sim_time + 0.5
 
             render.gizmos.draw_sphere(
                 0.05,

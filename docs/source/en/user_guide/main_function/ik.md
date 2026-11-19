@@ -1,5 +1,7 @@
 # 🦾 Inverse Kinematics (IK)
 
+{bdg-success-line}`CPU: fully supported` {bdg-danger-line}`GPU: not supported`
+
 MotrixSim provides an efficient and easy-to-use Inverse Kinematics (IK) solver located in the `motrixsim.ik` module. It supports Gauss-Newton ([`GaussNewtonSolver`]) and Damped Least Squares (DLS, [`DlsSolver`]), along with a simple IK chain model ([`IkChain`]).
 
 ```{video} /_static/videos/ik.mp4

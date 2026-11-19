@@ -14,8 +14,15 @@
 # ==============================================================================
 
 
-from motrixsim import SceneData, load_mjcf_str, run, step
+import sys
+
+from motrixsim import run
 from motrixsim.render import RenderApp
+
+if "--gpu" in sys.argv:
+    from motrixsim.gpu import SceneData, load_mjcf_str, step
+else:
+    from motrixsim import SceneData, load_mjcf_str, step
 
 # tag::model_load_from_string[]
 mjcf = """<mujoco>

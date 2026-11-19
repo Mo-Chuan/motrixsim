@@ -1,5 +1,7 @@
 # Velocimeter
 
+`{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 The velocimeter sensor is used to measure the three-axis linear velocity at the mounting point in the **local coordinate system**. In robot simulation, velocimeters are commonly used to monitor the robot's motion speed and provide important data for velocity control and motion estimation.
 
 ## 🎯 Functional Description

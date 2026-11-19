@@ -13,8 +13,16 @@
 # limitations under the License.
 # ==============================================================================
 
-from motrixsim import SceneData, load_model, run, step
+import sys
+
+from motrixsim import msd, run
 from motrixsim.render import RenderApp
+
+USE_GPU = "--gpu" in sys.argv
+if USE_GPU:
+    from motrixsim.gpu import SceneData, step
+else:
+    from motrixsim import SceneData, step
 
 
 def main():
@@ -24,15 +32,15 @@ def main():
     print("Press 'E' to enable the scene camera.")
     # Create render window for visualization
     with RenderApp() as render:
-        render.opt.set_left_panel_vis(True)
-
         # The scene description file
         path = "examples/assets/control_cameras.xml"
-        # Load the scene model
-        model = load_model(path)
-
-        cameras = model.cameras
-        cameras[0].set_render_target("image", 320, 240)
+        # Load the scene world and configure the camera before building
+        world = msd.from_file(path)
+        world.hierarchy.cameras[0].render_target = msd.RenderTarget.Image
+        world.hierarchy.cameras[0].resolution = [320, 240]
+        model = world.build()
+        if USE_GPU:
+            model = model.to_gpu()
 
         # Create the render instance of the model
         render.launch(model)

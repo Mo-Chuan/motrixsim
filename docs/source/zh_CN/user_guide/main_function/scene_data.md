@@ -1,5 +1,7 @@
 # 💾 数据
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 在上一章节中，我们了解了 [`SceneModel`](scene_model.md) 用于描述静态的物理模型。本章节将重点介绍 `SceneData`的创建和使用方法。
 
 ## 基本概念
@@ -12,14 +14,14 @@
 
 ### 基本创建
 
-```{literalinclude} ../../../../examples/getting_started/empty.py
+```{literalinclude} ../../../../examples/getting_started/falling_ball.py
 :language: python
 :dedent:
 :start-after: "# tag::create_data[]"
 :end-before:  "# end::create_data[]"
 ```
 
-完整的示例代码请参见 [`examples/getting_started/empty.py`](../../../../examples/getting_started/empty.py)。
+完整的示例代码请参见 [`examples/getting_started/falling_ball.py`](../../../../examples/getting_started/falling_ball.py)。
 
 ### 多数据实例
 

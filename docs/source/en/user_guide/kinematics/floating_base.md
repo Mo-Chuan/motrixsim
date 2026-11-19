@@ -1,5 +1,7 @@
 # 🛸 Floating Base
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 In [Body](body.md), we introduced three types of connections between a Body and the World:
 
 -   Fixed connection (Fixed)

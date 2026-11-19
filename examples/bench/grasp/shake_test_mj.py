@@ -21,18 +21,24 @@ Usage:
     python -m examples.bench.grasp.shake_test_mj --object=cube --noshake --record
 """
 
+import sys
 import time
+from contextlib import ExitStack
+from pathlib import Path
 
 import mujoco
-import mujoco.viewer
 from absl import app, flags
-from common import (
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from bench.grasp.common import (
     DEFAULT_HOLD_DURATION,
     DROP_Z_THRESHOLD,
     SETTLING_END_TIME,
     SETTLING_START_TIME,
     compute_ctrl_for_time,
 )
+from utils.mujoco_viewer import passive_viewer
 
 _Obj = flags.DEFINE_string("object", "cube", "Object to grasp. Choices: [cube, ball, bottle]")
 _Shake = flags.DEFINE_boolean("shake", True, "Whether to shake the arm after grasping")
@@ -41,8 +47,8 @@ _HoldDuration = flags.DEFINE_float("hold_duration", DEFAULT_HOLD_DURATION, "Hold
 
 
 def main(argv):
-    path = f"examples/assets/franka_emika_panda/scene_pick_{_Obj.value}.xml"
-    model = mujoco.MjModel.from_xml_path(path)
+    path = Path(__file__).resolve().parents[2] / f"assets/franka_emika_panda/scene_pick_{_Obj.value}.xml"
+    model = mujoco.MjModel.from_xml_path(str(path))
     data = mujoco.MjData(model)
     mujoco.mj_resetDataKeyframe(model, data, model.key("home").id)
 
@@ -64,59 +70,60 @@ def main(argv):
     mujoco.mj_forward(model, data)
 
     record = _Record.value
-    if record:
-        frames = []
-        renderer = mujoco.Renderer(model)
-        renderer.update_scene(data, 0)
+    with ExitStack() as resources:
+        if record:
+            frames = []
+            renderer = resources.enter_context(mujoco.Renderer(model))
+            renderer.update_scene(data, 0)
 
-    task_name = "shaking-grasp" if _Shake.value else "slip-grasp"
-    total_duration = SETTLING_END_TIME + _HoldDuration.value
+        task_name = "shaking-grasp" if _Shake.value else "slip-grasp"
+        total_duration = SETTLING_END_TIME + _HoldDuration.value
 
-    with mujoco.viewer.launch_passive(model, data) as viewer:
-        step_cnt = 0
-        while viewer.is_running():
-            step_cnt += 1
-            step_start = time.time()
-            sim_time = step_cnt * dt
+        with passive_viewer(model, data) as viewer:
+            step_cnt = 0
+            while viewer.is_running():
+                step_cnt += 1
+                step_start = time.time()
+                sim_time = step_cnt * dt
 
-            arm, gripper = compute_ctrl_for_time(sim_time, _Shake.value, shake_step=step_cnt)
-            if arm is not None:
-                set_arm_ctrl(arm)
-            if gripper is not None:
-                set_gripper_ctrl(gripper)
+                arm, gripper = compute_ctrl_for_time(sim_time, _Shake.value, shake_step=step_cnt)
+                if arm is not None:
+                    set_arm_ctrl(arm)
+                if gripper is not None:
+                    set_gripper_ctrl(gripper)
 
-            if sim_time >= SETTLING_START_TIME and _Shake.value:
-                if data.xpos[obj_body_id][2] < DROP_Z_THRESHOLD:
-                    print(f"The {task_name}-{_Obj.value} failed.")
+                if sim_time >= SETTLING_START_TIME and _Shake.value:
+                    if data.xpos[obj_body_id][2] < DROP_Z_THRESHOLD:
+                        print(f"The {task_name}-{_Obj.value} failed.")
+                        break
+
+                mujoco.mj_step(model, data)
+                viewer.sync()
+
+                time_until_next = dt - (time.time() - step_start)
+                if time_until_next > 0:
+                    time.sleep(time_until_next)
+
+                if record and len(frames) < data.time * 30:
+                    renderer.update_scene(data, 0)
+                    frames.append(renderer.render().copy())
+
+                if sim_time >= total_duration:
+                    print(f"The {task_name}-{_Obj.value} passed.")
                     break
 
-            mujoco.mj_step(model, data)
-            viewer.sync()
+            else:
+                print(f"The {task_name}-{_Obj.value} stopped before completion.")
 
-            time_until_next = dt - (time.time() - step_start)
-            if time_until_next > 0:
-                time.sleep(time_until_next)
+        if record:
+            import imageio
 
-            if record and len(frames) < data.time * 30:
-                renderer.update_scene(data, 0)
-                frames.append(renderer.render().copy())
-
-            if sim_time >= total_duration:
-                print(f"The {task_name}-{_Obj.value} passed.")
-                break
-
-        else:
-            print(f"The {task_name}-{_Obj.value} passed.")
-
-    if record:
-        import imageio
-
-        imageio.mimwrite(
-            f"mujoco_grasp_{_Obj.value}.mp4",
-            frames,
-            fps=30,
-            quality=8,
-        )
+            imageio.mimwrite(
+                f"mujoco_grasp_{_Obj.value}.mp4",
+                frames,
+                fps=30,
+                quality=8,
+            )
 
 
 if __name__ == "__main__":

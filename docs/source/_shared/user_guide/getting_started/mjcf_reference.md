@@ -1,10 +1,10 @@
 ---
-title: 📖 MJCF XML Reference
+title: 📖 MJCF Reference
 description: Complete MJCF XML reference with hierarchy
 outline: [2, 6]
 ---
 
-# 📖 MJCF XML Reference
+# 📖 MJCF Reference
 
 This document provides a hierarchical reference for all supported MJCF XML elements.
 
@@ -81,12 +81,15 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
 <details>
 <summary style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: monospace; transition: background-color 0.2s;"><a href="#asset-material" style="text-decoration: none; color: inherit;">material</a></summary>
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 8px 12px; margin: 4px 0;">
+  <div><a href="#asset-material-alpha_mode" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">alpha_mode</a></div>
+  <div><a href="#asset-material-both_side" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">both_side</a></div>
   <div><a href="#asset-material-castshadow" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">castshadow</a></div>
   <div><a href="#asset-material-class" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">class</a></div>
   <div><a href="#asset-material-depthbias" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">depthbias</a></div>
   <div><a href="#asset-material-detailpara" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">detailpara</a></div>
   <div><a href="#asset-material-emission" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">emission</a></div>
   <div><a href="#asset-material-emissionintensity" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">emissionintensity</a></div>
+  <div><a href="#asset-material-ior" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">ior</a></div>
   <div><a href="#asset-material-metallic" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">metallic</a></div>
   <div><a href="#asset-material-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
   <div><a href="#asset-material-reflectance" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">reflectance</a></div>
@@ -95,6 +98,7 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#asset-material-texrepeat" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">texrepeat</a></div>
   <div><a href="#asset-material-texture" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">texture</a></div>
   <div><a href="#asset-material-texuniform" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">texuniform</a></div>
+  <div><a href="#asset-material-transmission" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">transmission</a></div>
 </div>
 </details>
 </div>
@@ -237,6 +241,9 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
 <div style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; font-weight: 600; font-family: monospace;"><a href="#worldbody-site" style="text-decoration: none; color: inherit;">site</a></div>
 </div>
 <div style="margin-bottom: 6px; margin-left: 16px; border-left: 2px solid rgba(127, 127, 127, 0.3); padding-left: 12px;">
+<div style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; font-weight: 600; font-family: monospace;"><a href="#contact-pair" style="text-decoration: none; color: inherit;">pair</a></div>
+</div>
+<div style="margin-bottom: 6px; margin-left: 16px; border-left: 2px solid rgba(127, 127, 127, 0.3); padding-left: 12px;">
 <div style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; font-weight: 600; font-family: monospace;"><a href="#tendon" style="text-decoration: none; color: inherit;">tendon</a></div>
 </div>
 <div style="margin-bottom: 6px; margin-left: 16px; border-left: 2px solid rgba(127, 127, 127, 0.3); padding-left: 12px;">
@@ -332,12 +339,12 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 8px 12px; margin: 4px 0;">
   <div><a href="#worldbody-camera-axisangle" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">axisangle</a></div>
   <div><a href="#worldbody-camera-class" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">class</a></div>
-  <div><a href="#worldbody-camera-depth" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">depth</a></div>
   <div><a href="#worldbody-camera-euler" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">euler</a></div>
   <div><a href="#worldbody-camera-fovy" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">fovy</a></div>
   <div><a href="#worldbody-camera-mode" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">mode</a></div>
   <div><a href="#worldbody-camera-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
   <div><a href="#worldbody-camera-orthographic" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">orthographic</a></div>
+  <div><a href="#worldbody-camera-output" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">output</a></div>
   <div><a href="#worldbody-camera-pos" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">pos</a></div>
   <div><a href="#worldbody-camera-quat" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">quat</a></div>
   <div><a href="#worldbody-camera-resolution" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">resolution</a></div>
@@ -430,6 +437,7 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#worldbody-light-castshadow" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">castshadow</a></div>
   <div><a href="#worldbody-light-class" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">class</a></div>
   <div><a href="#worldbody-light-cutoff" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">cutoff</a></div>
+  <div><a href="#worldbody-light-depthbias" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">depthbias</a></div>
   <div><a href="#worldbody-light-diffuse" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">diffuse</a></div>
   <div><a href="#worldbody-light-dir" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">dir</a></div>
   <div><a href="#worldbody-light-directional" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">directional</a></div>
@@ -438,6 +446,7 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#worldbody-light-mode" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">mode</a></div>
   <div><a href="#worldbody-light-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
   <div><a href="#worldbody-light-nearz" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">nearz</a></div>
+  <div><a href="#worldbody-light-normalbias" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">normalbias</a></div>
   <div><a href="#worldbody-light-pos" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">pos</a></div>
   <div><a href="#worldbody-light-range" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">range</a></div>
   <div><a href="#worldbody-light-specular" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">specular</a></div>
@@ -493,6 +502,7 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#option-o_solref" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">o_solref</a></div>
   <div><a href="#option-sdf_initpoints" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">sdf_initpoints</a></div>
   <div><a href="#option-sdf_iterations" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">sdf_iterations</a></div>
+  <div><a href="#option-sdf_max_contacts" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">sdf_max_contacts</a></div>
   <div><a href="#option-timestep" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">timestep</a></div>
   <div><a href="#option-tolerance" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">tolerance</a></div>
 </div>
@@ -594,6 +604,7 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#actuator-position-forcerange" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">forcerange</a></div>
   <div><a href="#actuator-position-gear" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">gear</a></div>
   <div><a href="#actuator-position-group" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">group</a></div>
+  <div><a href="#actuator-position-implicit" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">implicit</a></div>
   <div><a href="#actuator-position-inheritrange" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">inheritrange</a></div>
   <div><a href="#actuator-position-joint" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">joint</a></div>
   <div><a href="#actuator-position-kp" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">kp</a></div>
@@ -712,6 +723,7 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#visual-ssgi-raycount" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">raycount</a></div>
   <div><a href="#visual-ssgi-rdenoiseoffset" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">rdenoiseoffset</a></div>
   <div><a href="#visual-ssgi-resolutionscale" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">resolutionscale</a></div>
+  <div><a href="#visual-ssgi-roughnessthreshold" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">roughnessthreshold</a></div>
   <div><a href="#visual-ssgi-rraycount" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">rraycount</a></div>
   <div><a href="#visual-ssgi-stepcount" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">stepcount</a></div>
   <div><a href="#visual-ssgi-thickness" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">thickness</a></div>
@@ -793,16 +805,6 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
 <div style="margin-top: 4px;">
 <div style="margin-bottom: 6px; margin-left: 16px; border-left: 2px solid rgba(127, 127, 127, 0.3); padding-left: 12px;">
 <details>
-<summary style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: monospace; transition: background-color 0.2s;"><a href="#contact-exclude" style="text-decoration: none; color: inherit;">exclude</a></summary>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 8px 12px; margin: 4px 0;">
-  <div><a href="#contact-exclude-body1" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">body1</a></div>
-  <div><a href="#contact-exclude-body2" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">body2</a></div>
-  <div><a href="#contact-exclude-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
-</div>
-</details>
-</div>
-<div style="margin-bottom: 6px; margin-left: 16px; border-left: 2px solid rgba(127, 127, 127, 0.3); padding-left: 12px;">
-<details>
 <summary style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: monospace; transition: background-color 0.2s;"><a href="#contact-pair" style="text-decoration: none; color: inherit;">pair</a></summary>
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 8px 12px; margin: 4px 0;">
   <div><a href="#contact-pair-class" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">class</a></div>
@@ -813,8 +815,19 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#contact-pair-geom2" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">geom2</a></div>
   <div><a href="#contact-pair-margin" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">margin</a></div>
   <div><a href="#contact-pair-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
+  <div><a href="#contact-pair-solimp" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">solimp</a></div>
   <div><a href="#contact-pair-solref" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">solref</a></div>
   <div><a href="#contact-pair-solreffriction" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">solreffriction</a></div>
+</div>
+</details>
+</div>
+<div style="margin-bottom: 6px; margin-left: 16px; border-left: 2px solid rgba(127, 127, 127, 0.3); padding-left: 12px;">
+<details>
+<summary style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: monospace; transition: background-color 0.2s;"><a href="#contact-exclude" style="text-decoration: none; color: inherit;">exclude</a></summary>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 8px 12px; margin: 4px 0;">
+  <div><a href="#contact-exclude-body1" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">body1</a></div>
+  <div><a href="#contact-exclude-body2" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">body2</a></div>
+  <div><a href="#contact-exclude-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
 </div>
 </details>
 </div>
@@ -1131,7 +1144,28 @@ Items marked with <span class="badge mpex">MPEX</span> (**M**ot**p**hys **Ex**te
   <div><a href="#sensor-lidar-exclude" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">exclude</a></div>
   <div><a href="#sensor-lidar-hz" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">hz</a></div>
   <div><a href="#sensor-lidar-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
+  <div><a href="#sensor-lidar-returns" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">returns</a></div>
   <div><a href="#sensor-lidar-site" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">site</a></div>
+</div>
+</details>
+</div>
+<div style="margin-bottom: 6px; margin-left: 16px; border-left: 2px solid rgba(127, 127, 127, 0.3); padding-left: 12px;">
+<details>
+<summary style="padding: 8px 12px; background-color: rgba(127, 127, 127, 0.08); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: monospace; transition: background-color 0.2s;"><a href="#sensor-raycastcamera" style="text-decoration: none; color: inherit;">raycastcamera</a></summary>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 8px 12px; margin: 4px 0;">
+  <div><a href="#sensor-raycastcamera-exclude" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">exclude</a></div>
+  <div><a href="#sensor-raycastcamera-far" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">far</a></div>
+  <div><a href="#sensor-raycastcamera-groups" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">groups</a></div>
+  <div><a href="#sensor-raycastcamera-height" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">height</a></div>
+  <div><a href="#sensor-raycastcamera-intrinsics" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">intrinsics</a></div>
+  <div><a href="#sensor-raycastcamera-name" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">name</a></div>
+  <div><a href="#sensor-raycastcamera-near" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">near</a></div>
+  <div><a href="#sensor-raycastcamera-projection" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">projection</a></div>
+  <div><a href="#sensor-raycastcamera-returns" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">returns</a></div>
+  <div><a href="#sensor-raycastcamera-site" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">site</a></div>
+  <div><a href="#sensor-raycastcamera-spacing" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">spacing</a></div>
+  <div><a href="#sensor-raycastcamera-update_period" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">update_period</a></div>
+  <div><a href="#sensor-raycastcamera-width" style="text-decoration: none; font-size: 0.95em; opacity: 0.85;">width</a></div>
 </div>
 </details>
 </div>
@@ -1476,6 +1510,29 @@ This element creates a material asset. It can be referenced from
 <div class="motphys-extension-block">
 <div class="motphys-extension-label">MPEX</div>
 
+(asset-material-ior)=
+* **`ior`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `1.0` ]
+
+  Index of refraction used by the physically-based renderer.
+
+(asset-material-transmission)=
+* **`transmission`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.0` ]
+
+  Transmission amount used by the physically-based renderer.
+
+(asset-material-alpha_mode)=
+* **`alpha_mode`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `opaque` ]
+
+  **Choice:** [ `opaque` | `mask` | `blend` | `multiply` ]
+
+  Alpha blending or masking mode used by the renderer. The mask mode
+   uses the alpha cutoff 0.35 and treats the rgba alpha channel as 1.
+
+(asset-material-both_side)=
+* **`both_side`** [ <span class="badge bool">bool</span> | <span class="badge required">Required</span> | **Default:** `false` ]
+
+  Whether geometries using this material render both front and back faces.
+
 (asset-material-emissionintensity)=
 * **`emissionintensity`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.0` ]
 
@@ -1741,7 +1798,7 @@ As with all other assets, a texture must have a name in order to be
    Physics-Based Rendering properties such as roughness or metallic).
 
 (asset-texture-gridsize)=
-* **`gridsize`** [ <span class="badge array">real(2)</span> | <span class="badge optional">Optional</span> ]
+* **`gridsize`** [ <span class="badge array">int(2)</span> | <span class="badge optional">Optional</span> ]
 
   -
 
@@ -1993,7 +2050,7 @@ This element is used to define default settings for various model elements.
 
 **Parent Elements**: [`default`](#default)
 
-**Child Elements**: [`default`](#default), [`geom`](#worldbody-geom), [`joint`](#worldbody-joint), [`light`](#worldbody-light), [`mesh`](#asset-mesh), [`material`](#asset-material), [`general`](#actuator-general), [`motor`](#actuator-motor), [`position`](#actuator-position), [`velocity`](#actuator-velocity), [`adhesion`](#actuator-adhesion), [`camera`](#worldbody-camera), [`site`](#worldbody-site), [`tendon`](#tendon), [`equality`](#equality)
+**Child Elements**: [`default`](#default), [`geom`](#worldbody-geom), [`joint`](#worldbody-joint), [`light`](#worldbody-light), [`mesh`](#asset-mesh), [`material`](#asset-material), [`general`](#actuator-general), [`motor`](#actuator-motor), [`position`](#actuator-position), [`velocity`](#actuator-velocity), [`adhesion`](#actuator-adhesion), [`camera`](#worldbody-camera), [`site`](#worldbody-site), [`pair`](#contact-pair), [`tendon`](#tendon), [`equality`](#equality)
 
 (default-adhesion)=
 #### `adhesion`
@@ -2044,6 +2101,11 @@ This element is used to define default settings for various model elements.
 #### `motor`
 
 → See [`motor`](#actuator-motor) for the full documentation.
+
+(default-pair)=
+#### `pair`
+
+→ See [`pair`](#contact-pair) for the full documentation.
 
 (default-position)=
 #### `position`
@@ -2622,9 +2684,18 @@ The `xyaxes` orientation attribute is semantically convenient for cameras, as th
    → See [rotation representation](#rotation-attrs-zaxis).
 
 (worldbody-camera-resolution)=
-* **`resolution`** [ <span class="badge array">real(2)</span> | <span class="badge required">Required</span> | **Default:** `1 1` ]
+* **`resolution`** [ <span class="badge array">int(2)</span> | <span class="badge required">Required</span> | **Default:** `1 1` ]
 
-  -
+  Resolution of the camera in pixels [width height]. Following the official MJCF
+   convention, an absent attribute defaults to \"1 1\" via the fill getter.
+
+(worldbody-camera-output)=
+* **`output`** [ <span class="badge string">string</span> | <span class="badge optional">Optional</span> ]
+
+  Types of output images supported by the camera, e.g. \"rgb\", \"depth\",
+   \"distance\", \"normal\", \"segmentation\". Multiple types can be listed, separated by
+   spaces. This attribute is a declaration of supported outputs rather than a render
+   instruction.
 
 <div class="motphys-extension-block">
 <div class="motphys-extension-label">MPEX</div>
@@ -2639,11 +2710,6 @@ The `xyaxes` orientation attribute is semantically convenient for cameras, as th
 
   Motphys-only extension. When not zero, the camera will rotate to target pose with this
    speed.
-
-(worldbody-camera-depth)=
-* **`depth`** [ <span class="badge bool">bool</span> | <span class="badge required">Required</span> | **Default:** `false` ]
-
-  Motphys-only extension. When enabled, the camera renders depth information only.
 
 (worldbody-camera-znear)=
 * **`znear`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.0` ]
@@ -3191,6 +3257,9 @@ To create a fixed light that does not move with any body, define it in the world
 
   The specular color of the light, used by the default Phong lighting model.
 
+<div class="motphys-extension-block">
+<div class="motphys-extension-label">MPEX</div>
+
 (worldbody-light-innerangle)=
 * **`innerangle`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `35.0` ]
 
@@ -3201,6 +3270,18 @@ To create a fixed light that does not move with any body, define it in the world
 * **`nearz`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.1` ]
 
   The distance from the light to the near Z plane in the shadow map. Motphys-only extension.
+
+(worldbody-light-depthbias)=
+* **`depthbias`** [ <span class="badge real">real</span> | <span class="badge optional">Optional</span> ]
+
+  Shadow query offset toward the light in world units. Motphys-only extension.
+
+(worldbody-light-normalbias)=
+* **`normalbias`** [ <span class="badge real">real</span> | <span class="badge optional">Optional</span> ]
+
+  Shadow query normal offset scaled by shadow texel size. Motphys-only extension.
+
+</div>
 
 **Parent Elements**: [`(world)body`](#worldbody-worldbody), [`default`](#default)
 
@@ -3427,12 +3508,24 @@ The most important parameter affecting the speed-accuracy trade-off is `timestep
 (option-sdf_iterations)=
 * **`sdf_iterations`** [ <span class="badge int">int</span> | <span class="badge required">Required</span> | **Default:** `10` ]
 
-  Number of iterations used for Signed Distance Field collisions (per initial poing)
+  Number of iterations per starting point used for finding contacts with Signed Distance
+   Field collisions.
 
 (option-sdf_initpoints)=
-* **`sdf_initpoints`** [ <span class="badge int">int</span> | <span class="badge required">Required</span> | **Default:** `40` ]
+* **`sdf_initpoints`** [ <span class="badge int">int</span> | <span class="badge required">Required</span> | **Default:** `50` ]
 
   Number of starting points used for finding contacts with Signed Distance Field collisions
+
+<div class="motphys-extension-block">
+<div class="motphys-extension-label">MPEX</div>
+
+(option-sdf_max_contacts)=
+* **`sdf_max_contacts`** [ <span class="badge int">int</span> | <span class="badge required">Required</span> | **Default:** `12` ]
+
+  Maximum number of contact points retained per shape pair in Signed Distance Field
+   collisions. Valid values are 1 to 15.
+
+</div>
 
 **Parent Elements**: [`mujoco`](#mujoco)
 
@@ -4046,8 +4139,8 @@ This actuator cannot be combined with both ctrlrange and inheritrange simultaneo
 (actuator-position-dampratio)=
 * **`dampratio`** [ <span class="badge real">real</span> | <span class="badge optional">Optional</span> ]
 
-  Damping ratio of the position actuator. When specified, the actual damping is computed
-   at runtime from the current joint inertia as
+  Damping ratio of the position actuator. When specified, the physical damping
+   coefficient is resolved at model-build time from the initial locked joint inertia as
    `2 * dampratio * sqrt(kp * mass / gear[0]^2)`. This attribute is exclusive with kv.
 
 (actuator-position-inheritrange)=
@@ -4067,6 +4160,16 @@ This actuator cannot be combined with both ctrlrange and inheritrange simultaneo
 
   Time-constant of optional first-order filter. If larger than 0, the actuator will use
    the filterexact dynamics type, if 0 (the default), the actuator will use the none dynamics type.
+
+<div class="motphys-extension-block">
+<div class="motphys-extension-label">MPEX</div>
+
+(actuator-position-implicit)=
+* **`implicit`** [ <span class="badge bool">bool</span> | <span class="badge required">Required</span> | **Default:** `false` ]
+
+  Whether position stiffness uses implicit integration.
+
+</div>
 
 **Parent Elements**: [`actuator`](#actuator), [`default`](#default)
 
@@ -4538,6 +4641,11 @@ Screen-space global illumination (SSGI) settings.
 
   Reflection denoise pixel offset size, 0 mean no denoise.
 
+(visual-ssgi-roughnessthreshold)=
+* **`roughnessthreshold`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.0` ]
+
+  Skip reflection raytrcaing when Roughness greater than roughness threshold default 0.3.
+
 **Parent Elements**: [`visual`](#visual)
 
 </div>
@@ -4860,37 +4968,7 @@ This is a grouping element that groups elements used to adjust the generation of
 
 **Parent Elements**: [`mujoco`](#mujoco), [`sensor`](#sensor)
 
-**Child Elements**: [`exclude`](#contact-exclude), [`pair`](#contact-pair)
-
----
-
-(contact-exclude)=
-#### `exclude`
-
-This element is used to exclude a pair of bodies from collision checking.
-
- Unlike all other contact-related elements which refer to geoms, this element refers to bodies.
- Experience has shown that exclusion is more useful on the level of bodies. Collisions between
- any geom defined in the first body and any geom defined in the second body are excluded.
-
-**Attributes:**
-
-(contact-exclude-name)=
-* **`name`** [ <span class="badge string">string</span> | <span class="badge optional">Optional</span> ]
-
-  Name of this exclude pair.
-
-(contact-exclude-body1)=
-* **`body1`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `""` ]
-
-  The name of the first body in the pair.
-
-(contact-exclude-body2)=
-* **`body2`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `""` ]
-
-  The name of the second body in the pair.
-
-**Parent Elements**: [`contact`](#contact)
+**Child Elements**: [`pair`](#contact-pair), [`exclude`](#contact-exclude)
 
 ---
 
@@ -4903,6 +4981,9 @@ This element creates a predefined geom pair which will be checked for collision.
  properties, the pairs created here specify all their properties explicitly or through defaults,
  and the properties of the individual geoms are not used. Anisotropic friction can only be
  created with this element.
+
+ MotrixSim preserves the five MJCF friction coefficients, but the current pyramidal-friction
+ runtime does not implement the complete anisotropic tangential and rolling semantics.
 
 **Attributes:**
 
@@ -4939,25 +5020,36 @@ This element creates a predefined geom pair which will be checked for collision.
 
   The friction coefficients of the contacts generated by this geom pair. Making the first two
    coefficients different results in anisotropic tangential friction. Making the last two
-   coefficients different results in anisotropic rolling friction. The length of this array is
-   not enforced by the parser, and can be smaller than 5. This is because some of the
-   coefficients may not be used, depending on the contact dimensionality. Unspecified
-   coefficients remain equal to their defaults.
+   coefficients different results in anisotropic rolling friction. At most five components can
+   be authored. Missing prefix components are inherited from the selected class, parent
+   defaults or built-in defaults. The current runtime consumes the first tangential, torsional
+   and first rolling components as sliding, spinning and rolling coefficients, respectively.
+   The second tangential and second rolling components are currently preserved but not
+   consumed.
 
 (contact-pair-solref)=
 * **`solref`** [ <span class="badge array">real(2)</span> | <span class="badge required">Required</span> | **Default:** `0.02 1.0` ]
 
-  Solver reference parameters for contact simulation.
+  Solver reference parameters for contact simulation. Exactly two values must be authored.
    → See [solver parameters](#solver-attrs-solref).
+
+(contact-pair-solimp)=
+* **`solimp`** [ <span class="badge array">real(5)</span> | <span class="badge required">Required</span> | **Default:** `0.9 0.95 0.001 0.5 2.0` ]
+
+  Solver impedance parameters for contact simulation. Exactly five values must be authored.
 
 (contact-pair-solreffriction)=
 * **`solreffriction`** [ <span class="badge array">real(2)</span> | <span class="badge required">Required</span> | **Default:** `0.0 0.0` ]
 
-  Solver reference parameters for friction dimensions. This attribute has the same semantics
-   as other solref attributes, with two important distinctions: the default value of \"0 0\"
-   means \"use the same values as solref\", and this attribute only takes effect for elliptic
-   friction cones, since pyramidal cones mix normal and frictional forces.
+  Solver reference parameters for friction dimensions. Exactly two values must be authored.
+   In MJCF, this attribute has the same semantics as other solref attributes, with two
+   important distinctions: the default value of \"0 0\" means \"use the same values as
+   solref\", and this attribute only takes effect for elliptic friction cones, since
+   pyramidal cones mix normal and frictional forces.
    → See [solver parameters](#solver-attrs-solref).
+   MotrixSim currently compiles \"0 0\" as no independent friction model and preserves non-zero
+   values as an independent model, but the pyramidal-friction runtime does not consume either
+   form.
 
 (contact-pair-margin)=
 * **`margin`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.0` ]
@@ -4972,6 +5064,36 @@ This element creates a predefined geom pair which will be checked for collision.
    constraint solver but are included in the contact data for the purpose of custom
    computations. When this value is positive, geom distances between margin and margin-gap
    correspond to such inactive contacts.
+
+**Parent Elements**: [`contact`](#contact), [`default`](#default)
+
+---
+
+(contact-exclude)=
+#### `exclude`
+
+This element is used to exclude a pair of bodies from collision checking.
+
+ Unlike all other contact-related elements which refer to geoms, this element refers to bodies.
+ Experience has shown that exclusion is more useful on the level of bodies. Collisions between
+ any geom defined in the first body and any geom defined in the second body are excluded.
+
+**Attributes:**
+
+(contact-exclude-name)=
+* **`name`** [ <span class="badge string">string</span> | <span class="badge optional">Optional</span> ]
+
+  Name of this exclude pair.
+
+(contact-exclude-body1)=
+* **`body1`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `""` ]
+
+  The name of the first body in the pair.
+
+(contact-exclude-body2)=
+* **`body2`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `""` ]
+
+  The name of the second body in the pair.
 
 **Parent Elements**: [`contact`](#contact)
 
@@ -5210,7 +5332,7 @@ This element is a grouping element for sensors.
 
 **Parent Elements**: [`mujoco`](#mujoco)
 
-**Child Elements**: [`touch`](#sensor-touch), [`accelerometer`](#sensor-accelerometer), [`velocimeter`](#sensor-velocimeter), [`gyro`](#sensor-gyro), `force`, `torque`, [`jointpos`](#sensor-jointpos), [`jointvel`](#sensor-jointvel), `jointactuatorfrc`, `ballquat`, `ballangvel`, `jointlimitpos`, `jointlimitvel`, `jointlimitfrc`, `tendonpos`, `tendonvel`, `tendonlimitpos`, `tendonlimitvel`, `tendonlimitfrc`, `actuatorpos`, `actuatorvel`, `actuatorfrc`, [`framepos`](#sensor-framepos), [`framequat`](#sensor-framequat), [`framexaxis`](#sensor-framexaxis), [`frameyaxis`](#sensor-frameyaxis), [`framezaxis`](#sensor-framezaxis), [`framelinvel`](#sensor-framelinvel), [`frameangvel`](#sensor-frameangvel), `framelinacc`, `frameangacc`, [`subtreecom`](#sensor-subtreecom), [`subtreelinvel`](#sensor-subtreelinvel), [`subtreeangmom`](#sensor-subtreeangmom), `distance`, `normal`, `fromto`, [`contact`](#sensor-contact), [`lidar`](#sensor-lidar)
+**Child Elements**: [`touch`](#sensor-touch), [`accelerometer`](#sensor-accelerometer), [`velocimeter`](#sensor-velocimeter), [`gyro`](#sensor-gyro), `force`, `torque`, [`jointpos`](#sensor-jointpos), [`jointvel`](#sensor-jointvel), `jointactuatorfrc`, `ballquat`, `ballangvel`, `jointlimitpos`, `jointlimitvel`, `jointlimitfrc`, `tendonpos`, `tendonvel`, `tendonlimitpos`, `tendonlimitvel`, `tendonlimitfrc`, `actuatorpos`, `actuatorvel`, `actuatorfrc`, [`framepos`](#sensor-framepos), [`framequat`](#sensor-framequat), [`framexaxis`](#sensor-framexaxis), [`frameyaxis`](#sensor-frameyaxis), [`framezaxis`](#sensor-framezaxis), [`framelinvel`](#sensor-framelinvel), [`frameangvel`](#sensor-frameangvel), `framelinacc`, `frameangacc`, [`subtreecom`](#sensor-subtreecom), [`subtreelinvel`](#sensor-subtreelinvel), [`subtreeangmom`](#sensor-subtreeangmom), `distance`, `normal`, `fromto`, [`contact`](#sensor-contact), [`lidar`](#sensor-lidar), [`raycastcamera`](#sensor-raycastcamera)
 
 ---
 
@@ -5249,7 +5371,7 @@ Common sensor data for sensors that attach to a site.
    absolute terms, it is clipped to this value.
 
 (sensor-touch-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5293,7 +5415,7 @@ Common sensor data for sensors that attach to a site.
    absolute terms, it is clipped to this value.
 
 (sensor-accelerometer-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5337,7 +5459,7 @@ Common sensor data for sensors that attach to a site.
    absolute terms, it is clipped to this value.
 
 (sensor-velocimeter-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5381,7 +5503,7 @@ Common sensor data for sensors that attach to a site.
    absolute terms, it is clipped to this value.
 
 (sensor-gyro-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5427,7 +5549,7 @@ Common sensor data for sensors that attach to a scalar joint.
    absolute terms, it is clipped to this value.
 
 (sensor-jointpos-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5473,7 +5595,7 @@ Common sensor data for sensors that attach to a scalar joint.
    absolute terms, it is clipped to this value.
 
 (sensor-jointvel-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5549,7 +5671,7 @@ Both `ref_type` and `ref_name` must be set together; providing one without the o
    absolute terms, it is clipped to this value.
 
 (sensor-framepos-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5625,7 +5747,7 @@ Both `ref_type` and `ref_name` must be set together; providing one without the o
    absolute terms, it is clipped to this value.
 
 (sensor-framequat-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5701,7 +5823,7 @@ Both `ref_type` and `ref_name` must be set together; providing one without the o
    absolute terms, it is clipped to this value.
 
 (sensor-framexaxis-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5777,7 +5899,7 @@ Both `ref_type` and `ref_name` must be set together; providing one without the o
    absolute terms, it is clipped to this value.
 
 (sensor-frameyaxis-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5853,7 +5975,7 @@ Both `ref_type` and `ref_name` must be set together; providing one without the o
    absolute terms, it is clipped to this value.
 
 (sensor-framezaxis-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -5929,7 +6051,7 @@ Both `ref_type` and `ref_name` must be set together; providing one without the o
    absolute terms, it is clipped to this value.
 
 (sensor-framelinvel-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -6005,7 +6127,7 @@ Both `ref_type` and `ref_name` must be set together; providing one without the o
    absolute terms, it is clipped to this value.
 
 (sensor-frameangvel-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -6048,7 +6170,7 @@ Common sensor data for sensors that are rooted at a body.
    absolute terms, it is clipped to this value.
 
 (sensor-subtreecom-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -6091,7 +6213,7 @@ Common sensor data for sensors that are rooted at a body.
    absolute terms, it is clipped to this value.
 
 (sensor-subtreelinvel-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -6134,7 +6256,7 @@ Common sensor data for sensors that are rooted at a body.
    absolute terms, it is clipped to this value.
 
 (sensor-subtreeangmom-user)=
-* **`user`** [ <span class="badge array">real(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
+* **`user`** [ <span class="badge array">int(n)</span> | <span class="badge required">Required</span> | **Default:** `` ]
 
   User-defined scalar data associated with the sensor. These values are not used by
    the simulator and are passed through to the model without change.
@@ -6247,8 +6369,8 @@ A multi-beam lidar sensor attached to a site.
 
 ```{note}
 This is a MotrixSim extension to MJCF. Model and scan attributes are defined by the referenced
- `asset/lidar` profile; the sensor instance contains only identity, mounting, filtering, and
- runtime-adjustable scan rate.
+ `asset/lidar` profile; the sensor instance contains identity, mounting, filtering, output
+ fields, and scan rate. Output layout is static after model construction.
 ```
 
 **Attributes:**
@@ -6280,6 +6402,107 @@ This is a MotrixSim extension to MJCF. Model and scan attributes are defined by 
 * **`hz`** [ <span class="badge real">real</span> | <span class="badge optional">Optional</span> ]
 
   Full-scan rate in hertz. If omitted, the complete pattern is sampled every physics step.
+
+(sensor-lidar-returns)=
+* **`returns`** [ <span class="badge string">string</span> | <span class="badge optional">Optional</span> ]
+
+  Space-separated selection of output fields: distance, point, time_offset, and normal.
+   Distance is required. Token order does not affect the output layout: each ray always writes
+   distance, point(x, y, z), time_offset, then normal(x, y, z), omitting unselected fields.
+   For example, \"normal distance\" produces distance followed by the three normal components.
+
+**Parent Elements**: [`sensor`](#sensor)
+
+</div>
+
+---
+
+(sensor-raycastcamera)=
+#### `raycastcamera` <span class="badge mpex">MPEX</span>
+
+<div class="motphys-extension-block">
+
+A pinhole or orthographic raycast camera mounted on a site.
+
+```{note}
+MotrixSim extension, independent of rendering cameras and LiDAR profiles. Pixels are row-major;
+ local +X is right, +Y is down, and +Z is optical forward. Both projections use the complete site
+ transform. Near/far clip optical-axis depth. Projection-specific attributes cannot be mixed.
+```
+
+**Attributes:**
+
+(sensor-raycastcamera-name)=
+* **`name`** [ <span class="badge string">string</span> | <span class="badge optional">Optional</span> ]
+
+  Name of the sensor.
+
+(sensor-raycastcamera-site)=
+* **`site`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `""` ]
+
+  Mounting site defining the optical frame.
+
+(sensor-raycastcamera-width)=
+* **`width`** [ <span class="badge int">int</span> | <span class="badge required">Required</span> | **Default:** `1` ]
+
+  Number of pixel columns.
+
+(sensor-raycastcamera-height)=
+* **`height`** [ <span class="badge int">int</span> | <span class="badge required">Required</span> | **Default:** `1` ]
+
+  Number of pixel rows.
+
+(sensor-raycastcamera-projection)=
+* **`projection`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `pinhole` ]
+
+  **Choice:** [ `pinhole` | `orthographic` ]
+
+  Camera projection determining the local ray geometry.
+
+(sensor-raycastcamera-intrinsics)=
+* **`intrinsics`** [ <span class="badge array">real(4)</span> | <span class="badge required">Required</span> | **Default:** `1.0 1.0 0.5 0.5` ]
+
+  Pinhole-only intrinsics in pixels, ordered fx, fy, cx, cy.
+
+(sensor-raycastcamera-spacing)=
+* **`spacing`** [ <span class="badge array">real(2)</span> | <span class="badge optional">Optional</span> ]
+
+  Orthographic-only positive spacing between adjacent pixel origins in x and y.
+
+(sensor-raycastcamera-near)=
+* **`near`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.0` ]
+
+  Minimum accepted optical-axis depth.
+
+(sensor-raycastcamera-far)=
+* **`far`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `100.0` ]
+
+  Maximum accepted optical-axis depth.
+
+(sensor-raycastcamera-update_period)=
+* **`update_period`** [ <span class="badge real">real</span> | <span class="badge required">Required</span> | **Default:** `0.0` ]
+
+  Snapshot period in simulation seconds; zero samples every physics step.
+
+(sensor-raycastcamera-exclude)=
+* **`exclude`** [ <span class="badge string">string</span> | <span class="badge required">Required</span> | **Default:** `parentbody` ]
+
+  **Choice:** [ `none` | `parentbody` | `parentsubtree` ]
+
+  Self-filter policy for the mounting body's hierarchy.
+
+(sensor-raycastcamera-groups)=
+* **`groups`** [ <span class="badge array">int(n)</span> | <span class="badge optional">Optional</span> ]
+
+  Optional collision geom group whitelist with integer group IDs in 0..=255.
+   An empty list includes no collider; valid IDs need not be used by a geom.
+
+(sensor-raycastcamera-returns)=
+* **`returns`** [ <span class="badge string">string</span> | <span class="badge optional">Optional</span> ]
+
+  Space-separated output set: depth, distance, point, normal.
+   At least one of depth or distance is required; field order is fixed independently of token
+   order.
 
 **Parent Elements**: [`sensor`](#sensor)
 

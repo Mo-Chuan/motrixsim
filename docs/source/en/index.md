@@ -1,111 +1,24 @@
 # MotrixSim
 
-MotrixSim is a high-performance physics simulation engine designed specifically for multibody dynamics and robotics simulation. It provides an efficient and stable physics simulation platform, supporting a wide range of application scenarios, including robot control, reinforcement learning, industrial simulation, and more.
+MotrixSim is a high-performance multibody dynamics simulation engine designed for robotics. It provides an efficient and stable physics simulation platform for developing robot control algorithms, building reinforcement learning environments, real-time industrial simulation, education, and research.
 
-::::{grid} 1 2 3 3
-:::{grid-item}
-
-```{video} _static/videos/g1_parlour.mp4
-:poster: _static/images/poster/g1_parlour.jpg
-:nocontrols:
+```{video} _static/videos/motrixsim-prom-10m.mp4
 :autoplay:
 :playsinline:
 :muted:
 :loop:
-:width: 100%
+:width: 80%
 ```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/complex_car.mp4
-:poster: _static/images/poster/complex_car.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/go2-ssgi.mp4
-:poster: _static/images/poster/go2-ssgi.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/arm.mp4
-:poster: _static/images/poster/arm.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/g1_terrian.mp4
-:poster: _static/images/poster/g1_terrian.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-:::{grid-item}
-
-```{video} _static/videos/shadow_hand_repose.mp4
-:poster: _static/images/poster/shadow_hand_repose.jpg
-:nocontrols:
-:autoplay:
-:playsinline:
-:muted:
-:loop:
-:width: 100%
-```
-
-:::
-
-::::
 
 ## Key Features
 
--   **Physics Simulation**: Comprehensive support for rigid body dynamics, collision detection, and other core physics simulation capabilities
--   **Generalized Coordinate Modeling**: Utilizes a generalized coordinate system, enabling modeling of complex multibody systems
--   **Novel Solver**: Employs a proprietary constraint model and solver, delivering efficient and stable multibody dynamics computation
--   **High-Performance Computing**: CPU version developed in Rust, offering excellent performance and memory safety
--   **Python API**: Intuitive and user-friendly Python interface for rapid development and prototyping
--   **Robotics Support**: Specialized features for robotics simulation, with high compatibility for the MJCF model format
-
-## Application Scenarios
-
--   Development and testing of robotic control algorithms
--   Construction of reinforcement learning environments
--   Real-time industrial physics simulation
--   Simulation and analysis of physical phenomena
--   Engineering design verification
--   Education and research
+-   **Physics Simulation**: Complete rigid body dynamics, collision detection, and contact solving, with support for modeling complex multibody systems
+-   **Parallel Simulation of Multiple Environments**: Simulates thousands of model instances in parallel within a single process, for large-scale RL training and batch evaluation ([docs](user_guide/main_function/parallel.md))
+-   **GPU Acceleration**: Version 1.0 ships a GPU build optimized for massively parallel simulation ([docs](user_guide/gpu_version/index.md))
+-   **Constraint Solver**: A proprietary constraint model and solver delivering efficient and stable multibody dynamics computation
+-   **High-Performance CPU Core**: Developed in Rust, combining computational performance with memory safety
+-   **Python API**: Intuitive interface for rapid development and prototyping ([quick start](user_guide/getting_started/hello_motrixsim.md))
+-   **Robotics Support**: High compatibility with the MJCF model format, with built-in features commonly used in robot simulation such as inverse kinematics ([IK](user_guide/main_function/ik.md)), sensors, and rendering
 
 ## MotrixSim Ecosystem and Research
 
@@ -123,4 +36,5 @@ user_guide/index
 :maxdepth: 1
 
 api_reference/index
+user_guide/getting_started/mjcf_reference
 ```

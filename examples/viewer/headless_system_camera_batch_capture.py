@@ -57,8 +57,10 @@ def main():
 
     grid_size = 4
     batch_size = grid_size * grid_size
-    model = mx.msd.from_str(SCENE_MJCF).build()
-    model.cameras.set_system_render_target("image", args.width, args.height)
+    world = mx.msd.from_str(SCENE_MJCF)
+    world.system_camera.render_target = mx.msd.RenderTarget.Image
+    world.system_camera.resolution = [args.width, args.height]
+    model = world.build()
 
     data = mx.SceneData(model, batch=(batch_size,))
     render_offset = make_grid_offsets(grid_size, spacing=0.42)

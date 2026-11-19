@@ -1,5 +1,7 @@
 # 🔩 关节
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 关节用来定义它所在的刚体 ([Body](body.md)) 与父刚体之间的运动自由度。每个刚体可以定义多个关节，组合多种自由度。如果一个刚体没有定义关节，该刚体与父刚体刚性连接。世界刚体 (world body) 中不能定义关节。关节的状态数据（位置、速度）保存在 [SceneData](../main_function/scene_data.md) 中，由于关节定义的自由度不同，状态数据的长度也有所不同。
 
 ## 关节类型

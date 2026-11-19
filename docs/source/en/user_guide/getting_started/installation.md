@@ -1,132 +1,179 @@
 # 🛠️ Install Python SDK
 
-## Installation Requirements
+Choose an installation path to use MotrixSim in your own project or run the examples included in the repository.
 
--   **Python Version**: {bdg-danger-line}`<3.14,>=3.10`
+## System Requirements
 
-    | Python Version | Support Status |
-    | :------------: | :------------: |
-    |     ≤ 3.9      |       ❌       |
-    |  3.10 ～ 3.13  |       ✅       |
-    |     ≥ 3.14     |       ❌       |
+(installation-gpu-requirements)=
 
--   **Package Manager**: {bdg-danger-line}`pip 23.0+`
-    (It is recommended to use project management tools such
-    as [uv](https://docs.astral.sh/uv/), [pdm](https://pdm-project.org/en/latest/),
-    or [poetry](https://python-poetry.org/))
+CPU and GPU simulation are physics backends. The renderer and interactive viewer provide visualization and image capture and can be used alongside a simulation backend as needed.
 
--   **System & Architecture**:
+| Environment | CPU simulation | GPU simulation | Renderer / interactive viewer |
+| --- | --- | --- | --- |
+| **Python** | 3.10–3.13 | 3.10–3.13 | 3.10–3.13 |
+| **Windows x86_64** | ✅ | ✅ | ✅ |
+| **Linux x86_64** | ✅ | ✅ | ✅ |
+| **macOS Apple Silicon (arm64)** | ✅ | ❌ | ✅; launch RenderApp windowed programs with `mxpython` |
+| **Hardware** | No GPU required | NVIDIA GPU; AMD / Intel GPUs currently unsupported | Available graphics device; CPU software rendering is an option without a GPU¹ |
+| **Driver** | No GPU driver required | NVIDIA driver supporting CUDA 12.9 or newer | Driver for the graphics device; software rendering requires a software graphics driver |
+| **Dependency** | `motrixsim` | `motrixsim[gpu]`, including CPU support | Included with `motrixsim`; no additional rendering extra required |
 
-    -   {bdg-danger-line}`Windows(x86_64)`
-    -   {bdg-danger-line}`Linux(x86_64)`
-    -   {bdg-danger-line}`MacOS(aarch64)`
+¹ [CPU software rendering](../render/headless_cpu.md) is suitable for offline image capture, not recommended for real-time interaction.
 
-    ```{note}
-    Supported features by platform:
-    | Operating System | CPU Simulation | Interactive Viewer | GPU Simulation |
-    | :--------------: | :------------: | :----------------: | :------------: |
-    |      Linux       |      ✅        |        ✅          |   🛠️ In Development   |
-    |     Windows      |      ✅        |        ✅          |   🛠️ In Development   |
-    |      MacOS       |      ✅        |        ✅          |   🛠️ In Development   |
-    ```
+CPU simulation can also be combined with GPU rendering.
 
-    ````{note}
-    On MacOS (aarch64-apple-darwin) platform, when using {doc}`../main_function/render` related features, you need to use the following command format:
+**Check the GPU driver**: Run `nvidia-smi` in a terminal to confirm GPU detection and check the CUDA version supported by the driver. See the [GPU runtime requirements](https://nvidia.github.io/warp/stable/user_guide/compatibility.html#runtime-requirements) for full compatibility details.
+
+## Choose an Installation Path
+
+| Your goal | Installation path |
+| --- | --- |
+| Use the SDK in a new or existing project | {ref}`Path 1: Install from PyPI <install-from-pypi>` |
+| Run the models and example programs included in the repository | {ref}`Path 2: Clone the Repository and Run Examples <install-from-repository>` |
+
+Both paths use [uv](https://docs.astral.sh/uv/getting-started/installation/) to manage the Python environment.
+
+(install-from-pypi)=
+
+## Path 1: Install from PyPI
+
+### 1. Prepare Your Project
+
+For an existing project, run subsequent commands from its root directory. For a new project, first run:
+
+```bash
+uv init --python 3.13 motrixsim-demo
+cd motrixsim-demo
+```
+
+### 2. Install the SDK
+
+Choose a command for your simulation backend:
+
+| Simulation backend | Installation command | Python import |
+| --- | --- | --- |
+| CPU | `uv add motrixsim` | `import motrixsim` |
+| CPU + GPU | `uv add "motrixsim[gpu]"` | `import motrixsim` or `import motrixsim.gpu` |
+
+The GPU installation command also adds GPU support to projects that already use the SDK.
+
+::::{dropdown} Other package managers
+
+Run the appropriate command in your project environment:
+
+| Tool | CPU | CPU + GPU |
+| --- | --- | --- |
+| pip 23.0+ | `python -m pip install motrixsim` | `python -m pip install "motrixsim[gpu]"` |
+| pdm | `pdm add motrixsim` | `pdm add "motrixsim[gpu]"` |
+| poetry | `poetry add motrixsim` | `poetry add "motrixsim[gpu]"` |
+
+In the verification commands below, replace `uv run python` with `python` in an activated pip virtual environment, or with `pdm run python` / `poetry run python` in the corresponding project.
+
+::::
+
+### 3. Verify Installation
+
+From your project root, run:
+
+```bash
+uv run python -c "import motrixsim; print('motrixsim import OK')"
+```
+
+The output `motrixsim import OK` confirms that the SDK loaded successfully.
+
+(installation-verify-gpu)=
+
+For a GPU installation, also check the GPU components:
+
+```bash
+uv run python -c "import motrixsim.gpu; print('motrixsim.gpu import OK')"
+```
+
+The output `motrixsim.gpu import OK` confirms that the GPU components loaded successfully.
+
+Continue with the [quick start](hello_motrixsim.md) to prepare a model and write your first simulation program.
+
+(install-from-repository)=
+
+## Path 2: Clone the Repository and Run Examples
+
+The repository includes model assets, example programs, and their dependencies, ready for running and modifying examples.
+
+### 1. Prepare Tools and Clone the Repository
+
+Install [Git](https://git-scm.com/downloads), [Git LFS](https://git-lfs.com/), and [uv](https://docs.astral.sh/uv/getting-started/installation/), then run:
+
+```bash
+git lfs install
+git clone https://github.com/Motphys/motrixsim.git
+cd motrixsim
+git lfs pull
+```
+
+Run all subsequent commands from the `motrixsim` repository root.
+
+:::{dropdown} China mainland: clone from a mirror and configure a package index (optional)
+
+If downloads are slow, clone from the ModelScope mirror and configure a package index in `pyproject.toml`:
+
+1.  Clone from the mirror:
 
     ```bash
-    uv run mxpython your_script.py
+    git clone https://www.modelscope.cn/datasets/motphysdevelopers/motrixsim-docs.git
+    cd motrixsim-docs
+    git lfs pull
     ```
 
-    This is required due to the specificity of RenderApp on MacOS ARM64 platform. Using `uv run mxpython` ensures correct loading of rendering-related dependencies and execution environment.
+2.  Add an index to `pyproject.toml`:
 
-    **Important Notes**:
-    - If your code uses {doc}`../main_function/render`, you need to use `uv run mxpython`
-    - If your code **does not use** RenderApp (e.g., physics simulation only without a rendering window), use `uv run` which is consistent with Windows and Linux platforms
-
-    ````
-
-## Installation Methods
-
-::::{tab-set}
-:sync-group: installation-mode
-
-:::{tab-item} Using pip
-:sync: pip
-
-```bash
-pip install motrixsim
-```
+    ```toml
+    [[tool.uv.index]]
+    name = "mirror"
+    # For example, the Tsinghua mirror:
+    # "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+    url = ""
+    ```
 
 :::
 
-:::{tab-item} Using uv
-:sync: uv
+### 2. Install Example Dependencies
+
+uv prepares the Python environment, SDK, and example dependencies using the repository configuration. Choose a command for your simulation backend:
+
+| Simulation backend | Installation command |
+| --- | --- |
+| CPU | `uv sync` |
+| CPU + GPU | `uv sync --extra gpu` |
+
+### 3. Run Your First Example
+
+Load the Spot robot and open a simulation window:
 
 ```bash
-uv add motrixsim
+uv run python examples/getting_started/hello_motrixsim.py
 ```
 
-:::
-
-:::{tab-item} Using pdm
-:sync: pdm
+To use the GPU backend, run:
 
 ```bash
-pdm add motrixsim
+uv run --extra gpu python examples/getting_started/hello_motrixsim.py --gpu
 ```
 
-:::
+A window should display the Spot robot scene while the program steps physics and updates the view. Press `Ctrl+C` in the terminal to stop the program.
 
-:::{tab-item} Using poetry
-:sync: poetry
+On macOS Apple Silicon, launch windowed examples with `mxpython`:
 
 ```bash
-poetry add motrixsim
+uv run mxpython examples/getting_started/hello_motrixsim.py
 ```
 
-:::
+Next, browse the [example programs](../overview/examples.md) and choose a task to explore.
 
-::::
+## Troubleshooting
 
-## Verify Installation
-
-::::{tab-set}
-:sync-group: installation-mode
-
-:::{tab-item} Using pip
-:sync: pip
-
-```bash
-pip show motrixsim
-```
-
-:::
-
-:::{tab-item} Using uv
-:sync: uv
-
-```bash
-uv pip list | grep motrixsim
-```
-
-:::
-
-:::{tab-item} Using pdm
-:sync: pdm
-
-```bash
-pdm list | grep motrixsim
-```
-
-:::
-
-:::{tab-item} Using poetry
-:sync: poetry
-
-```bash
-poetry show | grep motrixsim
-```
-
-:::
-
-::::
+| Symptom | Check and action |
+| --- | --- |
+| No matching package found | Check the Python version and system architecture against the requirements; repository examples use the Python version specified by the repository configuration |
+| `ModuleNotFoundError` | Run commands from the project where dependencies were installed; GPU components require `motrixsim[gpu]` or the repository's `gpu` extra |
+| Example model or mesh fails to load | Run examples from the repository root and use `git lfs pull` to fetch model assets |
+| CUDA execution error | Use `nvidia-smi` to check GPU detection and the CUDA version supported by the driver |

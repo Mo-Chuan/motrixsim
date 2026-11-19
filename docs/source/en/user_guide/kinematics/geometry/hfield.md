@@ -1,5 +1,7 @@
 # Height Fields (HField)
 
+`{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 Height Fields (HField) are an efficient geometry type for representing terrain surfaces. They store elevation information through 2D grid data, providing realistic physical collision responses for robot simulation, terrain following, and surface interaction.
 
 ## Height Field Features

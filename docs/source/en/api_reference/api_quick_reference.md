@@ -87,9 +87,8 @@ Each component access method returns the corresponding component object, providi
 
 ## 🎨 Rendering Module - [`motrixsim.render`](rendering/render.md)
 
-| Object/Class                                    | Category       | Main Functionality                   |
-| ----------------------------------------------- | -------------- | ------------------------------------ |
-| [`RenderApp`](motrixsim.render.RenderApp)       | Main Renderer  | Model loading, scene synchronization |
-| [`RenderGizmos`](motrixsim.render.RenderGizmos) | Gizmo Drawing  | Drawing spheres, cubes, etc.         |
-| [`RenderUI`](motrixsim.render.RenderUI)         | User Interface | Buttons, switches, controls          |
-| [`Input`](motrixsim.render.Input)               | Input Handler  | Keyboard, mouse, ray detection       |
+| Object/Class                                    | Category      | Main Functionality                   |
+| ----------------------------------------------- | ------------- | ------------------------------------ |
+| [`RenderApp`](motrixsim.render.RenderApp)       | Main Renderer | Model loading, scene synchronization |
+| [`RenderGizmos`](motrixsim.render.RenderGizmos) | Gizmo Drawing | Drawing spheres, cubes, etc.         |
+| [`Input`](motrixsim.render.Input)               | Input Handler | Keyboard, mouse, ray detection       |

@@ -13,10 +13,19 @@
 # limitations under the License.
 # ==============================================================================
 
+
+import sys
+
 import numpy as np
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import msd, run
 from motrixsim.render import Color, RenderApp
+
+USE_GPU = "--gpu" in sys.argv
+if USE_GPU:
+    from motrixsim.gpu import SceneData, step
+else:
+    from motrixsim import SceneData, step
 
 
 # Mouse controls:
@@ -27,10 +36,18 @@ def main():
     with RenderApp() as render:
         # The scene description file
         path = "examples/assets/geom.xml"
-        # Load the scene model
-        model = load_model(path)
+        # Configure the system camera clipping planes before building; the scene is
+        # compact (~10 m span), so a tight near plane improves depth precision
+        world = msd.from_file(path)
+        world.system_camera.znear = 0.1
+        world.system_camera.zfar = 100.0
+        model = world.build()
+        if USE_GPU:
+            model = model.to_gpu()
         # Create the render instance of the model
         render.launch(model)
+        # Frame the geom row: look at its center from the -y side, above the ground
+        render.system_camera.set_view(lookat=[3.0, 0.0, 0.5], distance=9.0, elevation=-25.0, azimuth=90.0)
         # Create the physics data of the model
         data = SceneData(model)
 

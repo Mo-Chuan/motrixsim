@@ -84,7 +84,7 @@
       <layer texture="2d440f29648430cf633ba9141d350007" role="rgb"/>
     </material>
     <material name="mat_21456" rgba="0.5142316632386907 0.5142316632386907 0.5142316632386907 1.0" reflectance="0.5" roughness="0.07000000029802322" metallic="0.0"/>
-    <material name="Clear_Glass" rgba="0.9999999999999999 0.9999999999999999 0.9999999999999999 0.10000000149011612" reflectance="0.5" roughness="0.0" metallic="0.0"/>
+    <material name="Clear_Glass" rgba="0.9999999999999999 0.9999999999999999 0.9999999999999999 0.10000000149011612" reflectance="0.5" roughness="0.0" metallic="0.0" alpha_mode="blend"/>
     <material name="mat_76" rgba="0.9999999999999999 0.9999999999999999 0.9999999999999999 1.0" reflectance="0.5" roughness="1.0" metallic="0.0" texuniform="true" texrepeat="39.370079040527344 39.370079040527344">
       <layer texture="342dbda6268f75c9b5a2ca21ea02dbb6" role="rgb"/>
     </material>

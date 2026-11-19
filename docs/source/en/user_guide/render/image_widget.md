@@ -1,5 +1,11 @@
 # 🖼️ ImageWidget
 
+This guide uses the viewport camera API. Use an SDK build that provides `target_camera` and the viewport camera setters described in [Camera](camera.md#switching-a-viewport-camera).
+
+`target_camera` selects the model camera on whose output the widget is composed. Pass `model.cameras.system_camera` for the system camera or `model.cameras["back"]` for a scene camera. Omitting it or passing `None` selects the system camera. This binding does not follow the active viewport: switching a viewport to another camera does not move the widget to that camera. `render.system_camera` is a runtime controller and cannot be passed as the target.
+
+Call `render.launch(model)` before creating runtime widgets. When using a custom blueprint, include a `ui.Viewport` bound to the target camera to display its output.
+
 ## Overview
 
 ImageWidget allows you to display custom images within the rendering window, which is very useful for visualizing sensor data, displaying debug information, creating custom UIs, and other scenarios.
@@ -16,6 +22,8 @@ Before using ImageWidget, you need to create an Image object. Use the `render.cr
 
 ```python
 import numpy as np
+
+render.launch(model)
 
 # Create a random RGB image
 pixels = np.random.randint(0, 256, (240, 320, 3), dtype=np.uint8)
@@ -44,6 +52,7 @@ Use the `render.widgets.create_image_widget()` method to create an image widget:
 ```python
 widget = render.widgets.create_image_widget(
     image=image,
+    target_camera=model.cameras.system_camera,
     layout=Layout(left=10, top=10, width=320, height=240)
 )
 ```
@@ -51,7 +60,8 @@ widget = render.widgets.create_image_widget(
 **Parameter Description**:
 
 -   **image**: Image object (required)
--   **layout**: Layout configuration (optional, defaults to left=50, top=50, width=200, height=200)
+-   **target_camera**: Keyword-only model camera on whose output the widget is composed; omitted or `None` selects the system camera.
+-   **layout**: Layout configuration (optional, defaults to the top-left corner with automatic width and height).
 
 **Return Value**: Returns an `ImageWidget` object.
 

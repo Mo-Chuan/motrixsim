@@ -14,8 +14,15 @@
 # ==============================================================================
 
 
-from motrixsim import SceneData, load_model, run, step
+import sys
+
+from motrixsim import run
 from motrixsim.render import RenderApp
+
+if "--gpu" in sys.argv:
+    from motrixsim.gpu import SceneData, load_model, step
+else:
+    from motrixsim import SceneData, load_model, step
 
 # Mouse controls:
 # - Press and hold left button then drag to rotate the camera/view
@@ -25,14 +32,18 @@ from motrixsim.render import RenderApp
 def main():
     # Create render window for visualization
     with RenderApp() as render:
+        # tag::load_model_from_file[]
         # The scene description file
         path = "examples/assets/falling_ball.xml"
         # Load the scene model
         model = load_model(path)
+        # end::load_model_from_file[]
         # Create the render instance of the model
         render.launch(model)
+        # tag::create_data[]
         # Create the physics data of the model
         data = SceneData(model)
+        # end::create_data[]
 
         run.render_loop(model.options.timestep, 60, lambda: step(model, data), lambda: render.sync(data))
 

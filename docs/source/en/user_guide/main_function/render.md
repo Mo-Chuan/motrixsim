@@ -4,6 +4,36 @@
 
 [`RenderApp`] is responsible for basic scene rendering. Typically, you create a [`RenderApp`] instance in your code, load a model using [`load_model`], and then call [`render.launch(model)`] to load the model into the renderer.
 
+## Viewport and panels
+
+Inside a **Viewport**, drag with the left mouse button to orbit, drag with the right mouse button to pan, and scroll to zoom. Use the camera selector at the top left of the viewport to switch cameras. Open the gear menu beside it to change the display mode, visibility, or gizmos.
+
+Declare the panels you want to display in the `blueprint` you pass to `RenderApp`.
+
+| Panel declaration | Use |
+| --- | --- |
+| `ui.Viewport()` | Display the system camera or a model camera |
+| `ui.Options()` | Open **Rendering** or **Lighting / Environment** settings |
+| `ui.Log()` | Read messages from the renderer |
+| `ui.View(...)` | Add custom controls such as buttons and text inputs |
+| `ui.Image(...)` | Display an image or a camera capture |
+
+Use the [interactive viewer](managed_viewer.md) for the **Physics** settings and object inspection panels. In RenderApp, the Python loop controls playback, single-stepping, and reset. Add custom controls to the blueprint if users need to trigger those actions from the window.
+
+### Try a simulation control panel
+
+From the repository root, run the [RenderApp UI example](../../../../examples/viewer/render_app_ui.py).
+
+```bash
+uv run python examples/viewer/render_app_ui.py
+```
+
+The example opens the **Simulation** viewport on the left and the **Controls**, **Options**, and **Log** tabs on the right. The blueprint uses `ui.Horizontal(..., shares=[3, 1])` to give the viewport three times the initial width of the tab group. Drag the divider to resize the two areas.
+
+- Clear **Run simulation** to pause physics. The viewport and panels stay responsive because the example keeps calling `renderer.sync(data)`.
+- While paused, click **Step once (when paused)** to advance one physics step.
+- Click **Reset state** to restore the initial state. The **Run simulation** checkbox keeps its current setting.
+
 ## Synchronization
 
 In motrixsim, the renderer runs in an independent thread, so we need to call [`render.sync(data)`] in the Python main thread to achieve bidirectional synchronization between physics simulation data and the renderer. The render.sync method actually executes the following logic:
@@ -37,20 +67,168 @@ Specifically, the corresponding rendering effects will only take effect when bot
 
 _Example code see [examples/viewer/render_settings.py](../../../../examples/viewer/render_settings.py)_
 
+(render-custom-ui)=
 ## Custom UI Components
 
-Currently supports two types of components: buttons ([`add_button`]) and toggles ([`add_toggle`]), which respond to user click events by setting callback functions.
+`show()` and `hide()` accept a View object, `title` for an exact displayed title, or `include` / `exclude`
+for regular expressions matching the full title. Exclusion takes precedence. These selection
+forms cannot be mixed. All panels must be declared in the construction blueprint; there is no
+runtime panel creation, and ids outside the blueprint are ignored by the render service with a
+logged error. Title searches restore hidden panels that are still open. To reopen a closed panel,
+pass its original View object to `show(view)`. To also activate its tab, use
+`show(view, select=True)`. The `select` argument requires a View object.
 
-Users need to display the left panel through [`render.opt.set_left_panel_vis(True)`], and components will be displayed on the panel in the order they are added.
-
-```{literalinclude} ../../../../examples/viewer/custom_ui.py
-:language: python
-:dedent:
-:start-after: "# tag::custom_ui[]"
-:end-before:  "# end::custom_ui[]"
+```python
+renderer.hide(view)
+renderer.show(view, select=True)
+renderer.hide(title="Controls")
+renderer.show(include=["Camera.*"], exclude=["Camera Debug"])
+renderer.sync(data)
 ```
 
-_Full code see [examples/viewer/custom_ui.py](../../../../examples/viewer/custom_ui.py)_
+Keep the objects returned by controls to read their values and call `is_clicked()` or
+`is_changed()`, as appropriate. Alternatively, use callbacks to respond to user input.
+For structural changes, declare a `ui.Frame` with a builder and request `RenderApp.rebuild(frame)`.
+The rebuild runs during a subsequent synchronization. The builder must declare exactly one root
+node. Use `ui.Column()` or `ui.Row()` to group multiple controls.
+
+In the [RenderApp Frame example](../../../../examples/viewer/render_app_frame.py), change **Mode**
+from **Position** to **Velocity**. The panel replaces **Target position (rad)** with
+**Target velocity (rad/s)** and adds **Enable velocity limit**.
+
+For images, call `RenderApp.create_image(...)` and pass the result to a `ui.Image` control's
+`set_image()`. The following gallery demonstrates the full API.
+
+`ui.Viewport()` and `ui.Options()` return `ui.View` objects. Combine them with a custom panel
+using `ui.Tabs([viewport, controls, ui.Options()])`.
+
+Composition transfers each View's declaration and contents into the resulting blueprint.
+Nested composition also consumes its input blueprints.
+
+Pass the final blueprint to `RenderApp(blueprint=...)`, which consumes it. Each View and blueprint
+can be transferred only once. You can also pass a single new View directly to the constructor.
+Keep the View objects so the owning app can hide and show the corresponding panels.
+Hiding a panel preserves its controls and docking position. Create fresh View objects for a new app.
+
+Declare a custom View's contents in a `with ui.View(...)` block. Give the View exactly one root
+node. Use `ui.Column()` or `ui.Row()` to group multiple controls under that node.
+
+```python
+from motrixsim import ui
+
+with ui.View(title="Details", visible=False) as details:
+    ui.Text("Simulation details")
+```
+
+Include `details` in the blueprint. With `visible=False`, the panel starts hidden.
+Call `render.show(details)` to reveal it at its existing dock location.
+
+If composition or construction fails, build new Views and a new layout before trying again.
+Consumed inputs are not restored.
+
+## UI Gallery
+
+Pass a Viewer blueprint to `RenderApp(blueprint=blueprint)` to combine built-in Views with Python-defined
+`ui.View` panels. Custom UI provides blueprint containers, text, buttons, toggles, text inputs,
+dropdowns, radio groups, toggle groups, dynamic Frames, and images. Each choice control
+returns a state with `options`, `value`, `set_options()`, and `set_value()`. Setter updates are submitted
+by the next `render.sync(data)`. A later synchronization reports the change through
+`is_changed()` and invokes `on_change`. Setters do not invoke callbacks immediately. Use Frame rebuilds
+only for structural changes such as conditional branches or adding and removing controls.
+After a Frame rebuild replaces a control, using the object returned by the old control raises
+`ReferenceError`; retain and use the new control object created during the rebuild instead.
+
+The following example assumes `model` and its `data` have already been created.
+
+```python
+from motrixsim import ui
+from motrixsim.render import RenderApp
+
+with ui.View(title="Settings") as settings:
+    preset = ui.Select("Preset", options=["Fast", "Accurate"], value="Fast")
+
+with RenderApp(blueprint=settings) as render:
+    render.launch(model)
+    preset.set_options(["Draft", "Final"], value="Final")
+    render.sync(data)
+    assert preset.value == "Final"
+```
+
+Use `ui.ScrollArea(max_height=...)` when only one local region should scroll. It is a composable
+vertical container, so a Section opts into scrolling by nesting the ScrollArea inside it. The
+height must be finite and positive. The region fills its parent's available width so the vertical
+scrollbar stays on the right edge, while short content can remain naturally compact vertically.
+
+UI callbacks run during `render.sync(data)` on the calling Python thread. They can update
+`SceneData` for the next physics step. Callbacks for controls replaced by a Frame rebuild are no
+longer invoked. Without calls to `render.sync(data)`, pending UI callbacks are not executed.
+
+`ui.Image(...)` creates an image display. Inside a `ui.View` or Frame it adds an embedded
+image; outside these contexts it creates a standalone panel with the default title `"Image"`.
+The display can start empty. Call `RenderApp.create_image(pixels, ...)` and pass the result to
+`set_image(image)`, or call `set_image(None)` to clear it. An embedded Image uses its original pixel size by default; one explicit dimension preserves the
+source aspect ratio, while two dimensions use contain or stretch according to
+`keep_aspect_ratio`. A standalone Image fills the View by default and is centered when fixed
+dimensions are supplied. Its standalone-only `fit_to_size` option defaults to `True`; set it to
+`False` to center the Image at its original pixel size. Content outside the panel is clipped.
+The standalone image toolbar provides Image Scaling controls. Pass `toolbar=False` to a
+standalone `ui.Image` or `ui.Viewport` to hide that instance's toolbar initially. It can still be
+restored from the owning tab group's `...` menu; this option does not add a Python runtime setter.
+
+Run the following example from the repository root. It displays the same black RGB image in
+an embedded area and in the standalone **RGB Preview** tab.
+
+```python
+import numpy as np
+import motrixsim as mx
+from motrixsim import run, ui
+from motrixsim.render import RenderApp, RenderClosedError
+
+model = mx.load_model("examples/assets/boston_dynamics_spot/scene.xml")
+data = mx.SceneData(model)
+
+with ui.View(title="Diagnostics") as diagnostics:
+    with ui.Column():
+        ui.Text("RGB")
+        embedded = ui.Image(width=320, height=240)
+
+preview = ui.Image(title="RGB Preview", fit_to_size=True, toolbar=False)
+blueprint = ui.Tabs([diagnostics, preview])
+
+with RenderApp(blueprint=blueprint) as renderer:
+    pixels = np.zeros((240, 320, 3), dtype=np.uint8)
+    image = renderer.create_image(pixels)
+    embedded.set_image(image)
+    preview.set_image(image)
+    renderer.launch(model)
+    try:
+        run.render_loop(
+            model.options.timestep,
+            60,
+            lambda: mx.step(model, data),
+            lambda: renderer.sync(data),
+        )
+    except RenderClosedError:
+        pass
+```
+
+Assign new pixels to `image.pixels` and call `renderer.sync(data)`. All displays using that image
+show the updated pixels without rebuilding their Views or calling `set_image()` again. This also
+works with CPU images returned by camera capture. On first submission, the original CPU Image
+becomes associated with this RenderApp. After submission, the display retains the image resource
+without keeping the Python Image or its RenderApp alive.
+
+```{literalinclude} ../../../../examples/viewer/ui_gallery.py
+:language: python
+:dedent:
+:start-after: "# tag::ui_gallery[]"
+:end-before:  "# end::ui_gallery[]"
+```
+
+_Full code see [examples/viewer/ui_gallery.py](../../../../examples/viewer/ui_gallery.py)_
+
+_Image sharing and updates see
+[examples/viewer/image_widget.py](../../../../examples/viewer/image_widget.py)_
 
 ## Gizmos Drawing
 
@@ -96,7 +274,7 @@ You can understand more detailed usage through the following examples:
 -   [example/mouse_click.py](../../../../examples/control/mouse_click.py)
 -   [example/keyboard_car.py](../../../../examples/control/keyboard_car.py)
 
-#### Valid Keyboard Input List
+### Valid Keyboard Input List
 
 The following is the list of supported keyboard key inputs:
 
@@ -123,14 +301,14 @@ For more camera control methods, please refer to [Camera](../render/camera.md).
 
 [`render.launch(model)`] also supports two optional parameters: batch:int and render_offset:List[:3]. These are used to set the number of instances and the offset positions when rendering multiple instances of a single model.
 
-```{literalinclude} ../../../../examples/physics/model.py
+```{literalinclude} ../../../../examples/parallel/parallelsim.py
 :language: python
 :dedent:
-:start-after: "model = load_model(path)"
-:end-before:  "# Create the physics data of the model"
+:start-after: "# tag::init batch data"
+:end-before: "# end::init batch data"
 ```
 
-_See the complete code at [examples/physics/model.py](../../../../examples/physics/model.py)_
+_See the complete code at [examples/parallel/parallelsim.py](../../../../examples/parallel/parallelsim.py)_
 
 ### Instance Visibility
 
@@ -168,6 +346,3 @@ _Full code see [examples/viewer/partial_rendering.py](../../../../examples/viewe
 [`render.sync(data)`]: motrixsim.render.RenderApp.sync
 [`render.input`]: motrixsim.render.RenderApp.input
 [`Input`]: motrixsim.render.Input
-[`render.opt.set_left_panel_vis(True)`]: motrixsim.render.RenderOpt.set_left_panel_vis
-[`add_button`]: motrixsim.render.RenderUI.add_button
-[`add_toggle`]: motrixsim.render.RenderUI.add_toggle

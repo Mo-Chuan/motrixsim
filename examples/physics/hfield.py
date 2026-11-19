@@ -14,10 +14,17 @@
 # ==============================================================================
 
 
+import sys
+
 import numpy as np
 
-from motrixsim import SceneData, load_model, run, step
+from motrixsim import run
 from motrixsim.render import RenderApp
+
+if "--gpu" in sys.argv:
+    from motrixsim.gpu import SceneData, load_model, step
+else:
+    from motrixsim import SceneData, load_model, step
 
 
 def demonstrate_hfield_api(model):
@@ -95,6 +102,13 @@ def main():
 
         # Create the render instance of the model
         render.launch(model)
+        # Frame both terrains, centered at x=0 and x=15, from above.
+        render.system_camera.set_view(
+            lookat=[7.5, 0.0, 1.0],
+            distance=30.0,
+            elevation=-35.0,
+            azimuth=90.0,
+        )
         # Create the physics data of the model
         data = SceneData(model)
 

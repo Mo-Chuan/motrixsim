@@ -23,11 +23,20 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from utils.controller import KeyboardCommandAdapter
-from utils.policy import G1LocomotionPolicy, G1Policy12Dof, Go1LocomotionPolicy, Go2LocomotionPolicy
-from utils.robot import G1Robot, G1Robot12Dof, Go1Robot, Go2Robot
+from utils.depth_camera_panel import DepthCameraPanel
+from utils.lidar_bev_panel import LidarBevPanel
+from utils.locomotion import LocomotionSimulation
+from utils.policy import (
+    G1LocomotionPolicy,
+    G1Policy12Dof,
+    Go1LocomotionPolicy,
+    Go2LocomotionPolicy,
+    MicroduckLocomotionPolicy,
+)
+from utils.robot import G1Robot, G1Robot12Dof, Go1Robot, Go2Robot, MicroduckRobot
 from utils.terrain_scan_visualizer import TerrainScanVisualizer
 
-from motrixsim import GeomHField, SceneData, TerrainScanner, msd
+from motrixsim import GeomHField, TerrainScanner, msd, run, ui
 from motrixsim.render import Layout, RenderApp, RenderSettings
 
 DEFAULT_SCENE = "playground"
@@ -39,6 +48,14 @@ SCENE_FILES = {
 }
 
 ROBOT_CONFIGS = {
+    "microduck": {
+        "robot": MicroduckRobot,
+        "policy": MicroduckLocomotionPolicy,
+        "camera_position": [-2, 0, 0.5],
+        "default_scene": "plane",
+        "scene_files": {"plane": str(MicroduckRobot.asset_dir / "flat_scene.xml")},
+        "render_settings": RenderSettings.performance,
+    },
     "g1": {
         "robot": G1Robot,
         "policy": G1LocomotionPolicy,
@@ -73,7 +90,7 @@ SCENE_CAMERA_OVERRIDES = {
     },
 }
 DEFAULT_TERRAIN_SCAN_SCENES = {"stairs"}
-ROBOT_CHOICES = ("g1", "go1", "go2")
+ROBOT_CHOICES = ("g1", "go1", "go2", "microduck")
 ROBOT_LIDAR_MOUNTS = {
     G1Robot: {
         "name": "g1",
@@ -157,7 +174,8 @@ def load_robot_lidar(robot_class: type, profile: str) -> msd.World:
   </worldbody>
   <sensor>
     <lidar name="{sensor_name}" site="{site_name}"
-      asset="{profile}" exclude="parentsubtree" hz="{hz:g}" />
+      asset="{profile}" exclude="parentsubtree" hz="{hz:g}"
+      returns="distance point time_offset normal" />
   </sensor>
 </mujoco>"""
     source_path = LIDAR_PROFILE_DIR / "robot_locomotion_lidar.xml"
@@ -170,6 +188,36 @@ def attach_robot_lidar(robot: msd.World, robot_class: type, profile: str) -> Non
     robot.attach(load_robot_lidar(robot_class, profile), mount["link"])
 
 
+GO2_DEPTH_WIDTH = 96
+GO2_DEPTH_HEIGHT = 54
+GO2_DEPTH_SENSOR = "go2_depth_camera"
+
+
+def attach_go2_depth_camera(robot: msd.World) -> None:
+    """Attach a headless pinhole sensor, optical +Z forward and 15 degrees downward."""
+    # Right-handed optical frame: +X right, +Y down, +Z forward.
+    tilt = np.deg2rad(15.0)
+    forward = np.array([np.cos(tilt), 0.0, -np.sin(tilt)])
+    right = np.array([0.0, -1.0, 0.0])
+    down = np.cross(forward, right)
+    # MJCF xyaxes supplies the local right/down axes, deriving optical +Z.
+    axes = " ".join(f"{x:.9g}" for x in (*right, *down))
+    focal = GO2_DEPTH_WIDTH / (2 * np.tan(np.deg2rad(70.0) / 2))
+    source = f"""<mujoco model="go2_depth_mount">
+  <worldbody>
+    <site name="go2_depth_site" pos="0.30 0 0.08" xyaxes="{axes}" size="0.01" />
+  </worldbody>
+  <sensor>
+    <raycastcamera projection="pinhole" name="{GO2_DEPTH_SENSOR}" site="go2_depth_site"
+      width="{GO2_DEPTH_WIDTH}" height="{GO2_DEPTH_HEIGHT}"
+      intrinsics="{focal} {focal} {GO2_DEPTH_WIDTH / 2} {GO2_DEPTH_HEIGHT / 2}"
+      near="0.05" far="12" update_period="0.03333333333333333"
+      exclude="parentsubtree" returns="depth" />
+  </sensor>
+</mujoco>"""
+    robot.attach(msd.from_str(source), Go2Robot.base_link_name)
+
+
 def build_model(
     scene_file: str,
     robot_class: type,
@@ -178,6 +226,7 @@ def build_model(
     lidar_profile: str | None = None,
     extra_worlds=None,
     head_camera: dict | None = None,
+    depth_camera: bool = False,
 ):
     """Build a locomotion scene and attach the selected robot and follower camera.
 
@@ -191,7 +240,8 @@ def build_model(
     camera_mjcf = f"""<mujoco model="camera">
   <worldbody>
     <camera name="follower" pos="{" ".join(str(x) for x in camera_position)}"
-      xyaxes="0 -1 0 0 0 1" fovy="{camera_fovy}" trackposspeed="2" trackrotspeed="2" />
+      xyaxes="0 -1 0 0 0 1" fovy="{camera_fovy}"
+      mode="targetbody" target="{robot_class.base_link_name}" trackposspeed="2" trackrotspeed="2" />
   </worldbody>
 </mujoco>"""
     camera = msd.from_str(camera_mjcf)
@@ -202,6 +252,11 @@ def build_model(
         scene.visual.sensor.lidar_point_cloud.point_size_px = 6.0
         scene.visual.sensor.lidar_point_cloud.max_color_distance = 12.0
 
+    if depth_camera:
+        if robot_class is not Go2Robot:
+            raise ValueError("depth camera demo is only supported for go2")
+        attach_go2_depth_camera(robot)
+
     if head_camera is not None:
         head_pos = " ".join(str(x) for x in head_camera["pos"])
         head_xyaxes = head_camera.get("xyaxes", "0 -1 0 0 0 1")
@@ -211,55 +266,98 @@ def build_model(
     <camera name="head" pos="{head_pos}" xyaxes="{head_xyaxes}" fovy="{head_fovy}" />
   </worldbody>
 </mujoco>"""
-        robot.attach(msd.from_str(head_mjcf), head_camera["link"])
+        head_world = msd.from_str(head_mjcf)
+        head_width, head_height = head_camera.get("resolution", (480, 360))
+        robot.attach(head_world, head_camera["link"])
 
     scene.attach(robot)
     for extra_world in extra_worlds or ():
         scene.attach(extra_world)
 
+    # NOTE: camera descriptors must be configured *after* scene.attach(); settings
+    # applied on detached worlds are dropped when the scene tree is assembled.
+    if head_camera is not None:
+        head_width, head_height = head_camera.get("resolution", (480, 360))
+        robot_body = scene.find_body(robot_class.base_link_name)
+        if robot_body is None:
+            raise ValueError(f"robot body '{robot_class.base_link_name}' was not attached")
+        head_link = robot_body.find_link(head_camera["link"])
+        if head_link is None:
+            raise ValueError(f"head camera link '{head_camera['link']}' was not found in robot body")
+        head_cam_desc = head_link.find_camera("head")
+        if head_cam_desc is None:
+            raise ValueError(f"head camera was not attached to link '{head_camera['link']}'")
+        head_cam_desc.render_target = msd.RenderTarget.Image
+        head_cam_desc.resolution = [head_width, head_height]
+
+    # Configure follower camera tracking on the MSD layer before building the immutable model
+    follower_desc = scene.find_body(robot_class.base_link_name).find_camera("follower")
+    follower_desc.position_track = msd.PositionTrack.FixedLocal
+    follower_desc.rotation_track = msd.RotationTrack.LookAtLink
+    follower_desc.track_target = robot_class.base_link_name
+
     model = scene.build()
     camera = model.cameras["follower"]
-    camera.rotation_track = "look_at_link"
-    camera.position_track = "fixed_local"
-    camera.track_target_link = model.get_link(robot_class.base_link_name)
 
     head_cam = None
     if head_camera is not None:
+        # Rendered offscreen (configured on the MSD layer before build) so a viewport
+        # widget can display its output.
         head_cam = model.cameras["head"]
-        width, height = head_camera.get("resolution", (480, 360))
-        # Render this camera offscreen so a viewport widget can display its output.
-        head_cam.set_render_target("image", width, height)
 
     return model, camera, head_cam
 
 
+def resolve_locomotion_config(
+    robot: str, scene: str | None = None, *, scene_file: str | None = None, lidar_profile: str | None = None
+):
+    """Resolve robot defaults and reject unsupported scene/sensor combinations."""
+    config = ROBOT_CONFIGS[robot]
+    scene = scene if scene is not None else config.get("default_scene", DEFAULT_SCENE)
+    if scene == "stairs" and robot != "g1":
+        raise ValueError(f"stairs scene only supports g1 robot, got '{robot}'")
+    robot_name = ROBOT_SCENE_OVERRIDES.get((robot, scene), robot)
+    config = ROBOT_CONFIGS[robot_name]
+    if "scene_files" in config:
+        if scene not in config["scene_files"] or scene_file is not None:
+            raise ValueError(f"{robot} only supports its bundled plane scene")
+        scene_file = config["scene_files"][scene]
+    elif scene_file is None:
+        scene_file = SCENE_FILES[scene]
+    if lidar_profile is not None and config["robot"] not in ROBOT_LIDAR_MOUNTS:
+        raise ValueError(f"lidar is not supported for {robot}")
+    return robot_name, scene, scene_file, config
+
+
 def run_locomotion(
     robot: str,
-    scene: str,
+    scene: str | None = None,
     *,
     scene_file: str | None = None,
     camera_position: list[float] | None = None,
     camera_fovy: float | None = None,
     head_camera: dict | None = None,
     lidar_profile: str | None = None,
+    depth_camera: bool = False,
 ):
-    # Stairs scene only supports G1 robot
-    if scene == "stairs" and robot != "g1":
-        raise ValueError(f"stairs scene only supports g1 robot, got '{robot}'")
-    if scene_file is None:
-        scene_file = SCENE_FILES[scene]
-
-    render_settings = RenderSettings(
-        simplify_render_mesh=True,
-        enable_shadow=True,
-        enable_ssao=False,
-        enable_oit=False,
-        share_lights_between_envs=False,
-        enable_ssgi=True,
+    if depth_camera and robot != "go2":
+        raise ValueError("--depth-camera is only supported for go2")
+    robot_name, scene, scene_file, robot_config = resolve_locomotion_config(
+        robot, scene, scene_file=scene_file, lidar_profile=lidar_profile
     )
+    if "render_settings" in robot_config:
+        render_settings = robot_config["render_settings"]()
+        render_settings.enable_shadow = True
+    else:
+        render_settings = RenderSettings(
+            simplify_render_mesh=True,
+            enable_shadow=True,
+            enable_ssao=False,
+            enable_oit=False,
+            share_lights_between_envs=False,
+            enable_ssgi=True,
+        )
 
-    robot_name = ROBOT_SCENE_OVERRIDES.get((robot, scene), robot)
-    robot_config = ROBOT_CONFIGS[robot_name]
     RobotClass = robot_config["robot"]
     PolicyClass = robot_config["policy"]
     scene_name = scene
@@ -281,6 +379,7 @@ def run_locomotion(
         lidar_profile=lidar_profile,
         extra_worlds=extra_worlds,
         head_camera=head_camera,
+        depth_camera=depth_camera,
     )
     if "timestep" in robot_config:
         model.options.timestep = robot_config["timestep"]
@@ -312,12 +411,8 @@ def run_locomotion(
             offsets=terrain_scan_offsets,
         )
 
-    # Create keyboard adapter
     keyboard_adapter = KeyboardCommandAdapter()
-
-    # Initialize simulation data
-    data = SceneData(model)
-    step = 0
+    simulation = LocomotionSimulation(model, policy, getattr(policy, "ctrl_dt", 0.02))
     print(f"Controlling {robot_name.upper()} robot in {scene_name} scene")
     print("Keyboard Controls:")
     print("- Press W / Up Arrow to move forward")
@@ -328,66 +423,85 @@ def run_locomotion(
     print("- Press D to rotate right")
     print("- Press ESC to exit")
 
-    # Create render window for visualization
-    with RenderApp() as render:
-        # Configure camera to look at robot
-        render.set_main_camera(camera)
+    bev_panel = None
+    blueprint = None
+    if lidar_profile is not None:
+        mount = ROBOT_LIDAR_MOUNTS[RobotClass]
+        bev_panel = LidarBevPanel(
+            f"{mount['name']}_lidar",
+            site=model.get_site(f"{mount['name']}_lidar_site"),
+            base_link=model.get_link(RobotClass.base_link_name),
+        )
+    depth_panel = None
+    if depth_camera:
+        depth_panel = DepthCameraPanel(GO2_DEPTH_SENSOR, GO2_DEPTH_WIDTH, GO2_DEPTH_HEIGHT)
 
+    # Build the layout once, after all optional sensor panels have been created. A ui.View can
+    # only be consumed by one layout, so constructing a LiDAR-only layout before adding the depth
+    # camera would make the combined --lidar + --depth-camera mode fail.
+    views = [
+        ui.Options(title="Options"),
+        ui.Viewport(camera=ui.CameraRef(camera.index), title="GameView"),
+    ]
+    shares = [1, 4]
+    if bev_panel is not None:
+        views.append(bev_panel.view)
+        shares.append(2)
+    if depth_panel is not None:
+        views.append(depth_panel.view)
+        shares.append(2)
+    blueprint = ui.Horizontal(views, shares=shares)
+    with RenderApp(blueprint=blueprint) as render:
         # Launch the render instance of the model
         render.launch(model, render_settings=render_settings)
         if lidar_profile is not None:
             render.opt.set_lidar_point_vis(True)
+            bev_panel.bind(render)
+        if depth_panel is not None:
+            depth_panel.bind(render)
 
         # Show the robot's head camera as an on-screen viewport widget. This also puts
         # multiple Gaussian-splat cameras (window + head) on screen at once, which is the
         # scenario the multi-camera 3DGS sort fix targets.
         if head_cam is not None:
             head_layout = (head_camera or {}).get("layout", Layout(right=16, top=16, width=360, height=270))
-            render.widgets.create_camera_viewport(head_cam, layout=head_layout)
+            render.widgets.create_camera_viewport(head_cam, layout=head_layout, target_camera=camera)
 
-        # Initialize timing control
-        phys_dt = model.options.timestep
-        contrl_dt = 0.02
-        render_fps = 60.0
-        render_dt = 1.0 / render_fps
+        def physics_step():
+            simulation.step(keyboard_adapter.command)
 
-        n_ctrl = max(1, round(contrl_dt / phys_dt))
-        n_render = max(1, round(render_dt / phys_dt))
-
-        # Main loop
-        while True:
-            # Check if render window is closed
+        def sync_render():
             if render.is_closed:
-                break
-            # === Physics update phase ===
+                raise KeyboardInterrupt
+            if terrain_scan_visualizer is not None:
+                terrain_scan_visualizer.update(simulation.data)
+                model.forward_kinematic(simulation.data)
+            if bev_panel is not None:
+                bev_panel.update(render, model, simulation.data)
+            if depth_panel is not None:
+                depth_panel.update(render, model, simulation.data)
+            render.sync(simulation.data)
+            if render.is_closed:
+                raise KeyboardInterrupt
 
-            if hasattr(policy, "pre_physics_step"):
-                policy.pre_physics_step(data)
-            model.step(data)
-            step += 1
-
-            if step % n_ctrl == 0:
-                # control update
-                need_reset = policy.step(data, keyboard_adapter.command)
-                if need_reset:
-                    data = SceneData(model)
-                    if hasattr(policy, "reset"):
-                        policy.reset()
-                    step = 0
-
-            # === Render update phase ===
-            # Update keyboard input
+        def update_input():
             keyboard_adapter.update_from_input(render.input)
-
-            # Check ESC key to exit
             if render.input.is_key_just_pressed("escape"):
-                break
-            if step % n_render == 0:
-                if terrain_scan_visualizer is not None:
-                    terrain_scan_visualizer.update(data)
-                    model.forward_kinematic(data)
-                # Sync rendering (also processes input events)
-                render.sync(data)
+                raise KeyboardInterrupt
+
+        def render_step():
+            sync_render()
+            update_input()
+
+        try:
+            # Wall-clock paced accumulator loop: physics advances against real
+            # time and the render cadence is capped at 60fps. Relying on render
+            # sync backpressure alone paces the loop to the display refresh
+            # rate (e.g. 2.4x real time on a 144Hz monitor).
+            render_step()
+            run.render_loop(model.options.timestep, 60.0, physics_step, render_step)
+        except KeyboardInterrupt:
+            pass
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
@@ -403,8 +517,8 @@ def create_argument_parser() -> argparse.ArgumentParser:
         "--scene",
         type=str,
         choices=sorted(SCENE_FILES),
-        default=DEFAULT_SCENE,
-        help=f"Scene type to load (default: {DEFAULT_SCENE})",
+        default=None,
+        help=f"Scene type to load (default: plane for microduck, {DEFAULT_SCENE} otherwise)",
     )
     parser.add_argument(
         "--lidar",
@@ -418,6 +532,11 @@ def create_argument_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="List available lidar profiles and exit",
     )
+    parser.add_argument(
+        "--depth-camera",
+        action="store_true",
+        help="Attach a headless depth camera to Go2 and display its depth image widget",
+    )
     return parser
 
 
@@ -429,7 +548,7 @@ def main():
         return
 
     try:
-        run_locomotion(args.robot, args.scene, lidar_profile=args.lidar)
+        run_locomotion(args.robot, args.scene, lidar_profile=args.lidar, depth_camera=args.depth_camera)
     except ValueError as exc:
         parser.error(str(exc))
 

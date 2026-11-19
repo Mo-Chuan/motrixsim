@@ -1,5 +1,7 @@
 # 🔨 程序化模型构建
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 `motphys-scene-descriptor`（下文简称 `MSD`）是 MotrixSim 的场景描述与组合能力。在 Python 侧，它通过 [`motrixsim.msd`](../../api_reference/msd/msd.md) 暴露给用户。
 
 如果把仿真流程拆成两个阶段：

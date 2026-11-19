@@ -1,5 +1,8 @@
 <mujoco model="tidybot scene position">
-  <include file="tidybot_position.xml"/>
+  <!-- Include the robot parts directly: tidybot_position.xml carries 18-DoF keyframes that do not
+       cover sphere_B, so this scene defines its own. -->
+  <include file="tidybot_base.xml"/>
+  <include file="tidybot_actuator_position.xml"/>
   <include file="../common/materials.xml"/>
   <statistic center="0 0 0.525" extent="1.1" meansize="0.05"/>
 
@@ -38,4 +41,11 @@
         <geom name="shpere" type="sphere" size="0.03" pos="0 0 0" rgba="0 1 0 1"/>
     </body>
   </worldbody>
+  <keyframe>
+    <!-- qpos: robot (18, see tidybot_position.xml) + sphere_B freejoint (pos + wxyz quat, its initial pose) -->
+    <key name="home" qpos="0 0 0 0 0.26179939 3.14159265 -2.26892803 0 0.95993109 1.57079633 0 0 0 0 0 0 0 0 1 0 0.5 1 0 0 0"
+      ctrl="0 0 0 0 0.26179939 3.14159265 -2.26892803 0 0.95993109 1.57079633 0"/>
+    <key name="retract" qpos="0 0 0 0 -0.34906585 3.14159265 -2.54818071 0 -0.87266463 1.57079633 0 0 0 0 0 0 0 0 1 0 0.5 1 0 0 0"
+      ctrl="0 0 0 0 -0.34906585 3.14159265 -2.54818071 0 -0.87266463 1.57079633 0"/>
+  </keyframe>
 </mujoco>

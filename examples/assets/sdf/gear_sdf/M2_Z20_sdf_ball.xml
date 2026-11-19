@@ -1,0 +1,35 @@
+<mujoco>
+  <compiler angle="radian" assetdir="assets" autolimits="true"/>
+
+  <asset>
+
+    <!-- Textures -->
+
+    <!-- Materials -->
+    <material name="钢_-_缎光" rgba="0.6274510025978088 0.6274510025978088 0.6274510025978088 1.0" reflectance="0.5" metallic="0.0" roughness="1.0"/>
+    <material name="ball" rgba="0.2 0.45 0.9 1.0" reflectance="0.2" metallic="0.0" roughness="0.6"/>
+
+    <mesh name="GB1356_M2_Z20" file="V_GB1356_M2_Z20.obj"/>
+  </asset>
+
+  <worldbody>
+
+    <body name="GEAR_SPUR" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0">
+      <joint name="gear_hinge" type="hinge" axis="0 1 0" limited="false"/>
+      <geom mesh="GB1356_M2_Z20" quat="0.7071066498756409 0.70710688829422 0.0 0.0" mass="1" type="sdf" material="钢_-_缎光"/>
+    </body>
+
+    <body name="ball" pos="0.0 0.0 3.0">
+      <freejoint/>
+      <geom name="ball" type="sphere" size="0.1" material="ball"/>
+    </body>
+  </worldbody>
+  <contact>
+  </contact>
+  <equality>
+  </equality>
+  <tendon>
+  </tendon>
+  <actuator>
+  </actuator>
+</mujoco>

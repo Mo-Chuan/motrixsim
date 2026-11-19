@@ -12,11 +12,31 @@ img {
 }
 
 .bd-main .bd-content .bd-article-container {
-    max-width: 80em; /* default is 60em */
+    max-width: 75rem; /* default is 60em */
 }
 
 .bd-page-width {
-    max-width: 100rem; /* default is 88rem */
+    max-width: 100%; /* default is 88rem */
+}
+
+.bd-main .bd-content .bd-article-container .bd-article {
+    padding-left: 1.5rem; /* theme default: 2rem left, 0 right */
+    padding-right: 1.5rem;
+}
+
+.bd-sidebar-secondary {
+    padding: 1.5rem 0.75rem 1rem; /* default is 2rem 1rem 1rem */
+}
+
+/* Narrow the primary (left) and secondary (right) sidebars to give the article more room. */
+@media (min-width: 960px) {
+    .bd-sidebar-primary {
+        width: 20rem !important; /* default is 25% */
+    }
+
+    .bd-sidebar-secondary {
+        width: 13rem !important; /* default is 17rem */
+    }
 }
 
 /* Custom styles for MJCF XML Reference */
@@ -270,4 +290,10 @@ html[data-theme="dark"] a.pro-license-btn {
 
 html[data-theme="dark"] a.pro-license-btn:hover {
     background-color: #a5b4fc;
+}
+
+/* Center videos narrower than their container (e.g. the landing-page video). */
+.sphinx-contrib-video-container video {
+    display: block;
+    margin: 0 auto;
 }

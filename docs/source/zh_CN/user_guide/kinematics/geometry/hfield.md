@@ -1,5 +1,7 @@
 # 高度场（Height Field）
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 高度场（Height Field，简称 HField）是一种用于表示地形表面的高效几何体类型。它通过二维网格数据存储高程信息，为机器人仿真、地形跟随和表面交互提供真实的物理碰撞响应。
 
 ## 高度场特点

@@ -1,4 +1,6 @@
-# 🖥️ CPU Software Rendering on GPU-less Machines
+# 🖥️ CPU Software Rendering
+
+{bdg-success-line}`CPU: fully supported`
 
 In some environments there is no usable rendering GPU (for example a compute-only node in a data center, a cloud host without a graphics card, or a CI runner), yet you still want to generate replay videos or screenshots offline after running a simulation/training. This chapter explains how to run MotrixSim's [headless rendering](../main_function/managed_viewer.md) on a pure-CPU software rasterization path.
 

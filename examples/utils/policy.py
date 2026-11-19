@@ -20,9 +20,11 @@ import onnxruntime as ort
 from scipy.spatial.transform import Rotation
 
 from motrixsim import SceneData
+from motrixsim.query import GeomPairCollision
+from utils.controller import OnnxController
 
 if TYPE_CHECKING:
-    from utils.robot import G1Robot, G1Robot12Dof, Go1Robot, Go2Robot
+    from utils.robot import G1Robot, G1Robot12Dof, Go1Robot, Go2Robot, MicroduckRobot
 
 
 class Go2LocomotionPolicy:
@@ -736,3 +738,94 @@ class G1LocomotionPolicy:
         thr = 0.3
         dot = np.dot(rotated_z_axis, np.array([0.0, 0.0, 1.0]))
         return dot < thr
+
+
+class MicroduckLocomotionPolicy:
+    """Microduck actor and episode state; the locomotion runner advances physics."""
+
+    ctrl_dt = 0.02
+    action_scale = 0.5
+    phase_dt = 2.0 * np.pi * ctrl_dt / 0.5
+    command_limit = np.array([0.4, 0.3, 1.0], dtype=np.float32)
+    _COMMAND_SCALE = command_limit / np.array([1.0, 0.5, 2.0], dtype=np.float32)
+
+    def __init__(self, robot: "MicroduckRobot", controller: OnnxController | None = None):
+        self._robot = robot
+        self._controller = (
+            controller if controller is not None else OnnxController(str(robot.asset_dir / "policy.onnx"))
+        )
+        self.default_angles = np.array(list(robot.DEFAULT_POSE.values()), dtype=np.float32)
+        # Match the training residual bounds (about +/-20), also embedded in ONNX's actor scale.
+        # ONNX already bounds normal outputs; the outer clip preserves this action-space contract.
+        # These symmetric bounds do not guarantee joint targets stay within joint angle limits.
+        self.action_bound = np.max(np.abs(robot.ctrl_ranges - self.default_angles[:, None]), axis=1) / self.action_scale
+        self.initial_qpos = robot.model.compute_init_dof_pos()
+        self.initial_qpos[robot.qpos_indices] = self.default_angles
+        self.initial_qvel = np.zeros(robot.model.num_dof_vel, dtype=np.float32)
+        self._collision_query = robot.model.compile_query({"fallen": GeomPairCollision([("trunk_collision", "floor")])})
+        self.last_action = np.zeros(len(self.default_angles), dtype=np.float32)
+        self.phase_offset = np.zeros(2, dtype=np.float32)
+        self._command = np.zeros(3, dtype=np.float32)
+
+    def initialize(self, data: SceneData) -> None:
+        """Restore the standing pose and bind episode queries to the runner's data."""
+        data.reset(self._robot.model, self.initial_qpos, self.initial_qvel, forward_kinematic=True)
+        self._collision = self._collision_query.allocate(data)
+        self.last_action.fill(0)
+        self.episode_steps = 0
+        self._command.fill(0)
+        # The source initializes phase from a sampled command before keyboard override.
+        command = np.random.uniform(-self.command_limit, self.command_limit).astype(np.float32)
+        if np.random.uniform() < 0.2:
+            command.fill(0)
+        self.phase_offset[0] = np.random.uniform(-np.pi, np.pi)
+        self.phase_offset[1] = np.fmod(self.phase_offset[0] + 2 * np.pi, 2 * np.pi) - np.pi
+        self.update_phase(command)
+
+    def update_phase(self, command: np.ndarray) -> None:
+        self.phase = (
+            np.fmod(np.float32(self.episode_steps) * self.phase_dt + self.phase_offset + np.pi, 2 * np.pi) - np.pi
+        )
+        if np.linalg.norm(command[:2]) < 0.01 and abs(command[2]) < 0.01:
+            self.phase.fill(np.pi)
+
+    def get_observation(self, data: SceneData, command: np.ndarray) -> np.ndarray:
+        """Assemble the actor's 55 inputs; learned normalization lives in ONNX."""
+        qpos = self._robot.dof_pos(data) - self.default_angles
+        qvel = self._robot.dof_vel(data) * 0.05
+        qpos += np.random.uniform(-1, 1, qpos.shape).astype(np.float32) * 0.01
+        qvel += np.random.uniform(-1, 1, qvel.shape).astype(np.float32) * 0.1
+        return np.concatenate(
+            (
+                self._robot.gyro(data) * 0.25,
+                self._robot.gravity(data),
+                command,
+                qpos,
+                qvel,
+                self.last_action,
+                np.sin(self.phase),
+                np.cos(self.phase),
+            )
+        ).astype(np.float32)
+
+    def apply_action(self, data: SceneData, action: np.ndarray) -> None:
+        """Map the actor's residual action to position targets exactly once."""
+        self.last_action[:] = np.clip(action, -self.action_bound, self.action_bound)
+        self._robot.set_actuator_ctrls(data, self.default_angles + self.action_scale * self.last_action)
+
+    def scale_command(self, raw_command: np.ndarray) -> np.ndarray:
+        """Convert shared keyboard inputs to the training velocity command range."""
+        return raw_command * self._COMMAND_SCALE
+
+    def pre_control_step(self, data: SceneData, command: np.ndarray) -> None:
+        """Scale and freeze this interval's command, then apply its action before physics."""
+        self._command[:] = self.scale_command(command)
+        self.apply_action(data, self._controller.get_actions(self.get_observation(data, self._command)))
+
+    def step(self, data: SceneData, command: np.ndarray) -> bool:
+        """Finish a control interval and request reset after trunk-floor contact."""
+        # Source transition caches phase before incrementing the episode counter.
+        self.update_phase(self._command)
+        self.episode_steps += 1
+        self._collision.execute(data)
+        return bool(self._collision["fallen"].any())

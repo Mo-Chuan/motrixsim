@@ -1,5 +1,11 @@
 # 📹 CameraViewport
 
+This guide uses the viewport camera API. Use an SDK build that provides `target_camera` and the viewport camera setters described in [Camera](camera.md#switching-a-viewport-camera).
+
+`target_camera` selects the model camera on whose output the widget is composed. Pass `model.cameras.system_camera` for the system camera or `model.cameras["back"]` for a scene camera. Omitting it or passing `None` selects the system camera. This binding does not follow the active viewport: switching a viewport to another camera does not move the widget to that camera. `render.system_camera` is a runtime controller and cannot be passed as the target.
+
+Call `render.launch(model)` before creating runtime widgets. When using a custom blueprint, include a `ui.Viewport` bound to the target camera to display its output.
+
 ## Overview
 
 CameraViewport allows you to create multiple camera viewport components within the rendering window for simultaneously displaying real-time rendered views from different cameras. This is very useful for multi-angle observation, sensor data visualization, and other scenarios.
@@ -25,8 +31,11 @@ CameraViewport allows you to create multiple camera viewport components within t
 Use the `render.widgets.create_camera_viewport()` method to create a camera viewport widget:
 
 ```python
+render.launch(model)
+cameras = model.cameras
 viewport = render.widgets.create_camera_viewport(
     camera=cameras[0],
+    target_camera=model.cameras.system_camera,
     layout=Layout(left=10, top=10, width=240, height=180),
     sim_world_index=0
 )
@@ -34,7 +43,8 @@ viewport = render.widgets.create_camera_viewport(
 
 **Parameter Description**:
 
--   **camera**: The camera object to display (required)
+-   **camera**: The source model camera whose image is displayed (required). Configure its image render target and resolution on the MSD layer before building the model.
+-   **target_camera**: Keyword-only model camera on whose output the widget is composed; omitted or `None` selects the system camera.
 -   **layout**: Layout configuration (optional, defaults to left=50, top=50, width=200, height=200)
 -   **sim_world_index**: Simulation world index (optional, defaults to 0)
 

@@ -172,7 +172,7 @@ Key points:
 -   `envmapintensity` controls the overall intensity of the environment map and should match the exposure used at bake time; if the result is too dark or too bright, adjust this value first before re-baking.
 -   KTX2 maps are HDR; pair them with `<tonemapping>` to map the high dynamic range into the display range. Optionally layer screen-space global illumination such as `<ssgi>` for added realism.
 
-For a complete example, see `examples/pro/assets/nav_scene_1/scene_ibl.xml` in the repository, which layers IBL and SSGI configuration on top of a 3DGS navigation scene.
+For a complete example, see `examples/assets/nav_scene_1/scene_ibl.xml` in the repository, which layers IBL and SSGI configuration on top of a 3DGS navigation scene.
 
 ## Related References
 

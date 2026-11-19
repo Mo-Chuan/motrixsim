@@ -28,13 +28,15 @@ from control.robot_locomotion import (
     attach_robot_lidar,
     create_argument_parser,
     load_robot_lidar,
+    resolve_locomotion_config,
 )
 from utils.robot import G1Robot, G1Robot12Dof, Go1Robot, Go2Robot
 
 
 def test_robot_locomotion_defaults():
     args = create_argument_parser().parse_args([])
-    assert args.scene == "playground"
+    assert args.scene is None
+    assert resolve_locomotion_config(args.robot, args.scene)[1] == "playground"
     assert args.lidar is None
     assert not args.list_lidars
 
@@ -59,3 +61,33 @@ def test_selected_lidar_profile_builds_with_supported_robot(robot_class):
     model = robot.build()
     data = SceneData(model)
     assert model.get_sensor_value(f"{mount['name']}_lidar", data).size > 0
+
+
+@pytest.mark.parametrize("robot", ["g1", "go1", "go2", "microduck"])
+def test_robot_default_scene(robot):
+    args = create_argument_parser().parse_args(["--robot", robot])
+    name, scene, scene_file, config = resolve_locomotion_config(args.robot, args.scene)
+    assert name == robot
+    assert scene == ("plane" if robot == "microduck" else "playground")
+    assert scene_file
+    assert config["robot"]
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"scene": "playground"},
+        {"scene": "parlour"},
+        {"scene": "stairs"},
+        {"scene_file": "custom.xml"},
+        {"lidar_profile": "ouster_os1_rev6_32ch_10hz_512res"},
+    ],
+)
+def test_microduck_rejects_unsupported_options(kwargs):
+    with pytest.raises(ValueError):
+        resolve_locomotion_config("microduck", **kwargs)
+
+
+def test_existing_scene_overrides_and_custom_scene():
+    assert resolve_locomotion_config("g1", "stairs")[0] == "g1_12dof"
+    assert resolve_locomotion_config("g1", "nav_scene_1", scene_file="custom.xml")[2] == "custom.xml"

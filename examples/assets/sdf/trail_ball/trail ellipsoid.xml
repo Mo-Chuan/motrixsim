@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Contact test between a nonconvex SDF chute and an analytic ellipsoid, adapted from trail ball.xml in this directory.
+  Preserves the original scene's initial state, mass, friction coefficients, contact margin, and solver budget.
+-->
+<mujoco model="trail_ellipsoid">
+  <visual>
+    <map zfar="1000" envmapintensity="1.35"/>
+    <tonemapping method="aces"/>
+    <headlight ambient="1.17 1.17 1.317" diffuse="1.61 1.61 1.755" specular="0.293 0.293 0.293" active="0"/>
+    <ssao active="true"/>
+    <ssgi active="true"
+          resolutionscale="2"
+          raycount="8"
+          stepcount="8"
+          thickness="0.3"
+          intensity="5.0"
+          gidenoiseoffset="3"
+          rraycount="128"
+          rdenoiseoffset="3"/>
+    <probe texture="" position="0 0 2" scale="4 4 3"/>
+  </visual>
+
+  <compiler angle="radian"/>
+
+  <option timestep="0.01" gravity="0 0 -9.81" sdf_initpoints="40" sdf_iterations="10"/>
+
+  <asset>
+    <!-- Skybox: daylight gradient -->
+    <texture type="skybox" builtin="gradient" rgb1="0.4896 0.525 0.6" rgb2="0.2562 0.348 0.4542" width="256" height="1024"/>
+
+    <!-- Ground material -->
+    <texture type="2d" name="groundplane" file="assets/ground_logo.png"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="0.15 0.15" reflectance="0.2" rgba="0.7 0.7 0.7 1"/>
+
+    <!-- Trail material: scratched orange plastic (color + normal + ORM) -->
+    <texture type="2d" colorspace="sRGB"   name="trail_color"     file="assets/trail_color.jpg"/>
+    <texture type="2d" colorspace="linear" name="trail_normal"    file="assets/trail_normal.jpg"/>
+    <texture type="2d" colorspace="linear" name="trail_orm"       file="assets/trail_orm.jpg"/>
+
+    <!-- Ball material: matte latitude/longitude grid (base color only) -->
+    <texture type="2d" colorspace="sRGB"   name="ball_color"     file="assets/ball_color.png"/>
+
+    <material name="trail_plastic" rgba="1 1 1 1" reflectance="0.5" metallic="0.0" roughness="1.0">
+      <layer texture="trail_color"  role="rgb"/>
+      <layer texture="trail_normal" role="normal"/>
+      <layer texture="trail_orm"    role="orm"/>
+    </material>
+    <material name="ball_metal" texture="ball_color" rgba="1 1 1 1"
+              reflectance="0" specular="0" shininess="0"
+              metallic="0" roughness="1"/>
+
+    <mesh name="C_trail" file="assets/trail2.obj"/>
+  </asset>
+
+  <worldbody>
+    <!-- Lighting: directional noon key light + cool fill -->
+    <light name="main_noon" pos="0 0 4" dir="0.5 0.5 -0.866" directional="true" diffuse="0.55 0.55 0.6" specular="0.2 0.2 0.22" castshadow="true"/>
+    <light name="fill" pos="0 -2 1" dir="0 0.8 -0.3" directional="true" diffuse="0.45 0.48 0.55" specular="0.12 0.14 0.18" castshadow="false"/>
+
+    <!-- Ground: logo-textured plane at Z=0, visual only (SDF cannot collide with planes) -->
+    <geom name="ground" type="plane" size="30 30 0.05" pos="0 0 0" material="groundplane" rgba="0.7 0.7 0.7 1" contype="0" conaffinity="0"/>
+
+    <!-- Static trail: base touching the ground, near-zero friction with the ball -->
+    <geom name="trail_sdf" type="sdf" mesh="C_trail" pos="0 0 0" material="trail_plastic" margin="0.0005" friction="0.016 0.016 0.016"/>
+
+    <!-- Dynamic ellipsoid: uses the original ball's initial state and drops from above the chute to test nonconvex contact. -->
+    <body name="ball" pos="1 0.0 4.8">
+      <freejoint/>
+      <geom name="ball_ellipsoid" type="ellipsoid" size="0.32 0.24 0.25" mass="1" margin="0.0005" material="ball_metal" friction="0.016 0.016 0.016"/>
+    </body>
+  </worldbody>
+</mujoco>

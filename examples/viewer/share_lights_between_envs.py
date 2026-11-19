@@ -13,10 +13,19 @@
 # limitations under the License.
 # ==============================================================================
 
+
+import sys
+
 from absl import app, flags
 
-from motrixsim import SceneData, load_model, run
+from motrixsim import run
 from motrixsim.render import RenderApp, RenderSettings
+
+if "--gpu" in sys.argv:
+    sys.argv.remove("--gpu")
+    from motrixsim.gpu import SceneData, load_model
+else:
+    from motrixsim import SceneData, load_model
 
 # uv run python examples/share_lights_between_envs.py --share_lights=False to disable light sharing between
 # multiple simulation worlds

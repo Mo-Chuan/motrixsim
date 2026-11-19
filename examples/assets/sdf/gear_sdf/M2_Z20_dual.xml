@@ -1,0 +1,43 @@
+<mujoco>
+  <compiler angle="radian" assetdir="assets" autolimits="true"/>
+
+  <option sdf_iterations="10" sdf_initpoints="40" cone="elliptic" noslip_iterations="2"/>
+
+  <asset>
+    <!-- Textures -->
+
+    <!-- Materials -->
+    <material name="钢_-_缎光" rgba="0.6274510025978088 0.6274510025978088 0.6274510025978088 0.45" reflectance="0.5" metallic="0.0" roughness="1.0" alpha_mode="blend"/>
+
+    <mesh name="GB1356_M2_Z20" file="V_GB1356_M2_Z20.obj"/>
+  </asset>
+
+  <worldbody>
+
+    <!-- 齿轮1：驱动轮（有motor） -->
+    <body name="gear_driven" pos="0.0 0.0 0.0">
+      <joint name="j_driven" type="hinge" axis="0 1 0" limited="false" damping="0.001" armature="0.001"/>
+      <geom name="c_driven" mesh="GB1356_M2_Z20" quat="0.7071066498756409 0.70710688829422 0.0 0.0" type="sdf" material="钢_-_缎光" density="7800" mass="1" margin="0.0005" friction="0.3 0.1 0.05"/>
+    </body>
+
+    <!-- 齿轮2：从动轮（自由旋转，靠啮合带动）
+         中心距 = 分度圆直径
+         quat 已合并齿相位偏移(绕Z转9°)到geom中，body不做额外旋转，保证两齿轮平行 -->
+    <body name="gear_idler" pos="4.1 0.0 0.0">
+      <joint name="j_idler" type="hinge" axis="0 1 0" limited="false" damping="0.001" armature="0.001"/>
+      <geom name="c_idler" mesh="GB1356_M2_Z20" quat="0.704799 0.704799 0.055480 -0.055480" type="sdf" material="钢_-_缎光" density="7800" mass="1" margin="0.0005" friction="0.3 0.1 0.05"/>
+    </body>
+
+  </worldbody>
+
+  <equality>
+  </equality>
+
+  <tendon>
+  </tendon>
+
+  <actuator>
+    <!-- 驱动轮 velocity actuator -->
+    <velocity name="velocity_driven" joint="j_driven" kv="1" ctrlrange="-100 100"/>
+  </actuator>
+</mujoco>

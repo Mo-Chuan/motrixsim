@@ -1,26 +1,16 @@
 # API 参考
 
-MotrixSim 是一个高性能的物理仿真引擎，提供了丰富的 Python API 用于机器人仿真、物理建模和实时渲染。
+MotrixSim 提供 CPU 和 GPU 两套版本，针对不同的使用场景优化。本章节按版本组织 API 文档。
 
-## 🚀 快速开始
+## 📚 版本概览
 
-**[API 快速参考](api_quick_reference.md)** - 汇总常用 API 并按功能分组，帮助你快速定位所需接口
-
-## 📋 API 层级架构
-
-MotrixSim 的 API 设计采用分层架构，满足不同用户的使用需求：
-
-| 层级         | 模块                                     | 特点                     | 适用场景                       |
-| ------------ | ---------------------------------------- | ------------------------ | ------------------------------ |
-| **核心模块** | [`motrixsim`](core/index.md)             | 简单易用、接口友好       | 机器人控制、强化学习           |
-| **模型构建** | [`motrixsim.msd`](msd/index.md)          | 程序化模型组合           | 多机器人场景、动态组装         |
-| **渲染模块** | [`motrixsim.render`](rendering/index.md) | 实时渲染、交互界面       | 仿真可视化、调试分析           |
-| **IK 模块**  | [`motrixsim.ik`](ik/index.md)            | 高效求解、易用           | 逆运动学求解                   |
-| **OSC 模块** | [`motrixsim.osc`](osc/index.md)          | 任务空间控制、动力学解耦 | 操作空间控制、力矩型机器人控制 |
-
-## 📚 详细模块文档
+| 版本    | 包名            | 适用场景                                 |
+| ------- | --------------- | ---------------------------------------- |
+| **CPU** | `motrixsim`     | 机器人控制、强化学习、可视化调试、IK/OSC |
+| **GPU** | `motrixsim.gpu` | 强化学习大规模并行训练                   |
 
 ```{toctree}
+:caption: CPU 版本
 :titlesonly:
 
 api_quick_reference
@@ -29,4 +19,13 @@ msd/index
 rendering/index
 ik/index
 osc/index
+```
+
+```{toctree}
+:caption: GPU 版本
+:titlesonly:
+
+gpu/api_quick_reference
+gpu/index
+gpu/render/index
 ```

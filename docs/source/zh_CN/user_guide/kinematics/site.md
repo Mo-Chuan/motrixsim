@@ -1,5 +1,7 @@
 # 📍 参考点
 
+{bdg-success-line}`CPU 完全支持` {bdg-success-line}`GPU 完全支持`
+
 ## 概述
 
 `Site`（参考点）是 MotrixSim 中一个重要的概念，它代表模型中用户感兴趣的位置点。`Site` 本质上是虚拟的位置标记，用于标记模型框架内特定的位置和方向。

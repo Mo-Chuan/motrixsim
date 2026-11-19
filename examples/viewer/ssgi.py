@@ -37,7 +37,6 @@ def main():
         # Create the render instance of the model
         render.launch(model, render_settings=render_settings)
         # endtag
-        render.opt.set_left_panel_vis(True)
         # Create the physics data of the model
         data = SceneData(model)
 

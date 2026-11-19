@@ -103,17 +103,17 @@
 
 ## 场景层级和变换
 
-| USD 元素 / 属性           | 状态                                        | MotrixSim 映射                                              |
-| ------------------------- | ------------------------------------------- | ----------------------------------------------------------- |
-| `UsdGeom.Xform` 层级      | <span class="badge supported">支持</span>   | 遍历场景层级并累计世界变换                                  |
-| instance / instance proxy | <span class="badge supported">支持</span>   | 遍历 instance proxy children                                |
-| `visibility = invisible`  | <span class="badge supported">支持</span>   | 不生成视觉几何                                              |
-| `purpose = guide`         | <span class="badge supported">支持</span>   | 不生成视觉几何；如果同时是 collider，仍可生成碰撞几何       |
-| scale / 非均匀 scale      | <span class="badge supported">支持</span>   | 应用到几何尺寸或 `mesh_scale`                               |
-| 负 scale                  | <span class="badge supported">支持</span>   | 翻转 mesh winding，避免背面剔除方向错误                     |
-| `UsdPhysics.RigidBodyAPI` | <span class="badge partial">部分支持</span> | 创建 `Link` / `Body`；非 kinematic 顶层刚体创建 `FreeJoint` |
-| kinematic rigid body      | <span class="badge supported">支持</span>   | 作为无 free joint 的静态 link 处理                          |
-| `ArticulationRootAPI`     | <span class="badge partial">部分支持</span> | 用于继承 self-collision 设置                                |
+| USD 元素 / 属性           | 状态                                        | MotrixSim 映射                                                                                                           |
+| ------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `UsdGeom.Xform` 层级      | <span class="badge supported">支持</span>   | 遍历场景层级并累计世界变换                                                                                               |
+| instance / instance proxy | <span class="badge supported">支持</span>   | 遍历 instance proxy children                                                                                             |
+| `visibility = invisible`  | <span class="badge supported">支持</span>   | 不生成视觉几何                                                                                                           |
+| `purpose = guide`         | <span class="badge supported">支持</span>   | 不生成视觉几何；如果同时是 collider，仍可生成碰撞几何                                                                    |
+| scale / 非均匀 scale      | <span class="badge supported">支持</span>   | Mesh 几何保留完整线性变换到 `mesh_transform`；primitive shape 必要时使用轴对齐尺寸近似                                   |
+| 负 scale                  | <span class="badge supported">支持</span>   | 保留在 `mesh_transform` 中；渲染层根据线性变换行列式选择 winding。                                                       |
+| `UsdPhysics.RigidBodyAPI` | <span class="badge partial">部分支持</span> | 创建 `Link` / `Body`；非 kinematic 顶层刚体创建 `FreeJoint`；Link 上无法表达的非刚性 scale/shear/reflection 会忽略并告警 |
+| kinematic rigid body      | <span class="badge supported">支持</span>   | 作为无 free joint 的静态 link 处理                                                                                       |
+| `ArticulationRootAPI`     | <span class="badge partial">部分支持</span> | 用于继承 self-collision 设置                                                                                             |
 
 (usd-physics-scene)=
 
@@ -140,51 +140,57 @@
 
 ## 关节和驱动
 
-| USD joint / 属性                                      | 状态                                          | MotrixSim 映射                                                                   |
-| ----------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------- |
-| `FixedJoint`                                          | <span class="badge supported">支持</span>     | 转换为无自由度的固定子 link                                                      |
-| `RevoluteJoint`                                       | <span class="badge supported">支持</span>     | `JointType.Revolute`，支持 `X/Y/Z` axis、limit、reference pose                   |
-| `PrismaticJoint`                                      | <span class="badge supported">支持</span>     | `JointType.Slide`，支持 `X/Y/Z` axis、limit、reference pose                      |
-| `SphericalJoint`                                      | <span class="badge partial">部分支持</span>   | `JointType.Ball`，用 cone angle 近似 ball joint limit                            |
-| `DistanceJoint`                                       | <span class="badge unsupported">未支持</span> | 输出 warning                                                                     |
-| `PhysicsDriveAPI:angular`                             | <span class="badge partial">部分支持</span>   | 应用于 revolute joint spring-damper 和 actuator force limit                      |
-| `PhysicsDriveAPI:linear`                              | <span class="badge partial">部分支持</span>   | 应用于 prismatic joint spring-damper 和 actuator force limit                     |
-| `drive:maxForce`                                      | <span class="badge supported">支持</span>     | `joint.actuator_force_limit`，并为一自由度 joint 生成 `MotorActuator.forcerange` |
-| `drive:targetPosition`                                | <span class="badge supported">支持</span>     | spring target                                                                    |
-| `drive:stiffness` / `drive:damping`                   | <span class="badge supported">支持</span>     | joint spring-damper                                                              |
-| `physxJoint:jointFriction`                            | <span class="badge supported">支持</span>     | `joint.friction_loss`                                                            |
-| `physxJoint:armature`                                 | <span class="badge supported">支持</span>     | `joint.armature`                                                                 |
-| `joint:collisionEnabled = false`                      | <span class="badge supported">支持</span>     | 生成父子 link collision ignore                                                   |
-| `PhysicsDriveAPI:transX/transY/transZ/rotX/rotY/rotZ` | <span class="badge unsupported">未支持</span> | 输出 warning                                                                     |
-| `physxJoint:maxJointVelocity`                         | <span class="badge unsupported">未支持</span> | 输出 warning                                                                     |
+| USD joint / 属性                                      | 状态                                          | MotrixSim 映射                                                                         |
+| ----------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `FixedJoint`                                          | <span class="badge supported">支持</span>     | 转换为无自由度的固定子 link                                                            |
+| `RevoluteJoint`                                       | <span class="badge supported">支持</span>     | `JointType.Revolute`，支持 `X/Y/Z` axis、limit、reference pose                         |
+| `PrismaticJoint`                                      | <span class="badge supported">支持</span>     | `JointType.Slide`，支持 `X/Y/Z` axis、limit、reference pose                            |
+| `SphericalJoint`                                      | <span class="badge partial">部分支持</span>   | `JointType.Ball`，用 cone angle 近似 ball joint limit                                  |
+| `DistanceJoint`                                       | <span class="badge unsupported">未支持</span> | 输出 warning                                                                           |
+| `PhysicsDriveAPI:angular`                             | <span class="badge partial">部分支持</span>   | force drive 根据增益为 revolute joint 生成 `Position`、`Velocity` 或 `Motor` actuator  |
+| `PhysicsDriveAPI:linear`                              | <span class="badge partial">部分支持</span>   | force drive 根据增益为 prismatic joint 生成 `Position`、`Velocity` 或 `Motor` actuator |
+| `drive:maxForce`                                      | <span class="badge supported">支持</span>     | 仅映射到该 actuator 的 `forcerange`，不写入 `Joint.actuator_force_limit`               |
+| `drive:targetPosition`                                | <span class="badge partial">部分支持</span>   | 非零 authored target 仅在 stiffness 启用时 warning，并忽略为初始控制值                 |
+| `drive:targetVelocity`                                | <span class="badge partial">部分支持</span>   | 非零 authored target 仅在 damping 启用时 warning，并忽略为初始控制值                   |
+| `drive:stiffness` / `drive:damping`                   | <span class="badge supported">支持</span>     | 映射到 actuator gain；force `Position` drive 设置 `implicit_stiffness=true`            |
+| `physxJoint:jointFriction`                            | <span class="badge supported">支持</span>     | `joint.friction_loss`                                                                  |
+| `physxJoint:armature`                                 | <span class="badge supported">支持</span>     | `joint.armature`                                                                       |
+| `joint:collisionEnabled = false`                      | <span class="badge supported">支持</span>     | 生成父子 link collision ignore                                                         |
+| `PhysicsDriveAPI:transX/transY/transZ/rotX/rotY/rotZ` | <span class="badge unsupported">未支持</span> | 输出 warning                                                                           |
+| `physxJoint:maxJointVelocity`                         | <span class="badge unsupported">未支持</span> | 输出 warning                                                                           |
+
+受支持的 force `Position` drive 固定设置 `implicit_stiffness=true`。对数值有效且为正的
+刚度，Rust CPU solver 因此采用下一时刻位置线性化。
+GPU/Warp backend 尚不保证等价行为。
 
 (usd-geometry-meshes)=
 
 ## 几何、网格和碰撞
 
-| USD geometry / 属性                                            | 状态                                          | MotrixSim 映射                                                                  |
-| -------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------- |
-| `UsdGeom.Mesh`                                                 | <span class="badge partial">部分支持</span>   | `ShapeType.Mesh`，mesh 数据内联到 `MeshAsset.source = MeshSource::Buffer`       |
-| `Cube`                                                         | <span class="badge supported">支持</span>     | `ShapeType.Box`                                                                 |
-| `Cylinder`                                                     | <span class="badge supported">支持</span>     | `ShapeType.Cylinder`                                                            |
-| `Capsule`                                                      | <span class="badge supported">支持</span>     | `ShapeType.Capsule`                                                             |
-| `Sphere`                                                       | <span class="badge supported">支持</span>     | `ShapeType.Sphere`                                                              |
-| `Plane`                                                        | <span class="badge supported">支持</span>     | `ShapeType.Plane`                                                               |
-| `GeomSubset` with `elementType = "face"`                       | <span class="badge supported">支持</span>     | 拆分为按 face subset 的子 mesh，可保留 subset 材质                              |
-| normals / `st` texcoords: `vertex` / `varying` / `faceVarying` | <span class="badge supported">支持</span>     | 读取并展开到 MSD mesh                                                           |
-| 其他 normal / texcoord interpolation                           | <span class="badge unsupported">未支持</span> | 输出 warning                                                                    |
-| `CollisionAPI`                                                 | <span class="badge supported">支持</span>     | 生成 collider                                                                   |
-| `MeshCollisionAPI`                                             | <span class="badge partial">部分支持</span>   | 可生成 mesh collider；只支持下列 approximation                                  |
-| `MeshCollisionAPI.approximation = none`                        | <span class="badge supported">支持</span>     | 默认 mesh collider                                                              |
-| `convexHull`                                                   | <span class="badge supported">支持</span>     | 默认 mesh collider，不启用运行时 ACD                                            |
-| `boundingSphere`                                               | <span class="badge supported">支持</span>     | 从 mesh 包围盒生成 sphere collider                                              |
-| `boundingCube`                                                 | <span class="badge supported">支持</span>     | 从 mesh 包围盒生成 box collider；可同时保留 visual mesh                         |
-| `convexDecomposition`                                          | <span class="badge supported">支持</span>     | 标记 mesh asset `collision_cooking = ConvexDecomposition`，并启用 `CoACDConfig` |
-| 未知 `MeshCollisionAPI.approximation`                          | <span class="badge unsupported">未支持</span> | 输出 warning，并回退为默认 mesh collider                                        |
-| `FilteredPairsAPI`                                             | <span class="badge supported">支持</span>     | 生成 collision ignore pair                                                      |
-| `physxCollision:contactOffset`                                 | <span class="badge supported">支持</span>     | `geometry.margin`                                                               |
-| `physxCollision:restOffset`                                    | <span class="badge unsupported">未支持</span> | 输出 warning                                                                    |
-| `MotrixPhysicsGeomAPI`                                         | <span class="badge supported">支持</span>     | 支持 Motrix 自定义 impedance contact model 和 priority                          |
+| USD geometry / 属性                                            | 状态                                          | MotrixSim 映射                                                                                                                                           |
+| -------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `UsdGeom.Mesh`                                                 | <span class="badge partial">部分支持</span>   | `ShapeType.Mesh`，mesh 数据内联到 `MeshAsset.source = MeshSource::Buffer`                                                                                |
+| `Cube`                                                         | <span class="badge supported">支持</span>     | `ShapeType.Box`                                                                                                                                          |
+| `Cylinder`                                                     | <span class="badge supported">支持</span>     | `ShapeType.Cylinder`                                                                                                                                     |
+| `Capsule`                                                      | <span class="badge supported">支持</span>     | `ShapeType.Capsule`                                                                                                                                      |
+| `Sphere`                                                       | <span class="badge supported">支持</span>     | `ShapeType.Sphere`                                                                                                                                       |
+| `Plane`                                                        | <span class="badge supported">支持</span>     | `ShapeType.Plane`                                                                                                                                        |
+| `GeomSubset` with `elementType = "face"`                       | <span class="badge supported">支持</span>     | 拆分为按 face subset 的子 mesh，可保留 subset 材质                                                                                                       |
+| normals / `st` texcoords: `vertex` / `varying` / `faceVarying` | <span class="badge supported">支持</span>     | 读取并展开到 MSD mesh                                                                                                                                    |
+| 其他 normal / texcoord interpolation                           | <span class="badge unsupported">未支持</span> | 输出 warning                                                                                                                                             |
+| `CollisionAPI`                                                 | <span class="badge supported">支持</span>     | 生成 collider                                                                                                                                            |
+| `MeshCollisionAPI`                                             | <span class="badge partial">部分支持</span>   | 可生成 mesh collider；只支持下列 approximation                                                                                                           |
+| `MeshCollisionAPI.approximation = none`                        | <span class="badge supported">支持</span>     | 默认 mesh collider                                                                                                                                       |
+| `convexHull`                                                   | <span class="badge supported">支持</span>     | 默认 mesh collider，不启用运行时 ACD                                                                                                                     |
+| `sdf`                                                          | <span class="badge supported">支持</span>     | CPU 版本支持通过 `physics:approximation = "sdf"` 从网格生成 SDF 碰撞形状。配置方法及碰撞组合限制见[有符号距离场（SDF）](../kinematics/geometry/sdf.md)。 |
+| `boundingSphere`                                               | <span class="badge supported">支持</span>     | 从 mesh 包围盒生成 sphere collider                                                                                                                       |
+| `boundingCube`                                                 | <span class="badge supported">支持</span>     | 从 mesh 包围盒生成 box collider；可同时保留 visual mesh                                                                                                  |
+| `convexDecomposition`                                          | <span class="badge supported">支持</span>     | 标记 mesh asset `collision_cooking = ConvexDecomposition`，并启用 `CoACDConfig`                                                                          |
+| 未知 `MeshCollisionAPI.approximation`                          | <span class="badge unsupported">未支持</span> | 输出 warning，并回退为默认 mesh collider                                                                                                                 |
+| `FilteredPairsAPI`                                             | <span class="badge supported">支持</span>     | 生成 collision ignore pair                                                                                                                               |
+| `physxCollision:contactOffset`                                 | <span class="badge supported">支持</span>     | `geometry.margin`                                                                                                                                        |
+| `physxCollision:restOffset`                                    | <span class="badge unsupported">未支持</span> | 输出 warning                                                                                                                                             |
+| `MotrixPhysicsGeomAPI`                                         | <span class="badge supported">支持</span>     | 支持 Motrix 自定义 impedance contact model 和 priority                                                                                                   |
 
 (usd-materials-textures)=
 

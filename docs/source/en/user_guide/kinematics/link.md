@@ -1,5 +1,7 @@
 # 📏 Link
 
+{bdg-success-line}`CPU: fully supported` {bdg-success-line}`GPU: fully supported`
+
 We refer to the rigid components in a multibody system as links. In MotrixSim, a link is an important concept representing each rigid part of a multibody system. Each link can have different properties and behaviors, and is connected to other links via joints.
 
 ![link](../../../_static/images/link.png)

@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from motrixsim import SceneData, msd, run, step
+from motrixsim import SceneData, msd, run, step, ui
 from motrixsim.render import Layout, RenderApp
 
 FORWARD_CTRL = 340.0
@@ -357,7 +357,8 @@ def main():
     camera_mjcf = """<mujoco model="camera">
   <worldbody>
     <camera name="follower" pos="8 0 4"
-      xyaxes="0 -1 0 0 0 1" trackposspeed="8" trackrotspeed="2" />
+      xyaxes="0 -1 0 0 0 1" mode="targetbody" target="car_CAR_CHA"
+      trackposspeed="8" trackrotspeed="2" />
     <camera name="front_wheel_side" pos="0 -1.5 0.3"
       xyaxes="1 0 0 0 0 1" fovy="60" />
     <camera name="rear_wheel_side" pos="2.7 -1.5 0.3"
@@ -367,30 +368,35 @@ def main():
     camera_msd = msd.from_str(camera_mjcf)
     scene.attach(camera_msd, "car_CAR_CHA")
 
+    # Configure follower camera tracking on the MSD layer before building the immutable model
+    follower_desc = scene.find_body("car_CAR_CHA").find_camera("follower")
+    follower_desc.position_track = msd.PositionTrack.FixedLocal
+    follower_desc.rotation_track = msd.RotationTrack.LookAtLink
+    follower_desc.track_target = "car_CAR_CHA"
+
+    # Configure offscreen render targets on the MSD layer before building the immutable model
+    car = scene.find_body("car_CAR_CHA")
+    for name in ("front_wheel_side", "rear_wheel_side"):
+        camera_desc = car.find_camera(name)
+        camera_desc.render_target = msd.RenderTarget.Image
+        camera_desc.resolution = [320, 240]
+
     model = scene.build()
 
     camera = model.cameras["follower"]
-    camera.rotation_track = "look_at_link"
-    camera.position_track = "fixed_local"
-    camera.track_target_link = model.get_link("car_CAR_CHA")
 
     front_wheel_cam = model.cameras["front_wheel_side"]
-    front_wheel_cam.set_render_target("image", 320, 240)
-
     rear_wheel_cam = model.cameras["rear_wheel_side"]
-    rear_wheel_cam.set_render_target("image", 320, 240)
 
-    with RenderApp() as render:
-        render.set_main_camera(camera)
-        render.widgets.create_camera_viewport(
-            front_wheel_cam,
-            layout=Layout(right=10, bottom=10, width=320, height=240),
-        )
-        render.widgets.create_camera_viewport(
-            rear_wheel_cam,
-            layout=Layout(right=10, bottom=260, width=320, height=240),
-        )
+    view = ui.Viewport(camera=ui.CameraRef(camera.index), title="Scene")
+    with RenderApp(blueprint=view) as render:
         render.launch(model)
+        render.widgets.create_camera_viewport(
+            front_wheel_cam, layout=Layout(right=10, bottom=10, width=320, height=240), target_camera=camera
+        )
+        render.widgets.create_camera_viewport(
+            rear_wheel_cam, layout=Layout(right=10, bottom=260, width=320, height=240), target_camera=camera
+        )
         data = SceneData(model)
 
         forward = model.get_actuator("forward")

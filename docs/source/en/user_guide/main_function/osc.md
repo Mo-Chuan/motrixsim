@@ -1,5 +1,7 @@
 # 🎯 Operational Space Controller (OSC)
 
+{bdg-success-line}`CPU: fully supported` {bdg-danger-line}`GPU: not supported`
+
 MotrixSim provides an Operational Space Controller (OSC) in the `motrixsim.osc` module. It exposes a single stateless solver class [`OscSolver`] that computes joint torques for task-space end-effector control.
 
 ## Basic Concepts
