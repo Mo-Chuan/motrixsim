@@ -9,7 +9,7 @@
     <material name="Opaque(210,210,255).002" rgba="0.8235 0.8235 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_BRD_BZ" file="V_BRD_BZ.obj"/>
+    <mesh class="visual" name="V_BRD_BZ" file="V_BRD_BZ.glb"/>
 
   </asset>
 

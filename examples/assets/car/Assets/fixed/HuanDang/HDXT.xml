@@ -9,7 +9,7 @@
     <material name="Opaque(255,0,255)" rgba="1.0 0.0 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527864098548889"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_HDXT_all" file="V_HDXT_all.obj"/>
+    <mesh class="visual" name="V_HDXT_all" file="V_HDXT_all.glb"/>
   </asset>
 
   <default>

@@ -12,10 +12,10 @@
     <material name="Opaque(210,210,255).002" rgba="0.8235294222831726 0.8235294222831726 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527864098548889"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_FL_SCP" file="V_FL_SCP.obj"/>
-    <mesh class="visual" name="V_FL_wheel01" file="V_FL_wheel01.obj"/>
-    <mesh class="visual" name="V_FL_wheel02" file="V_FL_wheel02.obj"/>
-    <mesh class="visual" name="V_L_QDZZ" file="V_L_QDZZ.obj"/>
+    <mesh class="visual" name="V_FL_SCP" file="V_FL_SCP.glb"/>
+    <mesh class="visual" name="V_FL_wheel01" file="V_FL_wheel01.glb"/>
+    <mesh class="visual" name="V_FL_wheel02" file="V_FL_wheel02.glb"/>
+    <mesh class="visual" name="V_L_QDZZ" file="V_L_QDZZ.glb"/>
 
   </asset>
 

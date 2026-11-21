@@ -9,7 +9,7 @@
     <material name="Opaque(210,210,255)" rgba="0.8235294222831726 0.8235294222831726 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527864098548889"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_CD_ZHOU" file="V_CD_ZHOU.obj"/>
+    <mesh class="visual" name="V_CD_ZHOU" file="V_CD_ZHOU.glb"/>
   </asset>
 
   <default>

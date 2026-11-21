@@ -9,9 +9,9 @@
     <material name="Opaque(210,210,255)" rgba="0.8235294222831726 0.8235294222831726 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527864098548889"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_PQ_B_KE" file="V_PQ_B_KE.obj"/>
-    <mesh class="visual" name="V_PQ_F_KE" file="V_PQ_F_KE.obj"/>
-    <mesh class="visual" name="V_PQ_GUAN" file="V_PQ_GUAN.obj"/>
+    <mesh class="visual" name="V_PQ_B_KE" file="V_PQ_B_KE.glb"/>
+    <mesh class="visual" name="V_PQ_F_KE" file="V_PQ_F_KE.glb"/>
+    <mesh class="visual" name="V_PQ_GUAN" file="V_PQ_GUAN.glb"/>
   </asset>
 
   <default>
