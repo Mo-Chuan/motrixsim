@@ -229,7 +229,7 @@ The output image in this mode is similar to:
 
 If you want to obtain the ID image of the geometric objects, you can set the camera's segmentation property to id:
 
-```{literalinclude} ../../../../examples/viewer/capture_id_color.py
+```{literalinclude} ../../../../examples/viewer/capture_segmentation.py
 :language: python
 :dedent:
 :start-after: "# tag: id color camera"
