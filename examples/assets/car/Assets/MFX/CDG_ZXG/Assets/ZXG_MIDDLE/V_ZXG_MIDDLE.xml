@@ -9,7 +9,7 @@
     <material name="Opaque(210,210,255).007" rgba="0.8235294222831726 0.8235294222831726 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527864098548889"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_ZXG_MIDDLE" file="V_ZXG_MIDDLE.obj"/>
+    <mesh class="visual" name="V_ZXG_MIDDLE" file="V_ZXG_MIDDLE.glb"/>
 
     <!-- Collision meshes -->
   </asset>

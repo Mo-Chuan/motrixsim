@@ -10,11 +10,11 @@
     <material name="Opaque(210,210,255).002" rgba="0.8235 0.8235 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_BL_SC" file="V_BL_SC.obj"/>
-    <mesh class="visual" name="V_BR_SC" file="V_BR_SC.obj"/>
-    <mesh class="visual" name="V_NZL_L" file="V_NZL_L.obj"/>
-    <mesh class="visual" name="V_NZL_M" file="V_NZL_M.obj"/>
-    <mesh class="visual" name="V_NZL_R" file="V_NZL_R.obj"/>
+    <mesh class="visual" name="V_BL_SC" file="V_BL_SC.glb"/>
+    <mesh class="visual" name="V_BR_SC" file="V_BR_SC.glb"/>
+    <mesh class="visual" name="V_NZL_L" file="V_NZL_L.glb"/>
+    <mesh class="visual" name="V_NZL_M" file="V_NZL_M.glb"/>
+    <mesh class="visual" name="V_NZL_R" file="V_NZL_R.glb"/>
 
   </asset>
 

@@ -10,9 +10,9 @@
     <material name="Opaque(128,64,64)" rgba="0.501960813999176 0.250980406999588 0.250980406999588 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527864098548889"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_LHXT_connect" file="V_LHXT_connect.obj"/>
-    <mesh class="visual" name="V_LHXT_pipeline" file="V_LHXT_pipeline.obj"/>
-    <mesh class="visual" name="V_LHXT_spring" file="V_LHXT_spring.obj"/>
+    <mesh class="visual" name="V_LHXT_connect" file="V_LHXT_connect.glb"/>
+    <mesh class="visual" name="V_LHXT_pipeline" file="V_LHXT_pipeline.glb"/>
+    <mesh class="visual" name="V_LHXT_spring" file="V_LHXT_spring.glb"/>
   </asset>
 
   <default>

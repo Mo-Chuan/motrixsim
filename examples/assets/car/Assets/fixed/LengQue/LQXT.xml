@@ -11,9 +11,9 @@
     <material name="Opaque(0,0,255)" rgba="0.0 0.0 1.0 1.0" reflectance="0.5" metallic="1.0" roughness="0.5527864098548889"/>
 
     <!-- Visual meshes -->
-    <mesh class="visual" name="V_LQXT_fan" file="V_LQXT_fan.obj"/>
-    <mesh class="visual" name="V_LQXT_fanCover" file="V_LQXT_fanCover.obj"/>
-    <mesh class="visual" name="V_LQXT_other" file="V_LQXT_other.obj"/>
+    <mesh class="visual" name="V_LQXT_fan" file="V_LQXT_fan.glb"/>
+    <mesh class="visual" name="V_LQXT_fanCover" file="V_LQXT_fanCover.glb"/>
+    <mesh class="visual" name="V_LQXT_other" file="V_LQXT_other.glb"/>
   </asset>
 
   <default>
