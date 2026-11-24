@@ -39,10 +39,6 @@ uv run mxpython examples/{category}/{example_name}.py
   - [`hello_usd.py`](../../../../examples/physics/hello_usd.py)
   - —
   - 从 USD 文件加载场景（cobotta_pro_1300 机械臂），展示与 MJCF 相同的 `load_model` 入口。
-* - ![slope](/_static/images/examples/thumbs/slope.jpg)
-  - [`slope.py`](../../../../examples/getting_started/slope.py)
-  - —
-  - 方块在斜坡上滚动的物理仿真模型。
 ```
 
 ## 物理仿真
@@ -289,11 +285,7 @@ uv run mxpython examples/{category}/{example_name}.py
 * - ![capture_segmentation](/_static/images/examples/thumbs/capture_segmentation.jpg)
   - [`capture_segmentation.py`](../../../../examples/viewer/capture_segmentation.py)
   - —
-  - 分割图捕获示例，展示如何将场景相机配置为 Segmentation 视觉传感器，获取语义分割图（colorful 模式）。详见[相机文档](../render/camera.md)。
-* - ![capture_id_color](/_static/images/examples/thumbs/capture_id_color.jpg)
-  - [`capture_id_color.py`](../../../../examples/viewer/capture_id_color.py)
-  - —
-  - ID 图捕获示例，展示如何将相机 segmentation 属性设为 id，获取几何体 ID 的单通道图像（id = geom_id + 1）。详见[相机文档](../render/camera.md)。
+  - 分割图捕获示例，展示如何将场景相机配置为 Segmentation 视觉传感器，获取语义分割图或几何体 ID 单通道图像；可通过面板在运行时切换模式，捕获结果实时显示在窗口内的图片组件上。详见[相机文档](../render/camera.md)。
 * - ![viewport_camera_targets](/_static/images/examples/thumbs/viewport_camera_targets.jpg)
   - [`viewport_camera_targets.py`](../../../../examples/viewer/viewport_camera_targets.py)
   - —
@@ -338,10 +330,6 @@ uv run mxpython examples/{category}/{example_name}.py
   - [`ssgi.py`](../../../../examples/viewer/ssgi.py)
   - —
   - 屏幕空间全局光照（SSGI）渲染示例，展示如何使用 `RenderSettings` 启用高质量 SSGI 渲染效果。
-* - ![headless](/_static/images/examples/thumbs/empty.jpg)
-  - [`headless.py`](../../../../examples/viewer/headless.py)
-  - `--no-wait` 切换异步捕获
-  - 无头渲染示例，展示如何使用 `RenderApp(headless=True)` 在无窗口模式下运行仿真并通过系统相机批量截取图像。
 * - ![g1_3dgs_locomotion](/_static/images/examples/thumbs/g1_3dgs.jpg)
   - [`g1_3dgs_locomotion.py`](../../../../examples/viewer/g1_3dgs_locomotion.py)
   - —

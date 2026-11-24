@@ -39,10 +39,6 @@ Examples that do not use RenderApp (physics simulation only) behave the same as 
   - [`hello_usd.py`](../../../../examples/physics/hello_usd.py)
   - —
   - Load a scene from a USD file (cobotta_pro_1300 arm), demonstrating the same `load_model` entry point as MJCF.
-* - ![slope](/_static/images/examples/thumbs/slope.jpg)
-  - [`slope.py`](../../../../examples/getting_started/slope.py)
-  - —
-  - Simulation of a block rolling down a slope.
 ```
 
 ## Physics
@@ -289,11 +285,7 @@ Examples that do not use RenderApp (physics simulation only) behave the same as 
 * - ![capture_segmentation](/_static/images/examples/thumbs/capture_segmentation.jpg)
   - [`capture_segmentation.py`](../../../../examples/viewer/capture_segmentation.py)
   - —
-  - Segmentation capture example, showing how to configure a scene camera as a Segmentation sensor to obtain semantic segmentation maps (colorful mode). See the [camera documentation](../render/camera.md).
-* - ![capture_id_color](/_static/images/examples/thumbs/capture_id_color.jpg)
-  - [`capture_id_color.py`](../../../../examples/viewer/capture_id_color.py)
-  - —
-  - ID map capture example, showing how to set the camera's segmentation property to id to obtain a single-channel image of geometry IDs (id = geom_id + 1). See the [camera documentation](../render/camera.md).
+  - Segmentation capture example, showing how to configure a scene camera as a Segmentation sensor to obtain semantic segmentation maps or the single-channel geom-id image. A UI panel switches modes at runtime and captured frames are displayed live in an on-screen image widget. See the [camera documentation](../render/camera.md).
 * - ![viewport_camera_targets](/_static/images/examples/thumbs/viewport_camera_targets.jpg)
   - [`viewport_camera_targets.py`](../../../../examples/viewer/viewport_camera_targets.py)
   - —
@@ -338,10 +330,6 @@ Examples that do not use RenderApp (physics simulation only) behave the same as 
   - [`ssgi.py`](../../../../examples/viewer/ssgi.py)
   - —
   - Screen Space Global Illumination (SSGI) rendering example, demonstrating how to use `RenderSettings` to enable high-quality SSGI rendering effects.
-* - ![headless](/_static/images/examples/thumbs/empty.jpg)
-  - [`headless.py`](../../../../examples/viewer/headless.py)
-  - `--no-wait` switches to async capture
-  - Headless rendering example, demonstrating how to use `RenderApp(headless=True)` to run simulation without a window and batch-capture images via the system camera.
 * - ![g1_3dgs_locomotion](/_static/images/examples/thumbs/g1_3dgs.jpg)
   - [`g1_3dgs_locomotion.py`](../../../../examples/viewer/g1_3dgs_locomotion.py)
   - —

@@ -225,7 +225,7 @@ MotrixSim 支持将场景相机转变为 Segmentation 视觉传感器，从而�
 
 如果您想获得几何体的 ID 图像，可以设置相机的 segmentation 属性为 id:
 
-```{literalinclude} ../../../../examples/viewer/capture_id_color.py
+```{literalinclude} ../../../../examples/viewer/capture_segmentation.py
 :language: python
 :dedent:
 :start-after: "# tag: id color camera"
