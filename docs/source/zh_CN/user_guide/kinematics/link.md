@@ -34,7 +34,34 @@ MJCF 中的`<worldbody>`不会被视作一个 Link 对象。
 uv run examples/physics/link.py
 ```
 
-来运行一个简单的关于 link api 调用的例子。
+来运行一个简单的关于 link api 调用的例子。场景是一个悬挂在立柱上的三级摆链,每帧通过 gizmo 叠加显示各连杆的坐标系、质心和速度。
+
+在 MotrixSim 中加载 MJCF 文件创建场景和数据
+
+```{literalinclude} ../../../../examples/physics/link.py
+:language: python
+:dedent:
+:start-after: "# tag::link_struct[]"
+:end-before:  "# end::link_struct[]"
+```
+
+查询连杆的位姿、旋转和速度
+
+```{literalinclude} ../../../../examples/physics/link.py
+:language: python
+:dedent:
+:start-after: "# tag::link_query[]"
+:end-before:  "# end::link_query[]"
+```
+
+对连杆施加外力
+
+```{literalinclude} ../../../../examples/physics/link.py
+:language: python
+:dedent:
+:start-after: "# tag::link_force[]"
+:end-before:  "# end::link_force[]"
+```
 
 源码可以参考 [`examples/physics/link.py`](../../../../examples/physics/link.py)。
 

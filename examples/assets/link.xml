@@ -1,20 +1,56 @@
-<mujoco>
-  <include file="./common/materials.xml"/>
-  <option timestep="0.01"/>
-  
+﻿<mujoco model="link">
+  <include file="./common/flat_ground.xml" />
+  <compiler />
+  <option timestep="0.005" />
+  <visual>
+    <quality shadowsize="4096" />
+    <global _disable_near_clip="true" />
+    <headlight diffuse="0.0 0.0 0.0" ambient="0.0 0.0 0.0" specular="0 0 0" />
+    <map zfar="1000" />
+    <tonemapping method="aces" />
+    <ssgi active="true" resolutionscale="2" raycount="4" stepcount="6" thickness="1" intensity="1" gidenoiseoffset="3" rraycount="256" rdenoiseoffset="3" />
+    <ssao active="true" />
+  </visual>
+  <asset>
+    <material name="MI_silvery_metal" rgba="0.735357 0.735357 0.735357 1.0" reflectance="0.7" roughness="0.1" metallic="0.7" />
+    <material name="MI_yellow" rgba="0.906734 0.8493526 0.0 1.0" reflectance="0.5" roughness="0.5" metallic="0.0" />
+    <material name="MI_black_metal" rgba="0.4845292 0.4845292 0.4845292 1.0" reflectance="0.7" roughness="0.1" metallic="0.7" />
+    <material name="MI_grey" rgba="0.4670652 0.4670652 0.4670652 1.0" reflectance="0.5" roughness="0.5" metallic="0.0" />
+    <material name="MI_red" rgba="0.9064818 0.0 0.0286454 1.0" reflectance="0.5" roughness="0.5" metallic="0.0" />
+    <material name="MI_green" rgba="0.1747258 0.9064775 0.0 1.0" reflectance="0.5" roughness="0.5" metallic="0.0" />
+    <texture type="skybox" builtin="gradient" rgb1="0.816 0.875 1.0" rgb2="0.427 0.580 0.757" width="256" height="1024" />
+  </asset>
   <worldbody>
-    <light name="light" pos="0 0 3"/>
-    <camera name="fixed" pos="0 -3 3" xyaxes="1 0 0 0 1 1"/>
-    <geom name="floor" type="plane" size="5 5 0.1" pos="0 0 0" rgba="0.4 0.4 0.4 1" material="motphys-ground"/>
+    <camera name="fixed" pos="0.0 -5.2 3.0" quat="0.9238796 0.3826834 0.0 0.0" fovy="26.9914664" mode="fixed" />
+    <light name="LIT_Key" pos="0.0 -2.0 8.0" dir="0.0 0.2425356 -0.9701424" type="spot" diffuse="1.0 0.744 0.536" intensity="203025.0000782" range="26.0" cutoff="70" innerangle="15" attenuation="0.0 0.5 0.01" bulbradius="10" castshadow="true" mode="fixed" />
+    <light name="LIT_Fill_1" pos="0.0 -2.0 8.0" dir="0.0 0.2425356 -0.9701424" type="spot" diffuse="1.0 0.744 0.536" intensity="150300.0162372" range="16.25" cutoff="32" innerangle="27" attenuation="0.0 0.5 0.01" bulbradius="1" castshadow="false" mode="fixed" />
+    <light name="LIT_Fill_2" pos="1.0 -1.0 6.0" dir="-0.1794892 0.1794892 -0.9672472" type="spot" diffuse="0.52 0.66 1.0" intensity="100440.0012809" range="26.0" cutoff="38" innerangle="8.0000017" attenuation="0.0 0.5 0.01" bulbradius="1" castshadow="false" mode="fixed" />
 
-    <body name="base" pos="0 0 0.1">
-      <body name="arm_A" pos="0 0 0"> 
-        <joint name="joint_A" type="hinge" axis="0 0 1" limited="false"/>
-        <geom name="cube_A" type="box" size="0.25 0.25 0.5" pos="0 0 0.5" rgba="1 0 0 1"/>
-        
-        <body name="arm_B" pos="0 0 1">  
-          <joint name="joint_B" type="hinge" axis="0 0 1" limited="false"/>
-          <geom name="cube_B" type="box" size="0.15 0.15 0.5" pos="0 0 0.5" rgba="0 0 1 1"/>
+    <!-- Pillar: the static mount the pendulum chain hangs from. -->
+    <body name="pillar" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0">
+      <geom name="GEO_hinge_bearing_back" pos="0.0 0.6 3.4" quat="0.7071068 0.7071068 0.0 0.0" type="cylinder" size="0.14 0.05" material="MI_black_metal" group="2" contype="0" conaffinity="0" />
+      <geom name="GEO_hinge_bearing_front" pos="0.0 -0.6 3.4" quat="0.7071068 0.7071068 0.0 0.0" type="cylinder" size="0.14 0.05" material="MI_black_metal" group="2" contype="0" conaffinity="0" />
+      <geom name="GEO_hinge_shaft" pos="0.0 0.0 3.4" quat="0.7071068 0.7071068 0.0 0.0" type="cylinder" size="0.05 0.7" material="MI_silvery_metal" group="2" contype="0" conaffinity="0" />
+      <geom name="GEO_pillar_back" pos="0.0 0.5 1.85" quat="1.0 0.0 0.0 0.0" type="box" size="0.15 0.05 1.75" material="MI_silvery_metal" group="2" contype="0" conaffinity="0" />
+      <geom name="GEO_pillar_base" pos="0.0 0.0 0.075" quat="1.0 0.0 0.0 0.0" type="box" size="1.0 0.7 0.075" material="MI_grey" group="2" contype="0" conaffinity="0" />
+      <geom name="GEO_pillar_front" pos="0.0 -0.5 1.85" quat="1.0 0.0 0.0 0.0" type="box" size="0.15 0.05 1.75" material="MI_silvery_metal" group="2" contype="0" conaffinity="0" />
+
+      <!-- Link 1: hinge about the Y axis, sweeps in the XZ plane. -->
+      <body name="link_1" pos="0.0 0.0 3.4" quat="1.0 0.0 0.0 0.0">
+        <joint name="joint_1" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" type="hinge" range="-80.0 80.0" damping="0.05" />
+        <geom name="GEO_link_1_rod" pos="0.0 0.0 -0.5" quat="1.0 0.0 0.0 0.0" type="capsule" size="0.05 0.5" material="MI_yellow" group="2" contype="0" conaffinity="0" />
+
+        <!-- Link 2: another hinge about Y, chained on the tip of link 1. -->
+        <body name="link_2" pos="0.0 0.0 -1.0" quat="1.0 0.0 0.0 0.0">
+          <joint name="joint_2" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" type="hinge" range="-100.0 100.0" damping="0.05" />
+          <geom name="GEO_link_2_rod" pos="0.0 0.0 -0.45" quat="1.0 0.0 0.0 0.0" type="capsule" size="0.045 0.45" material="MI_red" group="2" contype="0" conaffinity="0" />
+
+          <!-- Link 3: the end effector with a heavier bob so the chain keeps swinging. -->
+          <body name="link_3" pos="0.0 0.0 -0.9" quat="1.0 0.0 0.0 0.0">
+            <joint name="joint_3" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" type="hinge" range="-120.0 120.0" damping="0.05" />
+            <geom name="GEO_link_3_rod" pos="0.0 0.0 -0.4" quat="1.0 0.0 0.0 0.0" type="capsule" size="0.04 0.4" material="MI_green" group="2" contype="0" conaffinity="0" />
+            <geom name="GEO_link_3_bob" pos="0.0 0.0 -0.85" quat="1.0 0.0 0.0 0.0" type="sphere" size="0.11" material="MI_green" group="2" contype="0" conaffinity="0" />
+          </body>
         </body>
       </body>
     </body>
