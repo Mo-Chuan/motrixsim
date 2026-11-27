@@ -15,7 +15,7 @@
     <material name="yellow" rgba="0.9068561 0.8431176 0.0452435 1.0" reflectance="0.5" roughness="0.5" metallic="0.0" />
     <material name="black" rgba="0 0 0 1" reflectance="0.5" roughness="0.5" metallic="0.0" />
     <material name="blue" rgba="0 0.1682536 0.9063871 1" reflectance="0.5" roughness="0.5" metallic="0.0" />
-    <texture type="skybox" builtin="gradient" rgb1="0.816 0.875 1.0" rgb2="0.427 0.580 0.757" width="256" height="1024" />
+    <texture type="skybox" builtin="gradient" rgb1="0.0 0.0 0.0" rgb2="0.0 0.0 0.0" width="256" height="1024" />
   </asset>
   <worldbody>
     <camera name="fixed" pos="0 -6 6" quat="0.9238796 0.3826834 0.0 0.0" fovy="26.9914664" mode="fixed" />
