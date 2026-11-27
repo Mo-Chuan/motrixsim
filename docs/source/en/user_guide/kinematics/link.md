@@ -34,6 +34,35 @@ You can run a simple example demonstrating link API usage with:
 uv run examples/physics/link.py
 ```
 
+The scene is a three-link pendulum hanging from a static pillar; each frame overlays gizmos showing every link's frame, center of mass and velocity.
+
+Load an MJCF file and create the scene and data
+
+```{literalinclude} ../../../../examples/physics/link.py
+:language: python
+:dedent:
+:start-after: "# tag::link_struct[]"
+:end-before:  "# end::link_struct[]"
+```
+
+Query a link's pose, rotation and velocity
+
+```{literalinclude} ../../../../examples/physics/link.py
+:language: python
+:dedent:
+:start-after: "# tag::link_query[]"
+:end-before:  "# end::link_query[]"
+```
+
+Apply an external force to a link
+
+```{literalinclude} ../../../../examples/physics/link.py
+:language: python
+:dedent:
+:start-after: "# tag::link_force[]"
+:end-before:  "# end::link_force[]"
+```
+
 See the source code at [`examples/physics/link.py`](../../../../examples/physics/link.py).
 
 ## API Reference
